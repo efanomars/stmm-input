@@ -1,0 +1,68 @@
+#===================
+# libstmm-input-gtk
+#===================
+
+Requirements
+------------
+g++ compiler or compatible (>= C++14)
+libgtkmm3.0
+libxi
+libstmm-input (installed)
+libstmm-input-ev (installed)
+libstmm-input-base (installed)
+
+
+Instructions
+------------
+
+From this directory execute the following commands:
+
+  $ mkdir build
+  $ cd build
+
+  $ cmake -D CMAKE_BUILD_TYPE=Release ..
+
+Instead of 'Release' CMAKE_BUILD_TYPE can also be set to
+   'Debug', 'MinSizeRel' or 'RelWithDebInfo'.
+To build the documentation add option (before '..')
+   '-D BUILD_DOCS=ON' to the preceding command.
+To execute the tests add option'-D BUILD_TESTING=ON' to the preceding command
+   (read below how to setup google test).
+To change the installation directory add definition
+   '-D CMAKE_INSTALL_PREFIX=/home/adam/mylib' to the preceding command.
+
+  $ make
+
+  $ sudo make install
+
+sudo might be omitted in the preceding command if installing to a directory 
+owned by the current user.
+
+  $ sudo ldconfig
+
+
+Alternatively you can just execute the script
+
+  $ ./install_libstmm-input-gtk.sh  Release  /home/adam/mylib
+
+setting the parameters to your preferred value (like above).
+
+
+Setting up googletest
+---------------------
+
+If your Linux distribution already provides a googletest package and both
+the include and binary files are installed in the usual paths (either
+'/usr/include', '/usr/lib', '/usr/local/include', etc.), the tests should 
+compile and run provided the version is 1.7 or above.
+
+If it's not the case download googletest from github.com and compile it.
+Make sure library objects ('libgtest.so' and 'libgtest_main.so') are generated
+by setting BUILD_SHARED_LIBS option to ON.
+Back within the libstmm-input-gtk project use cmake-gui to set the 
+BUILD_TESTING_GOOGLE_TEST_LIBRARY_PATH cache variable to the directory where
+'libgtest.so' and 'libgtest_main.so' are located. Also set the
+BUILD_TESTING_GOOGLE_TEST_INCLUDE_PATH cache variable to the 'include' 
+directory that contains the 'gtest/' folder in which 'gtest.h' is located.
+
+As described above set BUILD_TESTING=ON to execute the tests.

@@ -1,0 +1,15 @@
+# stmm-input-gtk pkg-config source file
+
+prefix=@STMMI_GTK_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: stmm-input-gtk
+Description: C++ Device Input Framework - Gtk main loop devices
+Version: @STMM_INPUT_GTK_VERSION@
+Requires: stmm-input >= @STMM_INPUT_VERSION_REQ@  stmm-input-base >= @STMM_INPUT_BASE_VERSION_REQ@  stmm-input-ev >= @STMM_INPUT_EV_VERSION_REQ@  gtkmm-3.0 >= @GTKMM_VERSION_REQ@  xi >= @XI_VERSION_REQ@
+Conflicts:
+Libs: -L${libdir} -lstmm-input-gtk
+Cflags: -I${includedir}/stmm-input-gtk -I${includedir}
+

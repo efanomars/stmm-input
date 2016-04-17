@@ -1,0 +1,316 @@
+/*
+ * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>
+ */
+/*
+ * File:   callifs.h
+ */
+
+#ifndef _STMI_CALLIFS_H_
+#define _STMI_CALLIFS_H_
+
+#include <cassert>
+#include <iostream>
+
+#include "devicemanager.h"
+
+namespace stmi
+{
+
+////////////////////////////////////////////////////////////////////////////////
+/** Always call back listener.
+ */
+class CallIfTrue final : public CallIf
+{
+public:
+	//
+	bool operator()(const shared_ptr<const Event>& /*refEvent*/) const override
+	{
+		return true;
+	}
+	static const shared_ptr<CallIfTrue>& getInstance()
+	{
+		static const shared_ptr<CallIfTrue> s_refCallIfTrue(new CallIfTrue());
+		return s_refCallIfTrue;
+	}
+private:
+	CallIfTrue() {}
+};
+////////////////////////////////////////////////////////////////////////////////
+/** Never call back listener.
+ */
+class CallIfFalse final : public CallIf
+{
+public:
+	//
+	bool operator()(const shared_ptr<const Event>& /*refEvent*/) const override
+	{
+		return false;
+	}
+	static const shared_ptr<CallIfFalse>& getInstance()
+	{
+		static shared_ptr<CallIfFalse> s_refCallIfFalse(new CallIfFalse());
+		return s_refCallIfFalse;
+	}
+protected:
+	CallIfFalse() {}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Applies a "conditional AND" to two callif conditions.
+ */
+class CallIfAnd final : public CallIf
+{
+public:
+	CallIfAnd(const shared_ptr<CallIf>& refCallIf1, const shared_ptr<CallIf>& refCallIf2);
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		return m_refCallIf1->operator()(refEvent) && m_refCallIf2->operator()(refEvent);
+	}
+	inline const shared_ptr<CallIf>& getCallIf1() const { return m_refCallIf1; }
+	inline const shared_ptr<CallIf>& getCallIf2() const { return m_refCallIf2; }
+private:
+	const shared_ptr<CallIf> m_refCallIf1;
+	const shared_ptr<CallIf> m_refCallIf2;
+private:
+	CallIfAnd();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Applies a "conditional OR" to two callif conditions.
+ */
+class CallIfOr final : public CallIf
+{
+public:
+	CallIfOr(const shared_ptr<CallIf>& refCallIf1, const shared_ptr<CallIf>& refCallIf2);
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		return m_refCallIf1->operator()(refEvent) || m_refCallIf2->operator()(refEvent);
+	}
+	inline const shared_ptr<CallIf>& getCallIf1() const { return m_refCallIf1; }
+	inline const shared_ptr<CallIf>& getCallIf2() const { return m_refCallIf2; }
+private:
+	const shared_ptr<CallIf> m_refCallIf1;
+	const shared_ptr<CallIf> m_refCallIf2;
+private:
+	CallIfOr();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Applies a "NOT" to a callif condition.
+ */
+class CallIfNot final : public CallIf
+{
+public:
+	CallIfNot(const shared_ptr<CallIf>& refCallIf);
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		return ! (m_refCallIf->operator()(refEvent));
+	}
+	inline const shared_ptr<CallIf>& getCallIf() const { return m_refCallIf; }
+private:
+	const shared_ptr<CallIf> m_refCallIf;
+private:
+	CallIfNot();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Accessor callif.
+ * Selects events with the given accessor.
+ */
+class CallIfAccessor : public CallIf
+{
+public:
+	/** Empty constructor.
+	 * Selects events that didn't need an accessor.
+	 */
+	CallIfAccessor();
+	/** Constructor.
+	 * @param refAccessor Accessor subclass instance or null.
+	 */
+	CallIfAccessor(const shared_ptr<const Accessor>& refAccessor);
+	/** Note: if both this callif's accessor and the `refAccessor` are null, `true` is returned. */
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		const bool bMemberNull = (!m_refAccessor);
+		const shared_ptr<const Accessor>& refAccessor = refEvent->getAccessor();
+		const bool bOtherNull = (!refAccessor);
+		if (bOtherNull || bMemberNull) {
+			// if both null, it's a match!
+			return (bMemberNull == bOtherNull);
+		}
+		// compare objects
+		return ((*m_refAccessor) == (*refAccessor));
+	}
+	inline const shared_ptr<const Accessor>& getAccessor() const { return m_refAccessor; }
+private:
+	const shared_ptr<const Accessor> m_refAccessor;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Device callif.
+ * Selects events generated by a specific device which can be null.
+ */
+class CallIfDevice : public CallIf
+{
+public:
+	CallIfDevice();
+	CallIfDevice(const shared_ptr<Device>& refDevice);
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		const shared_ptr<Capability>& refCapability = refEvent->getCapability();
+		if (!refCapability) {
+			// if capability is not defined, it's a match if device isn't either
+			return !m_refDevice;
+		}
+		return (refCapability->getDevice() == m_refDevice);
+	}
+	inline const shared_ptr<Device>& getDevice() const { return m_refDevice; }
+private:
+	const shared_ptr<Device> m_refDevice;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Capability callif.
+ * Selects events generated by a specific capability instance, which can be null.
+ */
+class CallIfCapability : public CallIf
+{
+public:
+	CallIfCapability();
+	CallIfCapability(const shared_ptr<Capability>& refCapability);
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		assert(refEvent);
+		return (m_refCapability == refEvent->getCapability());
+	}
+	inline const shared_ptr<Capability>& getCapability() const { return m_refCapability; }
+private:
+	const shared_ptr<Capability> m_refCapability;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Capability class callif.
+ * Selects events generated by the instances of a specific registered capability class.
+ */
+class CallIfCapabilityClass : public CallIf
+{
+public:
+	CallIfCapabilityClass(const Capability::Class& oClass);
+	CallIfCapabilityClass(const std::string& sCapabilityClassId);
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		assert(refEvent);
+		if (! (refEvent->getCapability()) ) {
+			return false;
+		}
+		return (m_oClass == refEvent->getCapability()->getCapabilityClass());
+	}
+	inline const Capability::Class& getCapabilityClass() const { return m_oClass; }
+private:
+	const Capability::Class m_oClass;
+private:
+	CallIfCapabilityClass();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Device manager capability callif.
+ * Selects events generated by capabilities that are subclasses of stmi::DeviceManagerCapability.
+ */
+class CallIfDeviceManagerCapability : public CallIf
+{
+public:
+	CallIfDeviceManagerCapability();
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		assert(refEvent);
+		if (! (refEvent->getCapability())) {
+			return false;
+		}
+		return refEvent->getCapability()->getCapabilityClass().isDeviceManagerCapability();
+	}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Event class callif.
+ * Selects events that are subclasses of a given registered event class.
+ */
+class CallIfEventClass final : public CallIf
+{
+public:
+	CallIfEventClass(const Event::Class& oClass);
+	CallIfEventClass(const std::string& sEventClassId);
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		assert(refEvent);
+		return (m_oClass == refEvent->getEventClass());
+	}
+	inline const Event::Class& getClass() const { return m_oClass; }
+private:
+	const Event::Class m_oClass;
+private:
+	CallIfEventClass();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** XYEvent class callif.
+ * Selects events that are subclasses of XYEvent.
+ */
+class CallIfXYEvent final : public CallIf
+{
+public:
+	CallIfXYEvent();
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		assert(refEvent);
+		return refEvent->getEventClass().isXYEvent();
+	}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** Function callif.
+ * Selects an event according to the return value of a custom function.
+ */
+class CallIfFuction final : public CallIf
+{
+public:
+	using CallIfFunction = std::function<bool(const shared_ptr<const Event>&)>;
+	//
+	CallIfFuction(CallIfFunction&& oCallIfFunction);
+	CallIfFuction(const CallIfFunction& oCallIfFunction);
+	//
+	bool operator()(const shared_ptr<const Event>& refEvent) const override
+	{
+		return m_oCallIfFunction(refEvent);
+	}
+private:
+	const CallIfFunction m_oCallIfFunction;
+private:
+	CallIfFuction();
+};
+
+} // namespace stmi
+
+#endif	/* _STMI_CALLIFS_H_ */
+

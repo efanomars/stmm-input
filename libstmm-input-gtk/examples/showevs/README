@@ -1,0 +1,23 @@
+=======
+showevs
+=======
+
+showevs is a sample application that uses the stmm-input-gtk library.
+It shows the events received by different event listeners and all the 
+devices recognised by the device manager.
+It also shows what happens when multiple windows and dialogs are opened.
+
+
+Compile and run
+---------------
+
+mkdir build
+cd build
+
+cmake -D CMAKE_BUILD_TYPE=Debug ..
+
+make
+
+./showevs
+
+

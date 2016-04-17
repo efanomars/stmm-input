@@ -1,0 +1,36 @@
+Installation
+============
+
+Each project is separate and has its own description (README.md),
+license, installing instructions, etc. and can be handled in its 
+own subfolder.
+But since the projects partially depend on each other, a script is
+provided to compile and install the binaries in the right order.
+
+  install_stmm-input-all.sh  Debug  /usr/local
+
+Compiles (debug mode) and installs all libraries and the executable
+to the directory (prefix) '/usr/local'.
+The first parameter can also be 'Release', 'MinSizeRel' or 'RelWithDebInfo'
+(see cmake documentation).
+The second parameter can be omitted (usually '/usr/local' is the default).
+
+Dependencies
+============
+
+- libstmm-input-base depends on
+    + libstmm-input
+
+- libstmm-input-ev   depends on
+    + libstmm-input
+
+- libstmm-input-gtk  depends on
+    + libstmm-input-ev
+    + libstmm-input-base
+    + libxi
+    + libgtkmm-3.0
+
+- device-floater     depends on
+    + libgtkmm-3.0
+    + libxi
+    + libx11

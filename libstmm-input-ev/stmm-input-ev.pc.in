@@ -1,0 +1,15 @@
+# stmm-input-ev pkg-config source file
+
+prefix=@STMMI_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: stmm-input-ev
+Description: C++ Device Input Framework - Simple event classes
+Version: @STMM_INPUT_EV_VERSION@
+Requires: stmm-input >= @STMM_INPUT_VERSION_REQ@
+Conflicts:
+Libs: -L${libdir} -lstmm-input-ev
+Cflags: -I${includedir}/stmm-input-ev -I${includedir}
+
