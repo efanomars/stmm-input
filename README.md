@@ -1,4 +1,4 @@
-stmm-input                                                         {#mainpage}
+stmm-input
 ==========
 
 Extensible, platform independent device input event library for C++ (C++14).
