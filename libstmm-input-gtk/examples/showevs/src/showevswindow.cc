@@ -465,7 +465,12 @@ void ShowEvsWindow::recreateDeviceList()
 			if (!sCapas.empty()) {
 				sCapas = sCapas + ", ";
 			}
-			sCapas = sCapas + oCapaClass.getId();
+			auto sCapaClassId = oCapaClass.getId();
+			auto nLastPos = sCapaClassId.rfind("::");
+			if (nLastPos != std::string::npos) {
+				sCapaClassId.erase(0, nLastPos + 2);
+			}
+			sCapas = sCapas + sCapaClassId;
 		}
 //std::cout << "recreateDeviceList sCapas=" << sCapas << std::endl;
 		Gtk::ListStore::iterator itListDevice = m_refTreeModelDevices->append();
