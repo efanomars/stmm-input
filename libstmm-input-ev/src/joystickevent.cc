@@ -23,7 +23,7 @@
 namespace stmi
 {
 
-const char* const JoystickHatEvent::s_sClassId = "Joystick:JoystickHatEvent";
+const char* const JoystickHatEvent::s_sClassId = "stmi::Joystick:JoystickHatEvent";
 Event::RegisterClass<JoystickHatEvent> JoystickHatEvent::s_oInstall(s_sClassId);
 
 JoystickHatEvent::JoystickHatEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
@@ -116,7 +116,7 @@ std::vector< std::pair<HARDWARE_KEY, Event::AS_KEY_INPUT_TYPE> > JoystickHatEven
 
 
 ////////////////////////////////////////////////////////////////////////////////
-const char* const JoystickButtonEvent::s_sClassId = "Joystick:JoystickButtonEvent";
+const char* const JoystickButtonEvent::s_sClassId = "stmi::Joystick:JoystickButtonEvent";
 Event::RegisterClass<JoystickButtonEvent> JoystickButtonEvent::s_oInstall(s_sClassId);
 
 JoystickButtonEvent::JoystickButtonEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
@@ -140,7 +140,7 @@ bool JoystickButtonEvent::getAsKey(HARDWARE_KEY& eKey, AS_KEY_INPUT_TYPE& eType,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const char* const JoystickAxisEvent::s_sClassId = "Joystick:JoystickAxisEvent";
+const char* const JoystickAxisEvent::s_sClassId = "stmi::Joystick:JoystickAxisEvent";
 Event::RegisterClass<JoystickAxisEvent> JoystickAxisEvent::s_oInstall(s_sClassId);
 
 JoystickAxisEvent::JoystickAxisEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor

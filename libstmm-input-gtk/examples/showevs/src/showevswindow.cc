@@ -257,7 +257,14 @@ Glib::ustring ShowEvsWindow::getEventString(const std::string& sPre, const share
 			sAcc = "Main";
 		}
 	}
-	return Glib::ustring::compose("[%1][%2] Dev:%3 %4 (%5)", sPre, sAcc, sDevId, refEvent->getEventClass().getId(), nTimeUsec);
+	// Shorten event id (leave out "namespace" prefix if any)
+	auto sEvClassId = refEvent->getEventClass().getId();
+	auto nLastPos = sEvClassId.rfind("::");
+	if (nLastPos != std::string::npos) {
+		sEvClassId.erase(0, nLastPos + 2);
+	}
+
+	return Glib::ustring::compose("[%1][%2] Dev:%3 %4 (%5)", sPre, sAcc, sDevId, sEvClassId, nTimeUsec);
 }
 void ShowEvsWindow::printKeyEvent(const std::string& sPre, const shared_ptr<stmi::KeyEvent>& refEvent)
 {

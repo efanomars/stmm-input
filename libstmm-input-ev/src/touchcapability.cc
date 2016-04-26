@@ -23,7 +23,7 @@
 namespace stmi
 {
 
-const char* const TouchCapability::s_sClassId = "Touch";
+const char* const TouchCapability::s_sClassId = "stmi::Touch";
 Capability::RegisterClass<TouchCapability> TouchCapability::s_oInstall(s_sClassId);
 
 } // namespace stmi

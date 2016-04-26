@@ -23,7 +23,7 @@
 namespace stmi
 {
 
-const char* const PointerCapability::s_sClassId = "Pointer";
+const char* const PointerCapability::s_sClassId = "stmi::Pointer";
 Capability::RegisterClass<PointerCapability> PointerCapability::s_oInstall(s_sClassId);
 
 } // namespace stmi

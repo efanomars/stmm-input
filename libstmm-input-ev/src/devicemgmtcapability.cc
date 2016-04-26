@@ -23,7 +23,7 @@
 namespace stmi
 {
 
-const char* const DeviceMgmtCapability::s_sClassId = "DeviceMgmt";
+const char* const DeviceMgmtCapability::s_sClassId = "stmi::DeviceMgmt";
 Capability::RegisterClass<DeviceMgmtCapability> DeviceMgmtCapability::s_oInstall(s_sClassId);
 
 DeviceMgmtCapability::DeviceMgmtCapability()

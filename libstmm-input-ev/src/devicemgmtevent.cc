@@ -23,7 +23,7 @@
 namespace stmi
 {
 
-const char* const DeviceMgmtEvent::s_sClassId = "DeviceMgmt:DeviceMgmtEvent";
+const char* const DeviceMgmtEvent::s_sClassId = "stmi::DeviceMgmt:DeviceMgmtEvent";
 Event::RegisterClass<DeviceMgmtEvent> DeviceMgmtEvent::s_oInstall(s_sClassId);
 
 DeviceMgmtEvent::DeviceMgmtEvent(int64_t nTimeUsec, const shared_ptr<DeviceMgmtCapability>& refDeviceMgmtCapability

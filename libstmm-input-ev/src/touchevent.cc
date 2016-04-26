@@ -23,6 +23,9 @@
 namespace stmi
 {
 
+const char* const TouchEvent::s_sClassId = "stmi::Touch:TouchEvent";
+Event::RegisterClass<TouchEvent> TouchEvent::s_oInstall(s_sClassId);
+
 TouchEvent::TouchEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
 						, const shared_ptr<TouchCapability>& refTouchCapability, TOUCH_INPUT_TYPE eType
 						, double fX, double fY, int64_t nFingerId)
@@ -42,7 +45,5 @@ TouchEvent::TouchEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccesso
 	}
 	setXYGrab(eXYGrabType, nFingerId);
 }
-const char* const TouchEvent::s_sClassId = "Touch:TouchEvent";
-Event::RegisterClass<TouchEvent> TouchEvent::s_oInstall(s_sClassId);
 
 } // namespace stmi

@@ -23,7 +23,7 @@
 namespace stmi
 {
 
-const char* const KeyEvent::s_sClassId = "Keys:KeyEvent";
+const char* const KeyEvent::s_sClassId = "stmi::Keys:KeyEvent";
 Event::RegisterClass<KeyEvent> KeyEvent::s_oInstall(s_sClassId);
 
 

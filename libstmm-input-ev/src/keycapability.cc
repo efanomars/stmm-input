@@ -23,7 +23,7 @@
 namespace stmi
 {
 
-const char* const KeyCapability::s_sClassId = "Key";
+const char* const KeyCapability::s_sClassId = "stmi::Keys";
 Capability::RegisterClass<KeyCapability> KeyCapability::s_oInstall(s_sClassId);
 
 } // namespace stmi

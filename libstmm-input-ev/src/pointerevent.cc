@@ -23,7 +23,7 @@
 namespace stmi
 {
 
-const char* const PointerEvent::s_sClassId = "Pointer:PointerEvent";
+const char* const PointerEvent::s_sClassId = "stmi::Pointer:PointerEvent";
 Event::RegisterClass<PointerEvent> PointerEvent::s_oInstall(s_sClassId);
 
 PointerEvent::PointerEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
@@ -120,7 +120,7 @@ void PointerEvent::setPointer(POINTER_INPUT_TYPE eType, int32_t nButton, bool bA
 
 
 ////////////////////////////////////////////////////////////////////////////////
-const char* const PointerScrollEvent::s_sClassId = "Pointer:PointerScrollEvent";
+const char* const PointerScrollEvent::s_sClassId = "stmi::Pointer:PointerScrollEvent";
 Event::RegisterClass<PointerScrollEvent> PointerScrollEvent::s_oInstall(s_sClassId);
 
 PointerScrollEvent::PointerScrollEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor

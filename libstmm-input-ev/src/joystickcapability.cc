@@ -23,7 +23,7 @@
 namespace stmi
 {
 
-const char* const JoystickCapability::s_sClassId = "Joystick";
+const char* const JoystickCapability::s_sClassId = "stmi::Joystick";
 Capability::RegisterClass<JoystickCapability> JoystickCapability::s_oInstall(s_sClassId);
 
 } // namespace stmi
