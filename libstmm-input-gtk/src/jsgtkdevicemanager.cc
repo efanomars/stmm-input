@@ -306,7 +306,7 @@ shared_ptr<JoystickDevice> JsGtkDeviceManager::addIfJoystick(const std::string& 
 
 	RAII_Fd oRAII(nFD);
 
-	assert(sizeof(unsigned long) <= sizeof(int64_t)); // st_rdev
+	static_assert(sizeof(unsigned long) <= sizeof(int64_t), ""); // st_rdev
 	struct stat oSB;
 	if (stat(sPathName.c_str(), &oSB) == -1) {
 		return refNewJoystick; // ----------------------------------------------

@@ -68,7 +68,7 @@ void DeviceFloater::initXI(const Glib::RefPtr<Gdk::Display>& refDisplay)
 void gdkDeviceManagerCallbackCommon(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data)
 {
 	auto p0DeviceFloater = static_cast<DeviceFloater*>(p0Data);
-	p0DeviceFloater->on_device_common(p0DeviceManager, p0Device);
+	p0DeviceFloater->onDeviceCommon(p0DeviceManager, p0Device);
 }
 void DeviceFloater::initGdkDeviceManager(const Glib::RefPtr<Gdk::Display>& refDisplay)
 {
@@ -98,7 +98,7 @@ void DeviceFloater::deinitGdkDeviceManager()
 		}
 	}
 }
-void DeviceFloater::on_device_common(GdkDeviceManager *
+void DeviceFloater::onDeviceCommon(GdkDeviceManager*
 									#ifndef NDEBUG
 									p0DeviceManager
 									#endif //NDEBUG
@@ -113,7 +113,7 @@ void DeviceFloater::on_device_common(GdkDeviceManager *
 	auto aSaveDevices = m_aDevices;
 	refreshDevices();
 	if (aSaveDevices == m_aDevices) {
-		return;
+		return; //--------------------------------------------------------------
 	}
 	m_oDeviceChangedSignal.emit();
 	// for each slave not in saved devices call

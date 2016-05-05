@@ -64,15 +64,17 @@ using Private::Mas::GtkPointerDevice;
 using Private::Mas::MasGtkListenerExtraData;
 
 shared_ptr<MasGtkDeviceManager> MasGtkDeviceManager::create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-															, KEY_REPEAT_MODE eKeyRepeatMode, const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager)
+															, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+															, const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager)
 {
-	shared_ptr<MasGtkDeviceManager> refInstance(new MasGtkDeviceManager(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode));
+	shared_ptr<MasGtkDeviceManager> refInstance(new MasGtkDeviceManager(bEnableEventClasses, aEnDisableEventClass
+																		, eKeyRepeatMode, refGdkConverter));
 	refInstance->init(refGdkDeviceManager);
 	return refInstance;
 }
 
 MasGtkDeviceManager::MasGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-										, KEY_REPEAT_MODE eKeyRepeatMode)
+										, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
 : StdDeviceManager({typeid(DeviceMgmtCapability), typeid(KeyCapability), typeid(PointerCapability), typeid(TouchCapability)}
 					, {typeid(DeviceMgmtEvent), typeid(KeyEvent), typeid(PointerEvent), typeid(PointerScrollEvent), typeid(TouchEvent)}
 					, bEnableEventClasses, aEnDisableEventClass)
@@ -81,13 +83,18 @@ MasGtkDeviceManager::MasGtkDeviceManager(bool bEnableEventClasses, const std::ve
 , m_nConnectHandlerDeviceChanged(0)
 , m_nConnectHandlerDeviceRemoved(0)
 , m_eKeyRepeatMode(eKeyRepeatMode)
-, m_oConverter(*GdkKeyConverter::getConverter())
+, m_refGdkConverter(refGdkConverter)
+, m_oConverter(*m_refGdkConverter)
 , m_nClassIdxKeyEvent(getEventClassIndex(typeid(KeyEvent)))
 , m_nClassIdxPointerEvent(getEventClassIndex(typeid(PointerEvent)))
 , m_nClassIdxPointerScrollEvent(getEventClassIndex(typeid(PointerScrollEvent)))
 , m_nClassIdxTouchEvent(getEventClassIndex(typeid(TouchEvent)))
 , m_nClassIdxDeviceMgmtEvent(getEventClassIndex(typeid(DeviceMgmtEvent)))
 {
+	assert(refGdkConverter);
+	assert((eKeyRepeatMode >= KEY_REPEAT_MODE_SUPPRESS) && (eKeyRepeatMode <= KEY_REPEAT_MODE_ADD_RELEASE_CANCEL));
+	// The whole implementation of this class is based on this assumption
+	static_assert(sizeof(int) <= sizeof(int32_t), "");
 }
 MasGtkDeviceManager::~MasGtkDeviceManager()
 {

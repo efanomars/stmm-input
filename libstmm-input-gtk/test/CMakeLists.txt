@@ -10,7 +10,7 @@ option(BUILD_TESTING "Build tests" OFF)
 set(STMMI_GTK_TEST_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/test")
 # Test sources need to end with .cxx, helper sources with .h .cc
 set(STMMI_GTK_TEST_SOURCES_DATA
-        ${STMMI_GTK_TEST_SOURCES_DIR}/testHardwareKeyConverter.cxx
+        ${STMMI_GTK_TEST_SOURCES_DIR}/testGdkKeyConverterEvdev.cxx
         )
 set(STMMI_GTK_TEST_SOURCES_MAS
         )

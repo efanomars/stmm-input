@@ -77,7 +77,7 @@ class FloGtkDeviceManager : public StdDeviceManager, public DeviceMgmtCapability
 public:
 	/** Creates an instance of this class.
  	 * If the passed gdk display is null the system default is used.
-	 *
+	 * 
 	 * If bEnableEventClasses is `true` then all event classes in aEnDisableEventClass are enabled, all others disabled,
 	 * if `false` then all event classes supported by this instance are enabled except those in aEnDisableEventClass.
 	 * FloGtkDeviceManager doesn't allow disabling event classes once constructed, only enabling.
@@ -89,12 +89,14 @@ public:
 	 * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventType.
 	 * @param aEnDisableEventClass The event classes to be enabled or disabled according to bEnableEventClasses.
 	 * @param eKeyRepeatMode Key repeat translation type.
+	 * @param refGdkConverter The keycode to hardware key converter. Cannot be null.
 	 * @param refDisplay The display used to initialize XInput2. Can be null.
 	 * @return The created instance.
 	 * @throws std::runtime_error is if an error occurs (example: XInput2 is not supported).
 	 */
 	static shared_ptr<FloGtkDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-												, KEY_REPEAT_MODE eKeyRepeatMode, const Glib::RefPtr<Gdk::Display>& refDisplay);
+												, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+												, const Glib::RefPtr<Gdk::Display>& refDisplay);
 	virtual ~FloGtkDeviceManager();
 
 	void enableEventClass(const Event::Class& oEventClass) override;
@@ -131,7 +133,7 @@ protected:
 	void finalizeListener(ListenerData& oListenerData) override;
 private:
 	FloGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-						, KEY_REPEAT_MODE eKeyRepeatMode);
+						, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter);
 	// throws
 	void init(const Glib::RefPtr<Gdk::Display>& refDisplay);
 
@@ -210,7 +212,8 @@ private:
 
 	KEY_REPEAT_MODE m_eKeyRepeatMode;
 
-	// Fast access reference to same converter
+	const shared_ptr<GdkKeyConverter> m_refGdkConverter;
+	// Fast access reference to converter
 	const GdkKeyConverter& m_oConverter;
 	//
 	const int32_t m_nClassIdxKeyEvent;

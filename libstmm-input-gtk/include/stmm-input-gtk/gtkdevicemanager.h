@@ -26,6 +26,7 @@
 #include <stmm-input/devicemanager.h>
 
 #include "keyrepeatmode.h"
+#include "gdkkeyconverter.h"
 
 namespace stmi
 {
@@ -69,18 +70,28 @@ namespace GtkDeviceManager
  *
  *     bEnableEventClasses = true,  aEnDisableEventClass = {stmi::KeyEvent::getClass(), stmi::PointerEvent::getClass()}
  *
+ * If `refGdkConverter` is null, the stmi::GdkKeyConverterEvDev converter is used.
+ *
  * If the gdk display `refDisplay` is null, the system default is used.
  *
  * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventType.
  * @param aEnDisableEventClass The event classes to be enabled or disabled according to bEnableEventClasses.
  * @param eKeyRepeatMode How key repeat is handled.
+ * @param refGdkConverter refGdkConverter The gdk key event to hardware key converter. Cannot be null.
  * @param refDisplay The gdk display. Can be null.
  * @return The created device manager or null if creation failed.
  */
 shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-								, KEY_REPEAT_MODE eKeyRepeatMode, const Glib::RefPtr<Gdk::Display>& refDisplay);
+								, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+								, const Glib::RefPtr<Gdk::Display>& refDisplay);
 /** Creates a device manager.
  * The device manager is created for the default display.
+ * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
+ */
+shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
+								, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter);
+/** Creates a device manager.
+ * The device manager is created for the default key converter and default display.
  * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
  */
 shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass

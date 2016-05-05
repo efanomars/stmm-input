@@ -64,16 +64,17 @@ using Private::Flo::XIEventSource;
 using Private::Flo::FloGtkListenerExtraData;
 
 shared_ptr<FloGtkDeviceManager> FloGtkDeviceManager::create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-															, KEY_REPEAT_MODE eKeyRepeatMode, const Glib::RefPtr<Gdk::Display>& refDisplay)
+															, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+															, const Glib::RefPtr<Gdk::Display>& refDisplay)
 {
 	shared_ptr<FloGtkDeviceManager> refInstance(new FloGtkDeviceManager(bEnableEventClasses, aEnDisableEventClass
-																		, eKeyRepeatMode));
+																		, eKeyRepeatMode, refGdkConverter));
 	refInstance->init(refDisplay); // init might throw
 	return refInstance;
 }
 
 FloGtkDeviceManager::FloGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-										, KEY_REPEAT_MODE eKeyRepeatMode)
+										, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
 : StdDeviceManager({typeid(DeviceMgmtCapability), typeid(KeyCapability)}
 					, {typeid(DeviceMgmtEvent), typeid(KeyEvent)}
 					, bEnableEventClasses, aEnDisableEventClass)
@@ -83,13 +84,15 @@ FloGtkDeviceManager::FloGtkDeviceManager(bool bEnableEventClasses, const std::ve
 , m_nConnectHandlerDeviceChanged(0)
 , m_nConnectHandlerDeviceRemoved(0)
 , m_eKeyRepeatMode(eKeyRepeatMode)
-, m_oConverter(*GdkKeyConverter::getConverter())
+, m_refGdkConverter(refGdkConverter)
+, m_oConverter(*m_refGdkConverter)
 , m_nClassIdxKeyEvent(getEventClassIndex(typeid(KeyEvent)))
 , m_nClassIdxDeviceMgmtEvent(getEventClassIndex(typeid(DeviceMgmtEvent)))
 {
+	assert(refGdkConverter);
 	assert((eKeyRepeatMode >= KEY_REPEAT_MODE_SUPPRESS) && (eKeyRepeatMode <= KEY_REPEAT_MODE_ADD_RELEASE_CANCEL));
 	// The whole implementation of this class is based on this assumption
-	assert(sizeof(int) <= sizeof(int32_t));
+	static_assert(sizeof(int) <= sizeof(int32_t), "");
 }
 FloGtkDeviceManager::~FloGtkDeviceManager()
 {

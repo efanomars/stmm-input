@@ -22,6 +22,8 @@
 
 #include <gtkmm.h>
 
+#include "gdkkeyconverterevdev.h"
+
 #include "masgtkdevicemanager.h"
 #include "flogtkdevicemanager.h"
 #include "jsgtkdevicemanager.h"
@@ -43,10 +45,16 @@ shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Eve
 shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
 								, KEY_REPEAT_MODE eKeyRepeatMode)
 {
-	return create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode, Glib::RefPtr<Gdk::Display>{});
+	return create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode, shared_ptr<GdkKeyConverter>{});
 }
 shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-								, KEY_REPEAT_MODE eKeyRepeatMode, const Glib::RefPtr<Gdk::Display>& refDisplay)
+								, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
+{
+	return create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode, refGdkConverter, Glib::RefPtr<Gdk::Display>{});
+}
+shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
+								, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+								, const Glib::RefPtr<Gdk::Display>& refDisplay)
 {
 	shared_ptr<DeviceManager> refRes;
 
@@ -54,7 +62,8 @@ shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Eve
 	aManagers.reserve(3);
 	try {
 		auto refMDM = MasGtkDeviceManager::create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode
-											, (refDisplay ? refDisplay->get_device_manager() : Glib::RefPtr<Gdk::DeviceManager>{}));
+												, (refGdkConverter ? refGdkConverter : GdkKeyConverterEvDev::getConverter())
+												, (refDisplay ? refDisplay->get_device_manager() : Glib::RefPtr<Gdk::DeviceManager>{}));
 		aManagers.push_back(refMDM);
 	} catch (const std::runtime_error& oErr) {
 		std::cerr << "GtkDeviceManager initialization error: " << oErr.what() << std::endl;
@@ -62,7 +71,8 @@ shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Eve
 	}
 	try {
 		auto refFDM = FloGtkDeviceManager::create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode
-											, refDisplay);
+												, (refGdkConverter ? refGdkConverter : GdkKeyConverterEvDev::getConverter())
+												, refDisplay);
 		aManagers.push_back(refFDM);
 	} catch (const std::runtime_error& oErr) {
 		std::cerr << "FloGtkDeviceManager initialization error: " << oErr.what() << std::endl;

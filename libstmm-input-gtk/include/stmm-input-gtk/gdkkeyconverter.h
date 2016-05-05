@@ -37,12 +37,13 @@ namespace stmi
 class GdkKeyConverter
 {
 public:
+	virtual ~GdkKeyConverter() {}
 	/** Converts a Gdk keycode to a hardware key.
 	 * @param nGdkKeycode The Gdk keycode.
 	 * @param eHardwareKey The resulting hardware key.
 	 * @return Whether the conversion was successful.
 	 */
-	virtual bool convertGdkKeyCodeToHardwareKey(guint16 nGdkKeycode, HARDWARE_KEY& eHardwareKey) const = 0;
+	virtual bool convertKeyCodeToHardwareKey(guint16 nGdkKeycode, HARDWARE_KEY& eHardwareKey) const = 0;
 	/** Converts a GdkEventKey to a hardware key.
 	 * If the keycode isn't enough to determine the hardware key, the whole
 	 * key event (if available) can be used.
@@ -50,29 +51,7 @@ public:
 	 * @param eHardwareKey The resulting hardware key.
 	 * @return Whether the conversion was successful.
 	 */
-	virtual bool convertGdkEventKeyToHardwareKey(GdkEventKey const* p0GdkEvent, HARDWARE_KEY& eHardwareKey) const = 0;
-
-	/** Installs a converter if none is installed yet.
-	 * Only one instance can be installed.
-	 * The installation should take place before any of the device manager classes
-	 * that use a converter is instantiated.
-	 * @see getConverter().
-	 * @param refConverter The converter to install. Cannot be null.
-	 * @return Whether the converter could be installed.
-	 */
-	static bool installConverter(const std::shared_ptr<GdkKeyConverter>& refConverter);
-	/** Tells whether a converter is already installed.
-	 * @return `false` if it's still possible to install a custom converter, `true` otherwise.
-	 */
-	static bool isConverterInstalled();
-	/** Returns the converter.
-	 * If no converter is installed yet, a default one is automatically installed
-	 * (stmi::GdkKeyConverterEvDev).
-	 * @return The converter. Cannot be null.
-	 */
-	static std::shared_ptr<GdkKeyConverter> getConverter();
-private:
-	static std::shared_ptr<GdkKeyConverter> s_refSingletonInstance;
+	virtual bool convertEventKeyToHardwareKey(GdkEventKey const* p0GdkEvent, HARDWARE_KEY& eHardwareKey) const = 0;
 };
 
 } // namespace stmi

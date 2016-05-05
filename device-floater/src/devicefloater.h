@@ -82,7 +82,7 @@ private:
 	void initGdkDeviceManager(const Glib::RefPtr<Gdk::Display>& refDisplay);
 	void deinitGdkDeviceManager();
 	friend void gdkDeviceManagerCallbackCommon(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	void on_device_common(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device);
+	void onDeviceCommon(GdkDeviceManager* p0DeviceManager, GdkDevice* p0Device);
 	//
 	/* Reads the devices from XI. */
 	void refreshDevices();

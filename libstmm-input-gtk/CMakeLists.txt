@@ -136,7 +136,6 @@ list(APPEND STMMI_GTK_HEADERS
 # Source files (and headers only used for building)
 set(STMMI_GTK_SOURCES_DATA
         ${PROJECT_SOURCE_DIR}/src/gtkaccessor.cc
-        ${PROJECT_SOURCE_DIR}/src/gdkkeyconverter.cc
         ${PROJECT_SOURCE_DIR}/src/gdkkeyconverterevdev.cc
         )
 set(STMMI_GTK_SOURCES_MAS

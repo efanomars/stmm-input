@@ -74,10 +74,8 @@ bool GtkKeyboardDevice::handleGdkEventKey(GdkEventKey* p0KeyEv, const shared_ptr
 	}
 
 	HARDWARE_KEY eHardwareKey;
-	if (!p0Owner->m_oConverter.convertGdkKeyCodeToHardwareKey(p0KeyEv->hardware_keycode, eHardwareKey)) {
-		if (!p0Owner->m_oConverter.convertGdkEventKeyToHardwareKey(p0KeyEv, eHardwareKey)) {
-			return bContinue; //------------------------------------------------
-		}
+	if (!p0Owner->m_oConverter.convertEventKeyToHardwareKey(p0KeyEv, eHardwareKey)) {
+		return bContinue; //----------------------------------------------------
 	}
 	auto refListeners = p0Owner->getListeners();
 

@@ -22,12 +22,18 @@
 
 #include "gdkkeyconverterevdev.h"
 
+// Evdev formula from Daniel Berrange's https://www.berrange.com/tags/key-codes/
+
 namespace stmi
 {
 
-// From Daniel Berrange's https://www.berrange.com/tags/key-codes/
+const shared_ptr<GdkKeyConverterEvDev>& GdkKeyConverterEvDev::getConverter()
+{
+	static auto s_refConverter = shared_ptr<GdkKeyConverterEvDev>(new GdkKeyConverterEvDev());
+	return s_refConverter;
+}
 
-bool GdkKeyConverterEvDev::convertGdkKeyCodeToHardwareKey(guint16 nGdkKeycode, HARDWARE_KEY& eHardwareKey) const
+bool GdkKeyConverterEvDev::convertKeyCodeToHardwareKey(guint16 nGdkKeycode, HARDWARE_KEY& eHardwareKey) const
 {
 	const int32_t nLinuxCode = nGdkKeycode - 8;
 	if (nLinuxCode < 0) {
@@ -36,10 +42,10 @@ bool GdkKeyConverterEvDev::convertGdkKeyCodeToHardwareKey(guint16 nGdkKeycode, H
 	eHardwareKey = static_cast<HARDWARE_KEY>(nLinuxCode);
 	return true;
 }
-bool GdkKeyConverterEvDev::convertGdkEventKeyToHardwareKey(GdkEventKey const* p0GdkEvent, HARDWARE_KEY& eHardwareKey) const
+bool GdkKeyConverterEvDev::convertEventKeyToHardwareKey(GdkEventKey const* p0GdkEvent, HARDWARE_KEY& eHardwareKey) const
 {
 	assert(p0GdkEvent != nullptr);
-	return convertGdkKeyCodeToHardwareKey(p0GdkEvent->hardware_keycode, eHardwareKey);
+	return convertKeyCodeToHardwareKey(p0GdkEvent->hardware_keycode, eHardwareKey);
 }
 
 } // namespace stmi

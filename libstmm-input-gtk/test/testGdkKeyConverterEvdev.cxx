@@ -14,40 +14,42 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
-/*
- * File:   gdkkeyconverter.cc
+/* 
+ * File:   testGdkKeyConverterEvdev.cc
  */
 
-#include <limits>
-
+#include <gtest/gtest.h>
 #include "gdkkeyconverterevdev.h"
 
 namespace stmi
 {
 
-std::shared_ptr<GdkKeyConverter> GdkKeyConverter::s_refSingletonInstance;
+using std::shared_ptr;
+using std::weak_ptr;
 
-std::shared_ptr<GdkKeyConverter> GdkKeyConverter::getConverter()
+namespace testing
 {
-	if (!s_refSingletonInstance) {
-		s_refSingletonInstance = std::make_shared<GdkKeyConverterEvDev>();
-	}
-	return s_refSingletonInstance;
-}
-bool GdkKeyConverter::isConverterInstalled()
+
+TEST(testGdkKeyConverterEvdev, SingletonNotNull)
 {
-	return !(!s_refSingletonInstance);
+	EXPECT_TRUE(GdkKeyConverterEvDev::getConverter().operator bool());
 }
-bool GdkKeyConverter::installConverter(const std::shared_ptr<GdkKeyConverter>& ref)
+
+TEST(testGdkKeyConverterEvdev, IsReallySingleton)
 {
-	if (!ref) {
-		return false;
-	}
-	if (s_refSingletonInstance) {
-		return false;
-	}
-	s_refSingletonInstance = ref;
-	return true;
+	auto refConverter = GdkKeyConverterEvDev::getConverter();
+	EXPECT_TRUE(refConverter == GdkKeyConverterEvDev::getConverter());
 }
+
+TEST(testGdkKeyConverterEvdev, KeyCodeConversionWorks)
+{
+	auto refConverter = GdkKeyConverterEvDev::getConverter();
+	HARDWARE_KEY eKey;
+	const bool bConverted = refConverter->convertKeyCodeToHardwareKey(9, eKey);
+	EXPECT_TRUE(bConverted);
+	EXPECT_TRUE(eKey == HK_ESC);
+}
+
+} // namespace testing
 
 } // namespace stmi

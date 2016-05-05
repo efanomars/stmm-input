@@ -78,7 +78,7 @@ bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, con
 		return bContinue; //----------------------------------------------------
 	}
 	HARDWARE_KEY eHardwareKey;
-	if (!p0Owner->m_oConverter.convertGdkKeyCodeToHardwareKey(static_cast<guint16>(p0XIDeviceEvent->detail), eHardwareKey)) {
+	if (!p0Owner->m_oConverter.convertKeyCodeToHardwareKey(static_cast<guint16>(p0XIDeviceEvent->detail), eHardwareKey)) {
 		return bContinue; //----------------------------------------------------
 	}
 	auto refListeners = p0Owner->getListeners();

@@ -92,12 +92,14 @@ public:
 	 * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventType.
 	 * @param aEnDisableEventClass The event classes to be enabled or disabled according to bEnableEventClasses.
 	 * @param eKeyRepeatMode Key repeat translation type.
+	 * @param refGdkConverter refGdkConverter The gdk key event to hardware key converter. Cannot be null.
 	 * @param refGdkDeviceManager The backend gdk device manager. Can be null.
 	 * @return The created instance.
 	 * @throws std::runtime_error If an initialization error occurred.
 	 */
 	static shared_ptr<MasGtkDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-											, KEY_REPEAT_MODE eKeyRepeatMode, const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager);
+											, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+											, const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager);
 
 	virtual ~MasGtkDeviceManager();
 
@@ -135,7 +137,7 @@ protected:
 	void finalizeListener(ListenerData& oListenerData) override;
 private:
 	MasGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-						, KEY_REPEAT_MODE eKeyRepeatMode);
+						, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter);
 	// Initializes the device manager by adding the master devices.
 	bool init(const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager);
 
@@ -206,6 +208,8 @@ private:
 	shared_ptr<Private::Mas::GtkKeyboardDevice> m_refKeyboardDevice;
 	shared_ptr<Private::Mas::GtkPointerDevice> m_refPointerDevice;
 	KEY_REPEAT_MODE m_eKeyRepeatMode;
+
+	const shared_ptr<GdkKeyConverter> m_refGdkConverter;
 	// Fast access reference to converter
 	const GdkKeyConverter& m_oConverter;
 	//

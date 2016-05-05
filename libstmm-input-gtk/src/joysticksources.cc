@@ -47,9 +47,9 @@ JoystickLifeSource::JoystickLifeSource(const std::string& sPath)
 , m_nINotifyFD(-1)
 , m_nWatchDevFD(-1)
 {
-	assert(sizeof(int) <= sizeof(int32_t));
-	assert(false == FALSE);
-	assert(true == TRUE);
+	static_assert(sizeof(int) <= sizeof(int32_t), "");
+	static_assert(false == FALSE, "");
+	static_assert(true == TRUE, "");
 	m_nINotifyFD = inotify_init1(IN_NONBLOCK);
 	if (m_nINotifyFD == -1) {
 		return;
@@ -222,9 +222,9 @@ bool DevInitTimeoutSource::callback()
 JoystickInputSource::JoystickInputSource(int32_t nFD, const std::string& sPathName)
 : m_sPathName(sPathName)
 {
-	assert(sizeof(int) <= sizeof(int32_t));
-	assert(false == FALSE);
-	assert(true == TRUE);
+	static_assert(sizeof(int) <= sizeof(int32_t), "");
+	static_assert(false == FALSE, "");
+	static_assert(true == TRUE, "");
 	//
 	m_oPollFD.set_fd(nFD);
 	m_oPollFD.set_events(Glib::IO_IN);

@@ -35,11 +35,18 @@ namespace stmi
 /** Converts from evdev gdk keycode to hardware key (`linux/input.h`).
  * Evdev formula: `eHardwareKey = nGdkKeycode - 8`.
  */
-class GdkKeyConverterEvDev : public GdkKeyConverter
+class GdkKeyConverterEvDev final : public GdkKeyConverter
 {
 public:
-	bool convertGdkKeyCodeToHardwareKey(guint16 nGdkKeycode, HARDWARE_KEY& eHardwareKey) const override;
-	bool convertGdkEventKeyToHardwareKey(GdkEventKey const* p0GdkEvent, HARDWARE_KEY& eHardwareKey) const override;
+	bool convertKeyCodeToHardwareKey(guint16 nGdkKeycode, HARDWARE_KEY& eHardwareKey) const override;
+	bool convertEventKeyToHardwareKey(GdkEventKey const* p0GdkEvent, HARDWARE_KEY& eHardwareKey) const override;
+
+	/** Returns the singleton evdev converter.
+	 * @return Singleton converter instance. Cannot be null.
+	 */
+	static const shared_ptr<GdkKeyConverterEvDev>& getConverter();
+private:
+	GdkKeyConverterEvDev() {}
 };
 
 } // namespace stmi
