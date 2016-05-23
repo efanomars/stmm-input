@@ -1,5 +1,5 @@
 if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-  message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the stmm-input-base source code and call cmake from there")
+    message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the stmm-input-base source code and call cmake from there")
 endif()
 
 string(STRIP "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
@@ -123,7 +123,7 @@ set_target_properties(stmm-input-base   PROPERTIES
         )
 
 # Determine header installation dir
-target_include_directories(stmm-input-base   PUBLIC
+target_include_directories(stmm-input-base   BEFORE PUBLIC
   $<BUILD_INTERFACE:${STMMI_HEADERS_DIR}>
   $<INSTALL_INTERFACE:include/stmm-input-base>  # <prefix>/include/stmm-input-base
 )

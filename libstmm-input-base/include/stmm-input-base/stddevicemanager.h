@@ -130,7 +130,7 @@ protected:
 	public:
 		/** Empty default constructor. */
 		ListenerExtraData() {}
-		virtual ~ListenerExtraData() {}
+		virtual ~ListenerExtraData() = default;
 		/** Resets the extra data.
 		 * Called by StdDeviceManager::resetExtraDataOfAllListeners().
 		 * Override this function to clear the custom data in a subclass of

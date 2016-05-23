@@ -57,9 +57,9 @@ void InputStrings::initKeyMap()
 {
 	// Generate:
 	// from <stmm-input/hardwarekey.h> file copy all keys and transform each line:
-	//	, HK_ESC = 1
+	//	, HK_XXX = n
 	// to:
-	//	addKey(stmi::HK_ESC, "ESC");
+	//	addKey(stmi::HK_XXX, "XXX");
 	// with:
 	//   Find:     <^	, HK_([^ ]+).*$>
 	//   Replace:  <	addKey(stmi::HK_\1, "\1");>

@@ -19,7 +19,7 @@ namespace showevs
 class AllKeysDialog : public Gtk::Dialog
 {
 public:
-	virtual ~AllKeysDialog() {}
+	virtual ~AllKeysDialog() = default;
 protected:
 	// Too receive most of the keys, like cursor keys, TAB, ENTER, etc. override default handlers
 	bool on_key_press_event(GdkEventKey* /*p0Event*/) override

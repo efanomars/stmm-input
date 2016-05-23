@@ -53,8 +53,8 @@ using std::weak_ptr;
  * 
  * When there is a change of active window, all the keys, buttons, touches
  * are canceled. 
- * Example: for pressed keys a KeyEvent of type KeyEvent::KEY_RELEASE_CANCEL is
- * sent to the listeners.
+ * Example: for each pressed keys a KeyEvent of type KeyEvent::KEY_RELEASE_CANCEL
+ * is sent to the listeners.
  */
 namespace GtkDeviceManager
 {

@@ -37,7 +37,7 @@ namespace stmi
 class GdkKeyConverter
 {
 public:
-	virtual ~GdkKeyConverter() {}
+	virtual ~GdkKeyConverter() = default;
 	/** Converts a Gdk keycode to a hardware key.
 	 * @param nGdkKeycode The Gdk keycode.
 	 * @param eHardwareKey The resulting hardware key.

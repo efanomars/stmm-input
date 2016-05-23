@@ -45,7 +45,7 @@ using std::weak_ptr;
 class Accessor
 {
 public:
-	virtual ~Accessor() {}
+	virtual ~Accessor() = default;
 	/** Accessor comparison.
 	 * Needed to identify accessors and remove them.
 	 */

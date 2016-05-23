@@ -50,7 +50,7 @@ using EventListener = std::function<void(const shared_ptr<Event>&)>;
 class CallIf
 {
 public:
-	virtual ~CallIf() {}
+	virtual ~CallIf() = default;
 	/** Function that determines whether an event should be sent to a listener.
 	 * @param refEvent The event. Cannot be null.
 	 * @return `true` if the event is to be sent to the listener, `false` otherwise.
@@ -65,7 +65,7 @@ protected:
 class DeviceManager
 {
 public:
-	virtual ~DeviceManager() {}
+	virtual ~DeviceManager() = default;
 
 	/** Returns the device with the given id, or null if not found.
 	 */

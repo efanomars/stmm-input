@@ -4,9 +4,10 @@
 
 Requirements
 ------------
-Linux with X11 (XI2).
 g++ compiler or compatible (>= C++14)
-
+libgtkmm3.0-dev
+libxi-dev
+libx11-dev
 
 Instructions
 ------------

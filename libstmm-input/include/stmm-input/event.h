@@ -64,7 +64,7 @@ class XYEvent;
 class Event
 {
 public:
-	virtual ~Event() {}
+	virtual ~Event() = default;
 
 	/** Returns the time this event originated.
 	 * @return The time is in microseconds from epoch or -1 if unknown.

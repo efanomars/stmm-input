@@ -27,10 +27,10 @@ Dependencies
 - libstmm-input-gtk  depends on
     + libstmm-input-ev
     + libstmm-input-base
-    + libxi
-    + libgtkmm-3.0
+    + libxi-dev
+    + libgtkmm-3.0-dev
 
 - device-floater     depends on
-    + libgtkmm-3.0
-    + libxi
-    + libx11
+    + libgtkmm-3.0-dev
+    + libxi-dev
+    + libx11-dev

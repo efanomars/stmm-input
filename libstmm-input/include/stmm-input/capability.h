@@ -43,7 +43,7 @@ class DeviceManagerCapability;
 class Capability
 {
 public:
-	virtual ~Capability() {}
+	virtual ~Capability() = default;
 
 	/** Returns the device owning this capability, if any.
 	 * If it's a device manager capability this might return null.

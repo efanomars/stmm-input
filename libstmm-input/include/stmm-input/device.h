@@ -38,7 +38,7 @@ class DeviceManager;
 class Device
 {
 public:
-	virtual ~Device() {}
+	virtual ~Device() = default;
 
 	/**
 	 * @return The unique id of the device.

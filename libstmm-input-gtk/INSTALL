@@ -5,8 +5,8 @@
 Requirements
 ------------
 g++ compiler or compatible (>= C++14)
-libgtkmm3.0
-libxi
+libgtkmm3.0-dev
+libxi-dev
 libstmm-input (installed)
 libstmm-input-ev (installed)
 libstmm-input-base (installed)
