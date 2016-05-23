@@ -1,5 +1,5 @@
 if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-  message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the stmm-input source code and call cmake from there")
+    message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the stmm-input source code and call cmake from there")
 endif()
 
 string(STRIP "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
@@ -60,6 +60,7 @@ set(STMMI_SOURCES
         ${PROJECT_SOURCE_DIR}/src/device.cc
         ${PROJECT_SOURCE_DIR}/src/devicemanager.cc
         ${PROJECT_SOURCE_DIR}/src/event.cc
+        ${PROJECT_SOURCE_DIR}/src/hardwarekey.cc
         ${PROJECT_SOURCE_DIR}/src/xyevent.cc
         )
 
@@ -93,6 +94,7 @@ message(STATUS " STMMI_HEADERS:             ${STMMI_HEADERS}")
 message(STATUS " STMMI_SOURCES:             ${STMMI_SOURCES}")
 message(STATUS " install prefix:            ${prefix}")
 message(STATUS " BUILD_DOCS:                ${BUILD_DOCS}")
+message(STATUS " BUILD_TESTING:             ${BUILD_TESTING}")
 
 # Documentation
 add_subdirectory(doc)
@@ -101,13 +103,9 @@ if (BUILD_DOCS)
     add_dependencies(stmm-input doc)
 endif()
 
-# Currently there are no tests:
-# but to avoid cmake warning keep an empty condition
-if (BUILD_TESTING)
-endif()
-#notests  # Testing
-#notests  enable_testing()
-#notests  add_subdirectory(test)
+# Testing
+enable_testing()
+add_subdirectory(test)
 
 
 # Set library versions
@@ -118,7 +116,7 @@ set_target_properties(stmm-input PROPERTIES
         )
 
 # Determine header installation dir
-target_include_directories(stmm-input PUBLIC
+target_include_directories(stmm-input    BEFORE PUBLIC
   $<BUILD_INTERFACE:${STMMI_HEADERS_DIR}>
   $<INSTALL_INTERFACE:include/stmm-input>  # <prefix>/include/stmm-input
 )

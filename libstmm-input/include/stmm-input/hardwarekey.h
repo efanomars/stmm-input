@@ -21,6 +21,10 @@
 #ifndef _STMI_HARDWARE_KEY_H_
 #define _STMI_HARDWARE_KEY_H_
 
+#include <type_traits>
+#include <functional>
+#include <unordered_set>
+
 namespace stmi
 {
 
@@ -28,8 +32,7 @@ namespace stmi
  * See <linux/input.h>
  */
 enum HARDWARE_KEY {
-	HK_RESERVED = 0
-	, HK_ESC = 1
+	HK_ESC = 1
 	, HK_1 = 2
 	, HK_2 = 3
 	, HK_3 = 4
@@ -603,6 +606,34 @@ enum HARDWARE_KEY {
 	, HK_X_SCROLL_LEFT = 0x300 /**< this is an extra definition not present in <linux/input.h> */
 	, HK_X_SCROLL_RIGHT = 0x301 /**< this is an extra definition not present in <linux/input.h> */
 };
+
+} // namespace stmi
+
+namespace std {
+	template <>
+	struct hash<stmi::HARDWARE_KEY> : private hash< std::underlying_type<stmi::HARDWARE_KEY>::type >
+	{
+		std::size_t operator()(const stmi::HARDWARE_KEY& eKey) const
+		{
+			return hash< std::underlying_type<stmi::HARDWARE_KEY>::type >::operator()
+					(static_cast<std::underlying_type<stmi::HARDWARE_KEY>::type>(eKey));
+		}
+	};
+} // namespace std
+
+namespace stmi
+{
+
+namespace HardwareKeys
+{
+
+/** Returns all the defined HARDWARE_KEY enum values as a unordered set.
+ * The singleton set is only created when this function is first called.
+ * @return The keys as a std::unordered_set.
+ */
+const std::unordered_set<HARDWARE_KEY>& get();
+
+} // namespace HardwareKeys
 
 } // namespace stmi
 
