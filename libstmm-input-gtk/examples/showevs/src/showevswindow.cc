@@ -587,8 +587,8 @@ void ShowEvsWindow::onDialogDButtonClicked()
 		m_refDialogD->set_transient_for(*this);
 		//
 		m_refDiaDAccessor = std::make_shared<stmi::GtkAccessor>(m_refDialogD);
-		m_refDM->addAccessor(m_refDiaDAccessor);
 	}
+	m_refDM->addAccessor(m_refDiaDAccessor);
 	m_refDialogD->run();
 	m_refDialogD->hide();
 	m_refDM->removeAccessor(m_refDiaDAccessor);
