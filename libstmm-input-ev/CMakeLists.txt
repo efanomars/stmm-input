@@ -52,7 +52,8 @@ string(STRIP "${STMMI_EV_EXTRA_INCLUDE_DIRS}" STMMI_EV_EXTRA_INCLUDE_DIRS)
 include_directories("${STMMI_EV_EXTRA_INCLUDE_DIRS}")
 
 # Headers dir
-set(STMMI_HEADERS_DIR  "${PROJECT_SOURCE_DIR}/include/stmm-input-ev")
+set(STMMI_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/include")
+set(STMMI_HEADERS_DIR  "${STMMI_INCLUDE_DIR}/stmm-input-ev")
 # Header files
 set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/devicemgmtcapability.h
@@ -68,18 +69,20 @@ set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/touchevent.h
        )
 #
+# Sources dir
+set(STMMI_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/src")
 # Source files (and headers only used for building)
 set(STMMI_SOURCES
-        ${PROJECT_SOURCE_DIR}/src/devicemgmtcapability.cc
-        ${PROJECT_SOURCE_DIR}/src/devicemgmtevent.cc
-        ${PROJECT_SOURCE_DIR}/src/joystickcapability.cc
-        ${PROJECT_SOURCE_DIR}/src/joystickevent.cc
-        ${PROJECT_SOURCE_DIR}/src/keycapability.cc
-        ${PROJECT_SOURCE_DIR}/src/keyevent.cc
-        ${PROJECT_SOURCE_DIR}/src/pointercapability.cc
-        ${PROJECT_SOURCE_DIR}/src/pointerevent.cc
-        ${PROJECT_SOURCE_DIR}/src/touchcapability.cc
-        ${PROJECT_SOURCE_DIR}/src/touchevent.cc
+        ${STMMI_SOURCES_DIR}/devicemgmtcapability.cc
+        ${STMMI_SOURCES_DIR}/devicemgmtevent.cc
+        ${STMMI_SOURCES_DIR}/joystickcapability.cc
+        ${STMMI_SOURCES_DIR}/joystickevent.cc
+        ${STMMI_SOURCES_DIR}/keycapability.cc
+        ${STMMI_SOURCES_DIR}/keyevent.cc
+        ${STMMI_SOURCES_DIR}/pointercapability.cc
+        ${STMMI_SOURCES_DIR}/pointerevent.cc
+        ${STMMI_SOURCES_DIR}/touchcapability.cc
+        ${STMMI_SOURCES_DIR}/touchevent.cc
        )
 
 # Set compiler flags

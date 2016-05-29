@@ -52,7 +52,8 @@ string(STRIP "${STMMI_BASE_EXTRA_INCLUDE_DIRS}" STMMI_BASE_EXTRA_INCLUDE_DIRS)
 include_directories("${STMMI_BASE_EXTRA_INCLUDE_DIRS}")
 
 # Headers dir
-set(STMMI_HEADERS_DIR  "${PROJECT_SOURCE_DIR}/include/stmm-input-base")
+set(STMMI_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/include")
+set(STMMI_HEADERS_DIR  "${STMMI_INCLUDE_DIR}/stmm-input-base")
 # Header files
 set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/childdevicemanager.h
@@ -60,14 +61,16 @@ set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/stddevicemanager.h
       )
 #
+# Sources dir
+set(STMMI_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/src")
 # Source files (and headers only used for building)
 set(STMMI_SOURCES
-        ${PROJECT_SOURCE_DIR}/src/callifsimplifier.cc
-        ${PROJECT_SOURCE_DIR}/src/callifsimplifier.h
-        ${PROJECT_SOURCE_DIR}/src/childdevicemanager.cc
-        ${PROJECT_SOURCE_DIR}/src/stddevice.cc
-        ${PROJECT_SOURCE_DIR}/src/stddevicemanager.cc
-        ${PROJECT_SOURCE_DIR}/src/util.h
+        ${STMMI_SOURCES_DIR}/callifsimplifier.cc
+        ${STMMI_SOURCES_DIR}/callifsimplifier.h
+        ${STMMI_SOURCES_DIR}/childdevicemanager.cc
+        ${STMMI_SOURCES_DIR}/stddevice.cc
+        ${STMMI_SOURCES_DIR}/stddevicemanager.cc
+        ${STMMI_SOURCES_DIR}/util.h
       )
 
 # Set compiler flags

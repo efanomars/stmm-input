@@ -37,7 +37,8 @@ set(STMM_INPUT_MINOR_VERSION 1)
 set(STMM_INPUT_VERSION "${STMM_INPUT_MAJOR_VERSION}.${STMM_INPUT_MINOR_VERSION}.0")
 
 # Headers dir
-set(STMMI_HEADERS_DIR  "${PROJECT_SOURCE_DIR}/include/stmm-input")
+set(STMMI_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/include")
+set(STMMI_HEADERS_DIR  "${STMMI_INCLUDE_DIR}/stmm-input")
 # Header files
 set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/accessor.h
@@ -52,16 +53,18 @@ set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/xyevent.h
         )
 #
+# Sources dir
+set(STMMI_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/src")
 # Source files (and headers only used for building)
 set(STMMI_SOURCES
-        ${PROJECT_SOURCE_DIR}/src/accessor.cc
-        ${PROJECT_SOURCE_DIR}/src/callifs.cc
-        ${PROJECT_SOURCE_DIR}/src/capability.cc
-        ${PROJECT_SOURCE_DIR}/src/device.cc
-        ${PROJECT_SOURCE_DIR}/src/devicemanager.cc
-        ${PROJECT_SOURCE_DIR}/src/event.cc
-        ${PROJECT_SOURCE_DIR}/src/hardwarekey.cc
-        ${PROJECT_SOURCE_DIR}/src/xyevent.cc
+        ${STMMI_SOURCES_DIR}/accessor.cc
+        ${STMMI_SOURCES_DIR}/callifs.cc
+        ${STMMI_SOURCES_DIR}/capability.cc
+        ${STMMI_SOURCES_DIR}/device.cc
+        ${STMMI_SOURCES_DIR}/devicemanager.cc
+        ${STMMI_SOURCES_DIR}/event.cc
+        ${STMMI_SOURCES_DIR}/hardwarekey.cc
+        ${STMMI_SOURCES_DIR}/xyevent.cc
         )
 
 # Set compiler flags

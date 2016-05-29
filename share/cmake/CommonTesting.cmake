@@ -2,11 +2,21 @@
 
 # Modified from Barthélémy von Haller's  github.com/Barthelemy/CppProjectTemplate
 
-# STMMI_TARGET_LIBS    list of (shared) libraries that have to be linked to each test
-#                      ex. for "stmm-input-ev;stmm-input-gtk", omit to prepend 'lib'!
+# Parameters:
+# STMMI_TARGET_LIBS    list of (shared) libraries that have to be linked to each test.
+#                      One of them should be the to be tested library target name
+#                      (cmake will recognize and link the freshly created one instead of 
+#                      the installed one).
+#                      ex. "stmm-input-ev;stmm-input-gtk". Note: omit to prepend 'lib'!
 # STMMI_ADD_FAKES      bool that tells whether the (headers) in 'share/test/' should be
-#                      included in the compilation of the tests
-# STMMI_TEST_SOURCES   list of test source files
+#                      included in the compilation of the tests.
+# STMMI_TEST_SOURCES   list of test source files for each of which a test executable
+#                      is created.
+#
+# Implicit paramters:
+# STMMI_INCLUDE_DIR    The directory of public headers of the to be tested library
+# STMMI_SOURCES_DIR    The directory of private headers of the to be tested library
+# 
 function(TestFiles STMMI_TARGET_LIBS  STMMI_ADD_FAKES  STMMI_TEST_SOURCES)
 
     set(BUILD_TESTING_GOOGLE_TEST_LIBRARY_PATH "/usr/lib"
@@ -71,10 +81,13 @@ function(TestFiles STMMI_TARGET_LIBS  STMMI_ADD_FAKES  STMMI_TEST_SOURCES)
 
                 add_executable(${STMMI_TEST_CUR_TGT} ${STMMI_TEST_CUR_FILE} ${STMMI_TEST_SOURCES_HELPER})
 
-                target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${PROJECT_SOURCE_DIR}/src ${GTESTINCLUDEDIR}) # add private includes
                 if (STMMI_ADD_FAKES)
                     target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${PROJECT_SOURCE_DIR}/../share/test)
                 endif (STMMI_ADD_FAKES)
+                target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${GTESTINCLUDEDIR})
+                # tests can also involve non public part of the library!
+                target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_SOURCES_DIR})
+                target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_INCLUDE_DIR})
 
                 target_link_libraries(${STMMI_TEST_CUR_TGT} ${STMMIFINDGTESTMAIN} ${STMMIFINDGTEST}) # link against gtest libs
                 foreach (STMMI_TEST_CUR_LIB  ${STMMI_TARGET_LIBS})
