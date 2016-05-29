@@ -1,9 +1,9 @@
 Installation
 ============
 
-Each project is separate and has its own description (README.md),
+Each project is separate and has its own description ('README.md'),
 license, installing instructions, etc. and can be handled in its 
-own subfolder.
+own subfolder (provided the 'share' folder is present).
 But since the projects partially depend on each other, a script is
 provided to compile and install the binaries in the right order.
 

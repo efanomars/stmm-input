@@ -48,8 +48,8 @@ public:
 	};
 	/** The involved device.
 	 * If a device is removed (DEVICE_MGMT_REMOVED), it no longer is attached to
-	 * its device manager, but its methods should still work at least during the
-	 * listener`s callback.
+	 * its device manager, but its methods should still work and its capabilities
+	 * be accessible, at least during the listener`s callback.
 	 * @return The device or null if it was deleted.
 	 */
 	inline shared_ptr<Device> getDevice() const { return m_refDevice.lock(); }
