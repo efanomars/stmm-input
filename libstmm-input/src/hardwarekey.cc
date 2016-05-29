@@ -30,7 +30,7 @@ const std::unordered_set<HARDWARE_KEY>& get()
 {
 	// Generate:
 	// copy all HARDWARE_KEY enums from hardwarekey.h
-	// Add ', ' before HK_ESC (the first enum)
+	// Remove line 'HK_NULL = 0' (the first enum)
 	// transform each line:
 	//	, HK_XXX = n //yyyy
 	// to:

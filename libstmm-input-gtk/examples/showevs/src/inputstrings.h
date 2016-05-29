@@ -51,7 +51,7 @@ public:
 	}
 	inline std::string getKeyString(stmi::HARDWARE_KEY eKey) const
 	{
-		auto itFind = m_oKeyStringMap.find((int32_t)eKey);
+		auto itFind = m_oKeyStringMap.find(eKey);
 		if (itFind == m_oKeyStringMap.end()) {
 			return "";
 		}
@@ -64,13 +64,13 @@ private:
 	}
 	inline void addKey(stmi::HARDWARE_KEY eKey, const std::string& sStr)
 	{
-		m_oKeyStringMap.emplace((int32_t)eKey, sStr);
+		m_oKeyStringMap.emplace(eKey, sStr);
 	}
 
 	void initAxisMap();
 	void initKeyMap();
 private:
-	std::unordered_map<int32_t, std::string> m_oKeyStringMap;
+	std::unordered_map<stmi::HARDWARE_KEY, std::string> m_oKeyStringMap;
 	std::unordered_map<int32_t, std::string> m_oAxisStringMap;
 };
 

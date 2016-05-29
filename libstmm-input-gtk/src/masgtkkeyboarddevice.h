@@ -74,7 +74,7 @@ private:
 	{
 		int64_t m_nPressedTimeUsec;
 	};
-	std::unordered_map<int32_t, KeyData> m_oPressedKeys; // Key: (int32_t)HARDWARE_KEY
+	std::unordered_map<HARDWARE_KEY, KeyData> m_oPressedKeys;
 	friend class stmi::MasGtkDeviceManager;
 private:
 	GtkKeyboardDevice(const GtkKeyboardDevice& oSource);
@@ -82,6 +82,7 @@ private:
 };
 
 } // namespace Mas
+
 } // namespace Private
 
 } // namespace stmi

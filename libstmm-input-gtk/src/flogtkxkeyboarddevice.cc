@@ -82,10 +82,9 @@ bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, con
 		return bContinue; //----------------------------------------------------
 	}
 	auto refListeners = p0Owner->getListeners();
-	const int32_t nHardwareKey = static_cast<int32_t>(eHardwareKey);
 	const int32_t nEvType = p0XIDeviceEvent->evtype;
 	int64_t nTimePressedUsec = std::numeric_limits<int64_t>::max();
-	auto itFind = m_oPressedKeys.find(nHardwareKey);
+	auto itFind = m_oPressedKeys.find(eHardwareKey);
 	const bool bHardwareKeyPressed = (itFind != m_oPressedKeys.end());
 	KeyEvent::KEY_INPUT_TYPE eInputType;
 	shared_ptr<GtkXKeyboardDevice> refGtkXKeyboardDevice = shared_from_this();
@@ -121,7 +120,7 @@ bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, con
 		nTimePressedUsec = DeviceManager::getNowTimeMicroseconds();
 		KeyData oKeyData;
 		oKeyData.m_nPressedTimeUsec = nTimePressedUsec;
-		m_oPressedKeys.emplace(nHardwareKey, oKeyData);
+		m_oPressedKeys.emplace(eHardwareKey, oKeyData);
 		eInputType = KeyEvent::KEY_PRESS;
 	} else {
 		assert(nEvType == XI_KeyRelease);
@@ -140,7 +139,7 @@ bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, con
 	for (auto& p0ListenerData : *refListeners) {
 		sendKeyEventToListener(*p0ListenerData, nEventTimeUsec, nTimePressedUsec, eInputType, eHardwareKey
 								, refWindowAccessor, refCapability, p0Owner->m_nClassIdxKeyEvent, refEvent);
-		if ((eInputType == KeyEvent::KEY_PRESS) && (m_oPressedKeys.find(nHardwareKey) == m_oPressedKeys.end())) {
+		if ((eInputType == KeyEvent::KEY_PRESS) && (m_oPressedKeys.find(eHardwareKey) == m_oPressedKeys.end())) {
 			// The key was canceled by the callback
 			break; // for -------
 		}

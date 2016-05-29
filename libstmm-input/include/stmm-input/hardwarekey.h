@@ -32,7 +32,8 @@ namespace stmi
  * See <linux/input.h>
  */
 enum HARDWARE_KEY {
-	HK_ESC = 1
+	HK_NULL = 0
+	, HK_ESC = 1
 	, HK_1 = 2
 	, HK_2 = 3
 	, HK_3 = 4
@@ -627,9 +628,9 @@ namespace stmi
 namespace HardwareKeys
 {
 
-/** Returns all the defined HARDWARE_KEY enum values as a unordered set.
+/** Returns the defined HARDWARE_KEY values as a unordered set (`HK_NULL` excluded).
  * The singleton set is only created when this function is first called.
- * @return The keys as a std::unordered_set.
+ * @return The hardware keys as a std::unordered_set.
  */
 const std::unordered_set<HARDWARE_KEY>& get();
 

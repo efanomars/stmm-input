@@ -71,7 +71,7 @@ private:
 	{
 		int64_t m_nPressedTimeUsec;
 	};
-	std::unordered_map<int32_t, KeyData> m_oPressedKeys; // Key: (int32_t)HARDWARE_KEY
+	std::unordered_map<HARDWARE_KEY, KeyData> m_oPressedKeys;
 private:
 	GtkXKeyboardDevice(const GtkXKeyboardDevice& oSource) = delete;
 	GtkXKeyboardDevice& operator=(const GtkXKeyboardDevice& oSource) = delete;

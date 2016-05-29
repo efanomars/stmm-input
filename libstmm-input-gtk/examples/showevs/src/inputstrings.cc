@@ -56,7 +56,9 @@ void InputStrings::initAxisMap()
 void InputStrings::initKeyMap()
 {
 	// Generate:
-	// from <stmm-input/hardwarekey.h> file copy all keys and transform each line:
+	// from <stmm-input/hardwarekey.h> file copy all keys,
+	// remove line 'HK_NULL = 0' (the first enum)
+	// and transform each line:
 	//	, HK_XXX = n
 	// to:
 	//	addKey(stmi::HK_XXX, "XXX");

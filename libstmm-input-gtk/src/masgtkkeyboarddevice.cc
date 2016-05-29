@@ -79,10 +79,9 @@ bool GtkKeyboardDevice::handleGdkEventKey(GdkEventKey* p0KeyEv, const shared_ptr
 	}
 	auto refListeners = p0Owner->getListeners();
 
-	const int32_t nHardwareKey = static_cast<int32_t>(eHardwareKey);
 	const GdkEventType eGdkType = p0KeyEv->type;
 	int64_t nTimePressedUsec = std::numeric_limits<int64_t>::max();
-	auto itFind = m_oPressedKeys.find(nHardwareKey);
+	auto itFind = m_oPressedKeys.find(eHardwareKey);
 	const bool bHardwareKeyPressed = (itFind != m_oPressedKeys.end());
 //std::cout << "GtkKeyboardDevice::handleGdkEventKey()  nHardwareKey=" << nHardwareKey << "  bHardwareKeyPressed=" << bHardwareKeyPressed << std::endl;
 	auto refWindowAccessor = refWindowData->getAccessor();
@@ -118,7 +117,7 @@ bool GtkKeyboardDevice::handleGdkEventKey(GdkEventKey* p0KeyEv, const shared_ptr
 		nTimePressedUsec = DeviceManager::getNowTimeMicroseconds();
 		KeyData oKeyData;
 		oKeyData.m_nPressedTimeUsec = nTimePressedUsec;
-		m_oPressedKeys.emplace(nHardwareKey, oKeyData);
+		m_oPressedKeys.emplace(eHardwareKey, oKeyData);
 //std::cout << "  handleGdkEventKey add 1 nHardwareKey=" << nHardwareKey << std::endl;
 		eInputType = KeyEvent::KEY_PRESS;
 	} else {
@@ -139,7 +138,7 @@ bool GtkKeyboardDevice::handleGdkEventKey(GdkEventKey* p0KeyEv, const shared_ptr
 	for (auto& p0ListenerData : *refListeners) {
 		sendKeyEventToListener(*p0ListenerData, nEventTimeUsec, nTimePressedUsec
 								, eInputType, eHardwareKey, refWindowAccessor, p0Owner, refEvent);
-		if ((eInputType == KeyEvent::KEY_PRESS) && (m_oPressedKeys.find(nHardwareKey) == m_oPressedKeys.end())) {
+		if ((eInputType == KeyEvent::KEY_PRESS) && (m_oPressedKeys.find(eHardwareKey) == m_oPressedKeys.end())) {
 			// The key was canceled by the callback (ex. through removeAccessor)
 			break; // for -------
 		}
