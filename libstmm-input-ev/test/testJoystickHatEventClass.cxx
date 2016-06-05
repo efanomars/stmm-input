@@ -15,7 +15,7 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
 /* 
- * File:   testJoystickEventClass.cc
+ * File:   testJoystickHatEventClass.cc
  */
 
 #include <gtest/gtest.h>
@@ -31,7 +31,7 @@ using std::weak_ptr;
 namespace testing
 {
 
-class JoystickEventClassFixture : public ::testing::Test
+class JoystickHatEventClassFixture : public ::testing::Test
 {
 	void SetUp() override
 	{
@@ -45,12 +45,12 @@ public:
 	shared_ptr<FakeJoystickDevice> m_refJoystickDevice;
 };
 
-TEST_F(JoystickEventClassFixture, WorkingSetUp)
+TEST_F(JoystickHatEventClassFixture, WorkingSetUp)
 {
 	EXPECT_TRUE(m_refJoystickDevice.operator bool());
 }
 
-TEST_F(JoystickEventClassFixture, ConstructEvent)
+TEST_F(JoystickHatEventClassFixture, ConstructEvent)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	const int32_t nHat = 0;
@@ -80,7 +80,7 @@ TEST_F(JoystickEventClassFixture, ConstructEvent)
 	EXPECT_TRUE(aAsKeys[0].second ==  Event::AS_KEY_PRESS);
 	//EXPECT_TRUE(false); //just to check
 }
-TEST_F(JoystickEventClassFixture, TransitionsDistOne)
+TEST_F(JoystickHatEventClassFixture, TransitionsDistOne)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	const int32_t nHat = 0;
@@ -124,7 +124,7 @@ TEST_F(JoystickEventClassFixture, TransitionsDistOne)
 	}
 	//EXPECT_TRUE(false); //just to check
 }
-TEST_F(JoystickEventClassFixture, TransitionsDistTwo)
+TEST_F(JoystickHatEventClassFixture, TransitionsDistTwo)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	const int32_t nHat = 0;
@@ -174,7 +174,7 @@ TEST_F(JoystickEventClassFixture, TransitionsDistTwo)
 	}
 	//EXPECT_TRUE(false); //just to check
 }
-TEST_F(JoystickEventClassFixture, HatKeys)
+TEST_F(JoystickHatEventClassFixture, HatKeys)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	for (int32_t nHat = 0; nHat < 2; ++nHat) {

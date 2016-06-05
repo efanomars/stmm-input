@@ -20,13 +20,16 @@
 
 #include "hardwarekey.h"
 
+#include <cassert>
+#include <algorithm>
+
 namespace stmi
 {
 
 namespace HardwareKeys
 {
 
-const std::unordered_set<HARDWARE_KEY>& get()
+const std::vector<HARDWARE_KEY>& get()
 {
 	// Generate:
 	// copy all HARDWARE_KEY enums from hardwarekey.h
@@ -39,7 +42,7 @@ const std::unordered_set<HARDWARE_KEY>& get()
 	//   Find:     <^	, HK_([^ ]+).*$>
 	//   Replace:  <	, HK_\1>
 
-	static const std::unordered_set<HARDWARE_KEY> s_oSet{
+	static const std::vector<HARDWARE_KEY> s_oSet{
 	HK_ESC
 	, HK_1
 	, HK_2
@@ -605,7 +608,12 @@ const std::unordered_set<HARDWARE_KEY>& get()
 	};
 	return s_oSet;
 }
-	
+bool isValid(HARDWARE_KEY eKey)
+{
+	auto& aKeys = get();
+	return std::binary_search(aKeys.begin(), aKeys.end(), eKey);
+}
+
 } // namespace HardwareKeys
 
 } // namespace stmi

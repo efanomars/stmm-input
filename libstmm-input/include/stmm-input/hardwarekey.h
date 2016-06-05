@@ -23,7 +23,7 @@
 
 #include <type_traits>
 #include <functional>
-#include <unordered_set>
+#include <vector>
 
 namespace stmi
 {
@@ -628,11 +628,17 @@ namespace stmi
 namespace HardwareKeys
 {
 
-/** Returns the defined HARDWARE_KEY values as a unordered set (`HK_NULL` excluded).
- * The singleton set is only created when this function is first called.
- * @return The hardware keys as a std::unordered_set.
+/** Returns the defined HARDWARE_KEY values as an ordered vector (`HK_NULL` excluded).
+ * The singleton vector is only created when this function is first called.
+ * @return The hardware keys as a std::vector.
  */
-const std::unordered_set<HARDWARE_KEY>& get();
+const std::vector<HARDWARE_KEY>& get();
+/** Tells whether a key is valid.
+ * `HK_NULL` is not considered a valid key by this function!
+ * @param eKey The key to check.
+ * @return Whether the key is valid.
+ */
+bool isValid(HARDWARE_KEY eKey);
 
 } // namespace HardwareKeys
 

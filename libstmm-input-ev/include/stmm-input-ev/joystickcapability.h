@@ -23,6 +23,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <algorithm>
 
 #include <stmm-input/capability.h>
 
@@ -50,23 +51,36 @@ public:
 		, HAT_LEFTDOWN = (HAT_LEFT | HAT_DOWN)
 		, HAT_CENTER_CANCEL = 16
 	};
+	/** Returns the defined HAT_VALUE values as an ordered vector (`HAT_VALUE_NOT_SET` excluded).
+	 * The singleton vector is only created when this function is first called.
+	 * @return The hat values as a std::vector.
+	 */
+	static const std::vector<HAT_VALUE>& getHats()
+	{
+		static const std::vector<HAT_VALUE> s_oSet{
+			HAT_CENTER
+			, HAT_LEFT
+			, HAT_RIGHT
+			, HAT_UP
+			, HAT_LEFTUP
+			, HAT_RIGHTUP
+			, HAT_DOWN
+			, HAT_LEFTDOWN
+			, HAT_RIGHTDOWN
+			, HAT_CENTER_CANCEL
+		};
+		//assert(std::is_sorted(s_oSet.begin(), s_oSet.end()));
+		return s_oSet;
+	}
+	/** Tells whether a hat value is valid.
+	 * `HAT_VALUE_NOT_SET` is not considered a valid hat by this function!
+	 * @param eValue The hat to check.
+	 * @return Whether the hat is valid.
+	 */
 	static bool isValidHatValue(HAT_VALUE eValue)
 	{
-		switch (eValue) {
-			case HAT_CENTER:
-			case HAT_UP:
-			case HAT_RIGHT:
-			case HAT_DOWN:
-			case HAT_LEFT:
-			case HAT_RIGHTUP:
-			case HAT_RIGHTDOWN:
-			case HAT_LEFTUP:
-			case HAT_LEFTDOWN:
-			case HAT_CENTER_CANCEL:
-				return true;
-			default:
-				return false;
-		}
+		auto& aHats = getHats();
+		return std::binary_search(aHats.begin(), aHats.end(), eValue);
 	}
 	// See <linux/input.h>
 	/** The valid buttons.
@@ -98,39 +112,51 @@ public:
 		, BUTTON_GEAR_DOWN = 0x150
 		, BUTTON_GEAR_UP = 0x151
 	};
+	/** Returns the defined BUTTON values as an ordered vector.
+	 * The singleton vector is only created when this function is first called.
+	 * @return The button values as a std::vector.
+	 */
+	static const std::vector<BUTTON>& getButtons()
+	{
+		static const std::vector<BUTTON> s_oSet{
+			BUTTON_TRIGGER
+			, BUTTON_THUMB
+			, BUTTON_THUMB2
+			, BUTTON_TOP
+			, BUTTON_TOP2
+			, BUTTON_PINKIE
+			, BUTTON_BASE
+			//
+			, BUTTON_A
+			, BUTTON_B
+			, BUTTON_C
+			, BUTTON_X
+			, BUTTON_Y
+			, BUTTON_Z
+			, BUTTON_TL
+			, BUTTON_TR
+			, BUTTON_TL2
+			, BUTTON_TR2
+			, BUTTON_SELECT
+			, BUTTON_START
+			, BUTTON_MODE
+			, BUTTON_THUMBL
+			, BUTTON_THUMBR
+			//
+			, BUTTON_GEAR_DOWN
+			, BUTTON_GEAR_UP
+		};
+		//assert(std::is_sorted(s_oSet.begin(), s_oSet.end()));
+		return s_oSet;
+	}
+	/** Tells whether a button value is valid.
+	 * @param eButton The button to check.
+	 * @return Whether the button is valid.
+	 */
 	static bool isValidButton(BUTTON eButton)
 	{
-		switch (eButton) {
-			case BUTTON_TRIGGER:
-			case BUTTON_THUMB:
-			case BUTTON_THUMB2:
-			case BUTTON_TOP:
-			case BUTTON_TOP2:
-			case BUTTON_PINKIE:
-			case BUTTON_BASE:
-			//
-			case BUTTON_A:
-			case BUTTON_B:
-			case BUTTON_C:
-			case BUTTON_X:
-			case BUTTON_Y:
-			case BUTTON_Z:
-			case BUTTON_TL:
-			case BUTTON_TR:
-			case BUTTON_TL2:
-			case BUTTON_TR2:
-			case BUTTON_SELECT:
-			case BUTTON_START:
-			case BUTTON_MODE:
-			case BUTTON_THUMBL:
-			case BUTTON_THUMBR:
-			//
-			case BUTTON_GEAR_DOWN:
-			case BUTTON_GEAR_UP:
-				return true;
-			default:
-				return false;
-		}
+		auto& aButtons = getButtons();
+		return std::binary_search(aButtons.begin(), aButtons.end(), eButton);
 	}
 	// See <linux/input.h>
 	/** The valid axes.
@@ -152,28 +178,40 @@ public:
 		, AXIS_TILT_X = 0x1a
 		, AXIS_TILT_Y = 0x1b
 	};
+	/** Returns the defined AXIS values as an ordered vector.
+	 * The singleton vector is only created when this function is first called.
+	 * @return The axis values as a std::vector.
+	 */
+	static const std::vector<AXIS>& getAxes()
+	{
+		static const std::vector<AXIS> s_oSet{
+			AXIS_X
+			, AXIS_Y
+			, AXIS_Z
+			, AXIS_RX
+			, AXIS_RY
+			, AXIS_RZ
+			, AXIS_THROTTLE
+			, AXIS_RUDDER
+			, AXIS_WHEEL
+			, AXIS_GAS
+			, AXIS_BRAKE
+			, AXIS_PRESSURE
+			, AXIS_DISTANCE
+			, AXIS_TILT_X
+			, AXIS_TILT_Y
+		};
+		//assert(std::is_sorted(s_oSet.begin(), s_oSet.end()));
+		return s_oSet;
+	}
+	/** Tells whether an axis value is valid.
+	 * @param eAxis The axis to check.
+	 * @return Whether the axis is valid.
+	 */
 	static bool isValidAxis(AXIS eAxis)
 	{
-		switch (eAxis) {
-			case AXIS_X:
-			case AXIS_Y:
-			case AXIS_Z:
-			case AXIS_RX:
-			case AXIS_RY:
-			case AXIS_RZ:
-			case AXIS_THROTTLE:
-			case AXIS_RUDDER:
-			case AXIS_WHEEL:
-			case AXIS_GAS:
-			case AXIS_BRAKE:
-			case AXIS_PRESSURE:
-			case AXIS_DISTANCE:
-			case AXIS_TILT_X:
-			case AXIS_TILT_Y:
-				return true;
-			default:
-				return false;
-		}
+		auto& aAxes = getAxes();
+		return std::binary_search(aAxes.begin(), aAxes.end(), eAxis);
 	}
 	/** Whether a device implementing this capability has the given button. */
 	virtual bool getHasButton(JoystickCapability::BUTTON eButton) const = 0;

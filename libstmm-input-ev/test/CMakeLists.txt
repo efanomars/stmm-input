@@ -13,6 +13,7 @@ set(STMMI_TEST_SOURCES
         ${STMMI_TEST_SOURCES_DIR}/testEventClass.cxx
         ${STMMI_TEST_SOURCES_DIR}/testJoystickAxisEventClass.cxx
         ${STMMI_TEST_SOURCES_DIR}/testJoystickButtonEventClass.cxx
+        ${STMMI_TEST_SOURCES_DIR}/testJoystickCapabilityClass.cxx
         ${STMMI_TEST_SOURCES_DIR}/testJoystickHatEventClass.cxx
         ${STMMI_TEST_SOURCES_DIR}/testKeyEventClass.cxx
         ${STMMI_TEST_SOURCES_DIR}/testPointerEventClass.cxx

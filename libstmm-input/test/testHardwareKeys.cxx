@@ -20,6 +20,8 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
+
 #include <stmm-input/hardwarekey.h>
 
 namespace stmi
@@ -43,11 +45,20 @@ TEST_F(HardwareKeysFixture, NotEmpty)
 	EXPECT_FALSE(HardwareKeys::get().empty());
 }
 
+TEST_F(HardwareKeysFixture, KeysOrdered)
+{
+	auto& oAllKeys = HardwareKeys::get();
+	EXPECT_TRUE(std::is_sorted(oAllKeys.begin(), oAllKeys.end()));
+}
+
 TEST_F(HardwareKeysFixture, FirstAndLastExist)
 {
 	auto& oAllKeys = HardwareKeys::get();
-	EXPECT_TRUE(oAllKeys.find(stmi::HK_ESC) != oAllKeys.end());
-	EXPECT_TRUE(oAllKeys.find(stmi::HK_X_SCROLL_RIGHT) != oAllKeys.end());
+	EXPECT_TRUE(std::find(oAllKeys.begin(), oAllKeys.end(), stmi::HK_ESC) != oAllKeys.end());
+	EXPECT_TRUE(std::find(oAllKeys.begin(), oAllKeys.end(), stmi::HK_X_SCROLL_RIGHT) != oAllKeys.end());
+
+	EXPECT_TRUE(HardwareKeys::isValid(stmi::HK_ESC));
+	EXPECT_FALSE(HardwareKeys::isValid(stmi::HK_NULL));
 }
 
 } // namespace testing
