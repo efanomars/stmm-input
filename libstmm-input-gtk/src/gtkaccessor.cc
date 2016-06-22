@@ -20,6 +20,8 @@
 
 #include "gtkaccessor.h"
 
+#include <cassert>
+
 namespace stmi
 {
 

@@ -21,15 +21,14 @@
 #ifndef _STMI_DEVICE_MANAGER_H_
 #define _STMI_DEVICE_MANAGER_H_
 
-#include <typeinfo>
-#include <vector>
-#include <string>
-#include <chrono>
-#include <memory>
-
 #include "device.h"
 #include "event.h"
 #include "accessor.h"
+
+#include <vector>
+#include <chrono>
+#include <memory>
+#include <functional>
 
 namespace stmi
 {

@@ -18,15 +18,16 @@
  * File:   stddevicemanager.cc
  */
 
-#include <iostream>
-#include <algorithm>
-
 #include "stddevicemanager.h"
 
 #include "callifs.h"
 #include "callifsimplifier.h"
 #include "util.h"
 
+#ifndef NDEBUG
+#include <iostream>
+#endif //NDEBUG
+#include <algorithm>
 
 namespace stmi
 {

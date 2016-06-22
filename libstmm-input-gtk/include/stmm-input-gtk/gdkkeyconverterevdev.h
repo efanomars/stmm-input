@@ -21,16 +21,14 @@
 #ifndef _STMI_GDK_KEY_CONVERTER_EVDEV_H_
 #define _STMI_GDK_KEY_CONVERTER_EVDEV_H_
 
-#include <cassert>
-#include <iostream>
-#include <memory>
-
-#include <gtkmm.h>
-
 #include "gdkkeyconverter.h"
+
+#include <memory>
 
 namespace stmi
 {
+
+using std::shared_ptr;
 
 /** Converts from evdev gdk keycode to hardware key (`linux/input.h`).
  * Evdev formula: `eHardwareKey = nGdkKeycode - 8`.

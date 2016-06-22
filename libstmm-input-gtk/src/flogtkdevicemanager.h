@@ -21,12 +21,9 @@
 #ifndef _STMI_FLO_GTK_DEVICE_MANAGER_H_
 #define _STMI_FLO_GTK_DEVICE_MANAGER_H_
 
-#include <typeinfo>
-#include <unordered_map>
-#include <vector>
-#include <string>
-
-#include <gtkmm.h>
+#include "gtkaccessor.h"
+#include "gdkkeyconverter.h"
+#include "keyrepeatmode.h"
 
 #include <stmm-input-base/stddevice.h>
 #include <stmm-input-base/stddevicemanager.h>
@@ -36,12 +33,14 @@
 #include <stmm-input-ev/devicemgmtcapability.h>
 #include <stmm-input-ev/devicemgmtevent.h>
 
-#include "gtkaccessor.h"
-#include "gdkkeyconverter.h"
-#include "keyrepeatmode.h"
+#include <gtkmm.h>
 
 #include <X11/extensions/XI2.h>
 #include <X11/extensions/XInput2.h>
+
+#include <unordered_map>
+#include <vector>
+#include <string>
 
 namespace stmi
 {

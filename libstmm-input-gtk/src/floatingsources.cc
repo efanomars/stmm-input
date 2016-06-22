@@ -18,17 +18,16 @@
  * File:   floatingsources.cc
  */
 
-#include <cassert>
-#include <iostream>
-
-#include <gdk/gdk.h>
-#include <gdkmm/device.h>
-
-#include <gdk/gdkx.h>
-#include <limits>
-
 #include "floatingsources.h"
 
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
+
+#include <limits>
+#include <cassert>
+#ifndef NDEBUG
+#include <iostream>
+#endif //NDEBUG
 
 namespace stmi
 {

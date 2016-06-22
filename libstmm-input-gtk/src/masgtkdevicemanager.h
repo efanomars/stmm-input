@@ -21,13 +21,9 @@
 #ifndef _STMI_MAS_GTK_DEVICE_MANAGER_H_
 #define _STMI_MAS_GTK_DEVICE_MANAGER_H_
 
-#include <typeinfo>
-#include <unordered_map>
-#include <vector>
-#include <string>
-#include <memory>
-
-#include <gtkmm.h>
+#include "gtkaccessor.h"
+#include "gdkkeyconverter.h"
+#include "keyrepeatmode.h"
 
 #include <stmm-input-base/stddevice.h>
 #include <stmm-input-base/stddevicemanager.h>
@@ -38,9 +34,13 @@
 #include <stmm-input-ev/pointerevent.h>
 #include <stmm-input-ev/touchevent.h>
 
-#include "gtkaccessor.h"
-#include "gdkkeyconverter.h"
-#include "keyrepeatmode.h"
+#include <gtkmm.h>
+
+#include <typeinfo>
+#include <unordered_map>
+#include <vector>
+#include <string>
+#include <memory>
 
 namespace stmi
 {

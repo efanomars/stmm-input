@@ -21,10 +21,10 @@
 #ifndef _STMI_STD_DEVICE_H_
 #define _STMI_STD_DEVICE_H_
 
+#include "childdevicemanager.h"
+
 #include <typeinfo>
 #include <string>
-
-#include "childdevicemanager.h"
 
 namespace stmi
 {

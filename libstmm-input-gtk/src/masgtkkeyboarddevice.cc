@@ -19,6 +19,7 @@
  */
 
 #include "masgtkkeyboarddevice.h"
+
 #include "masgtkwindowdata.h"
 #include "masgtklistenerextradata.h"
 

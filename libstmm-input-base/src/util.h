@@ -21,10 +21,8 @@
 #ifndef _STMI_UTIL_H_
 #define _STMI_UTIL_H_
 
-#include <cassert>
-#include <iostream>
 #include <vector>
-
+#include <algorithm>
 
 namespace stmi
 {
@@ -40,9 +38,9 @@ void addToVectorSet(std::vector<T>& aSet, const std::vector<T>& aChildSet)
 			return std::find(aSet.begin(), aSet.end(), oValue) == aSet.end();
 		});
 }
-template <class T>
 /* * Add a value to a set "represented" by a vector.
  */
+template <class T>
 void addToVectorSet(std::vector<T>& aSet, const T& oValue)
 {
 	if (std::find(aSet.begin(), aSet.end(), oValue) == aSet.end()) {

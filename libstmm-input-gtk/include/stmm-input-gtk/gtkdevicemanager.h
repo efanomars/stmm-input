@@ -21,12 +21,14 @@
 #ifndef _STMI_GTK_DEVICE_MANAGER_H_
 #define _STMI_GTK_DEVICE_MANAGER_H_
 
-#include <gtkmm.h>
+#include "keyrepeatmode.h"
+#include "gdkkeyconverter.h"
 
 #include <stmm-input/devicemanager.h>
 
-#include "keyrepeatmode.h"
-#include "gdkkeyconverter.h"
+#include <gtkmm.h>
+
+#include <memory>
 
 namespace stmi
 {

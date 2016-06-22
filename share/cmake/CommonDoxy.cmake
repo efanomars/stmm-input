@@ -4,7 +4,7 @@
 
 # STMMI_TARGET_LIB              The library name. Example: stmm-input-gtk
 # STMMI_TARGET_LIB_VERSION      The library version. Example: 0.1.0
-# STMMI_DOC_DIRS_AND_FILES      The other libraries that should be added to the docu.
+# STMMI_INCLUDE_LIBS            The other libraries that should be added to the docu.
 #                               Example: "stmm-input-ev;stmm-input"
 function(CreateLibDoxy STMMI_TARGET_LIB  STMMI_TARGET_LIB_VERSION  STMMI_INCLUDE_LIBS)
 

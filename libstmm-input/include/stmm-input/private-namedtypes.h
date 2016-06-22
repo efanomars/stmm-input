@@ -21,18 +21,16 @@
 #ifndef _STMI_PRIVATE_NAMED_TYPES_H_
 #define _STMI_PRIVATE_NAMED_TYPES_H_
 
-#include <stdint.h>
-#include <string.h>
-
-#include <cassert>
 #include <unordered_map>
-#ifndef NDEBUG
-	#include <string>
-	#include <iostream>
-#endif //NDEBUG
 #include <typeinfo>
 #include <typeindex>
+#include <cassert>
+#ifndef NDEBUG
+#include <iostream>
+#endif //NDEBUG
 
+#include <stdint.h>
+#include <string.h>
 
 namespace stmi
 {

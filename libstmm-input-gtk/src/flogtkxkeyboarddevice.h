@@ -21,9 +21,9 @@
 #ifndef _STMI_FLO_GTK_X_KEYBOARD_DEVICE_H_
 #define _STMI_FLO_GTK_X_KEYBOARD_DEVICE_H_
 
-#include <stmm-input-base/stddevice.h>
-
 #include "flogtkdevicemanager.h"
+
+#include <stmm-input-base/stddevice.h>
 
 namespace stmi
 {

@@ -2,16 +2,15 @@
  * File:   main.cc
  */
 
-#include <cassert>
-#include <iostream>
-
-#include <gtkmm.h>
-
 #include "barewindow.h"
 
 #include <stmm-input-gtk/gtkdevicemanager.h>
 #include <stmm-input/devicemanager.h>
 #include <stmm-input/event.h>
+
+#include <gtkmm.h>
+
+#include <iostream>
 
 namespace example
 {

@@ -21,9 +21,6 @@
 #ifndef _STMI_DEVICE_MGMT_CAPABILITY_H_
 #define _STMI_DEVICE_MGMT_CAPABILITY_H_
 
-#include <cassert>
-#include <iostream>
-
 #include <stmm-input/capability.h>
 
 namespace stmi

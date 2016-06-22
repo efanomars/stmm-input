@@ -21,10 +21,6 @@
 #ifndef _STMI_ACCESSOR_H_
 #define _STMI_ACCESSOR_H_
 
-#include <typeinfo>
-#include <vector>
-#include <string>
-#include <chrono>
 #include <memory>
 
 namespace stmi

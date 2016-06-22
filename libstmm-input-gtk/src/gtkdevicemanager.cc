@@ -20,10 +20,7 @@
 
 #include "gtkdevicemanager.h"
 
-#include <gtkmm.h>
-
 #include "gdkkeyconverterevdev.h"
-
 #include "masgtkdevicemanager.h"
 #include "flogtkdevicemanager.h"
 #include "jsgtkdevicemanager.h"

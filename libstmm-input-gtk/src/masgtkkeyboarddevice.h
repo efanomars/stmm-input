@@ -21,9 +21,9 @@
 #ifndef _STMI_MAS_GTK_KEYBOARD_DEVICE_H_
 #define _STMI_MAS_GTK_KEYBOARD_DEVICE_H_
 
-#include <stmm-input-base/stddevice.h>
-
 #include "masgtkdevicemanager.h"
+
+#include <stmm-input-base/stddevice.h>
 
 namespace stmi
 {

@@ -18,12 +18,6 @@
  * File:   masgtkdevicemanager.cc
  */
 
-#include <limits>
-
-#include <gdk/gdk.h>
-#include <sigc++/connection.h>
-#include <gdkmm/devicemanager.h>
-
 #include "masgtkdevicemanager.h"
 #include "gdkkeyconverter.h"
 #include "masgtkwindowdata.h"
@@ -31,6 +25,11 @@
 #include "masgtkpointerdevice.h"
 #include "masgtklistenerextradata.h"
 
+#include <gdkmm/devicemanager.h>
+#include <gdk/gdk.h>
+#include <sigc++/connection.h>
+
+#include <limits>
 
 namespace stmi
 {

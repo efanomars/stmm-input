@@ -23,12 +23,13 @@
 
 /* This file includes all headers of the stmm-input-ev library. */
 
-#include <stmm-input/stmm-input.h>
 #include "devicemgmtevent.h"
 #include "joystickevent.h"
 #include "keyevent.h"
 #include "pointerevent.h"
 #include "touchevent.h"
+
+#include <stmm-input/stmm-input.h>
 
 #endif	/* _STMI_STMM_INPUT_EV_H_ */
 

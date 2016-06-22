@@ -18,19 +18,21 @@
  * File:   flogtkdevicemanager.cc
  */
 
-#include <gdk/gdk.h>
-#include <glibmm/signalproxy.h>
-#include <gdkmm/device.h>
-#include <gdkmm/devicemanager.h>
-
-#include <gdk/gdkx.h>
-#include <glibmm/ustring.h>
-
 #include "flogtkdevicemanager.h"
+
 #include "floatingsources.h"
 #include "flogtkwindowdata.h"
 #include "flogtklistenerextradata.h"
 #include "flogtkxkeyboarddevice.h"
+
+#include <gdkmm/device.h>
+#include <gdkmm/devicemanager.h>
+
+#include <glibmm/signalproxy.h>
+#include <glibmm/ustring.h>
+
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 
 namespace stmi
 {

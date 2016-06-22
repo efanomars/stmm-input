@@ -21,12 +21,11 @@
 #ifndef _STMI_KEY_EVENT_H_
 #define _STMI_KEY_EVENT_H_
 
-#include <cassert>
-#include <iostream>
+#include "keycapability.h"
 
 #include <stmm-input/event.h>
 
-#include "keycapability.h"
+#include <cassert>
 
 namespace stmi
 {

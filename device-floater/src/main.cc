@@ -14,16 +14,14 @@
 /*
  * File:   main.cc
  */
-#include <cstdlib>
+
+#include "xideviceswindow.h"
+#include "config.h"
 
 #include <cassert>
 #include <iostream>
 
-#include <gtkmm.h>
-
-#include "config.h"
-#include "xideviceswindow.h"
-
+#include <cstdlib>
 
 namespace stmi
 {

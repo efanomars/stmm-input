@@ -21,13 +21,9 @@
 #ifndef _STMI_GDK_KEY_CONVERTER_H_
 #define _STMI_GDK_KEY_CONVERTER_H_
 
-#include <cassert>
-#include <iostream>
-#include <memory>
+#include <stmm-input/hardwarekey.h>
 
 #include <gdk/gdk.h>
-
-#include <stmm-input/event.h>
 
 namespace stmi
 {

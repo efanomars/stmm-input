@@ -18,28 +18,28 @@
  * File:   jsgtkdevicemanager.cc
  */
 
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-#include <unistd.h>
-
-#include <linux/joystick.h>
-
-#include <sstream>
-#include <set>
-
-#include <giomm/file.h>
-#include <glibmm/fileutils.h>
-
-#include <stmm-input-ev/joystickevent.h>
-#include <stmm-input/device.h>
-
 #include "jsgtkdevicemanager.h"
+
 #include "joysticksources.h"
 #include "jsgtkjoystickdevice.h"
 #include "jsgtklistenerextradata.h"
 #include "jsgtkwindowdata.h"
 
+#include <stmm-input-ev/joystickevent.h>
+#include <stmm-input/device.h>
+
+#include <giomm/file.h>
+#include <glibmm/fileutils.h>
+
+#include <sstream>
+#include <set>
+
+#include <linux/joystick.h>
+
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 namespace stmi
 {

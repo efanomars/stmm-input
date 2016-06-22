@@ -19,6 +19,7 @@
  */
 
 #include "jsgtkjoystickdevice.h"
+
 #include "joysticksources.h"
 #include "jsgtkwindowdata.h"
 #include "jsgtklistenerextradata.h"

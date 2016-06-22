@@ -18,9 +18,9 @@
  * File:   gdkkeyconverterevdev.cc
  */
 
-#include <limits>
-
 #include "gdkkeyconverterevdev.h"
+
+#include <cassert>
 
 // Evdev formula from Daniel Berrange's https://www.berrange.com/tags/key-codes/
 

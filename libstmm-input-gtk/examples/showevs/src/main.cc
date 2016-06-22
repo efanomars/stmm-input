@@ -2,14 +2,13 @@
  * File:   main.cc
  */
 
-#include <cassert>
-#include <iostream>
-
-#include <gtkmm.h>
-
 #include "showevswindow.h"
 
 #include <stmm-input-gtk/gtkdevicemanager.h>
+
+#include <gtkmm.h>
+
+#include <iostream>
 
 namespace example
 {

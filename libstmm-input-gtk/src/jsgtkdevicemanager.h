@@ -21,11 +21,7 @@
 #ifndef _STMI_JS_GTK_DEVICE_MANAGER_H_
 #define _STMI_JS_GTK_DEVICE_MANAGER_H_
 
-#include <typeinfo>
-#include <set>
-#include <unordered_map>
-#include <vector>
-#include <string>
+#include "gtkaccessor.h"
 
 #include <stmm-input-base/stddevicemanager.h>
 #include <stmm-input-base/stddevice.h>
@@ -35,12 +31,10 @@
 #include <stmm-input-ev/joystickevent.h>
 
 #include <gtkmm.h>
-#include <gdkmm.h>
 
-#include <X11/extensions/XI2.h>
-#include <X11/extensions/XInput2.h>
-
-#include "gtkaccessor.h"
+#include <unordered_map>
+#include <vector>
+#include <string>
 
 
 namespace stmi

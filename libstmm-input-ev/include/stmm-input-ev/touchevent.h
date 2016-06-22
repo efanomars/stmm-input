@@ -21,12 +21,11 @@
 #ifndef _STMI_TOUCH_EVENT_H_
 #define _STMI_TOUCH_EVENT_H_
 
-#include <cassert>
-#include <iostream>
+#include "touchcapability.h"
 
 #include <stmm-input/xyevent.h>
 
-#include "touchcapability.h"
+#include <cassert>
 
 namespace stmi
 {

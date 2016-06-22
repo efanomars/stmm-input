@@ -21,10 +21,9 @@
 #ifndef _STMI_XY_EVENT_H_
 #define _STMI_XY_EVENT_H_
 
-#include <cassert>
-#include <iostream>
-
 #include "event.h"
+
+#include <cassert>
 
 namespace stmi
 {

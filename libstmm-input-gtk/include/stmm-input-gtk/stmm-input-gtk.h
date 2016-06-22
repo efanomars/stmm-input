@@ -23,11 +23,12 @@
 
 /* This file includes all headers of the stmm-input-gtk library. */
 
-#include <stmm-input/stmm-input.h>
-#include <stmm-input-ev/stmm-input-ev.h>
 #include "gtkaccessor.h"
 #include "gtkdevicemanager.h"
 #include "gtkkeycodetohkevdev.h"
+
+#include <stmm-input/stmm-input.h>
+#include <stmm-input-ev/stmm-input-ev.h>
 
 #endif	/* _STMI_STMM_INPUT_GTK_H_ */
 

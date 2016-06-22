@@ -21,12 +21,11 @@
 #ifndef _STMI_JOYSTICK_EVENT_H_
 #define _STMI_JOYSTICK_EVENT_H_
 
-#include <cassert>
-#include <iostream>
+#include "joystickcapability.h"
 
 #include <stmm-input/event.h>
 
-#include "joystickcapability.h"
+#include <cassert>
 
 namespace stmi
 {

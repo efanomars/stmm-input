@@ -18,10 +18,11 @@
  * File:   childdevicemanager.cc
  */
 
-#include <algorithm>
-
 #include "childdevicemanager.h"
+
 #include "util.h"
+
+#include <algorithm>
 
 namespace stmi
 {

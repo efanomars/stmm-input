@@ -21,12 +21,9 @@
 #ifndef _STMI_GTK_ACCESSOR_H_
 #define _STMI_GTK_ACCESSOR_H_
 
-#include <cassert>
-#include <iostream>
+#include <stmm-input/accessor.h>
 
 #include <gtkmm.h>
-
-#include <stmm-input/accessor.h>
 
 namespace stmi
 {
@@ -36,7 +33,7 @@ namespace Private
 namespace GtkAccessorNS
 {
 void notify_window_destroyed(gpointer p0Data, GObject *p0Window);
-} // namespace GtkAccessor
+} // namespace GtkAccessorNS
 } // namespace Private
 
 /** Accessor wrapping a Gtk::Window.

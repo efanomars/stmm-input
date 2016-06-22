@@ -16,12 +16,14 @@
  */
 #include "devicefloater.h"
 
-#include <cassert>
-#include <iostream>
-
 #include <gdk/gdkx.h>
+
 #include <X11/extensions/XI2.h>
-#include <X11/extensions/XInput2.h>
+
+#include <cassert>
+#ifndef NDEBUG
+#include <iostream>
+#endif //NDEBUG
 
 namespace stmi
 {

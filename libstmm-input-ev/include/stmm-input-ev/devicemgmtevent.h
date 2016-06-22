@@ -21,12 +21,11 @@
 #ifndef _STMI_DEVICE_MGMT_EVENT_H_
 #define _STMI_DEVICE_MGMT_EVENT_H_
 
-#include <cassert>
-#include <iostream>
+#include "devicemgmtcapability.h"
 
 #include <stmm-input/event.h>
 
-#include "devicemgmtcapability.h"
+#include <cassert>
 
 namespace stmi
 {

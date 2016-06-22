@@ -19,6 +19,7 @@
  */
 
 #include "flogtkxkeyboarddevice.h"
+
 #include "flogtkwindowdata.h"
 #include "flogtklistenerextradata.h"
 

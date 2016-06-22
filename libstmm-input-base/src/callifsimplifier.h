@@ -21,9 +21,6 @@
 #ifndef _STMI_CALLIF_SIMPLIFIER_H_
 #define _STMI_CALLIF_SIMPLIFIER_H_
 
-#include <cassert>
-#include <iostream>
-
 #include "callifs.h"
 
 namespace stmi

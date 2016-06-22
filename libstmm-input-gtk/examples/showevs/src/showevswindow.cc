@@ -2,13 +2,13 @@
  * File:   showevswindow.cc
  */
 
+#include "showevswindow.h"
+
 #include <cassert>
 #include <iostream>
 #include <algorithm>
 #include <vector>
 #include <unordered_map>
-
-#include "showevswindow.h"
 
 namespace example
 {

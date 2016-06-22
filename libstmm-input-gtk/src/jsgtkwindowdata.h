@@ -21,10 +21,9 @@
 #ifndef _STMI_JS_GTK_WINDOW_DATA_H_
 #define _STMI_JS_GTK_WINDOW_DATA_H_
 
-#include <gtkmm.h>
-
 #include "jsgtkdevicemanager.h"
 
+#include <gtkmm.h>
 
 namespace stmi
 {

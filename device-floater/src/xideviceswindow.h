@@ -18,12 +18,11 @@
 #ifndef _STMI_XI_DEVICES_WINDOW_
 #define _STMI_XI_DEVICES_WINDOW_
 
-#include <string>
+#include "devicefloater.h"
 
 #include <gtkmm.h>
-#include <gdkmm.h>
 
-#include "devicefloater.h"
+#include <string>
 
 namespace stmi
 {

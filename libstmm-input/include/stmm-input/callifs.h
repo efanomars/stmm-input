@@ -21,10 +21,9 @@
 #ifndef _STMI_CALLIFS_H_
 #define _STMI_CALLIFS_H_
 
-#include <cassert>
-#include <iostream>
-
 #include "devicemanager.h"
+
+#include <cassert>
 
 namespace stmi
 {

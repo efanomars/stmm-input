@@ -21,16 +21,17 @@
 #ifndef _STMI_EVENT_H_
 #define _STMI_EVENT_H_
 
+#include "hardwarekey.h"
+#include "private-namedtypes.h"
+#include "capability.h"
+#include "accessor.h"
+
 #include <typeinfo>
 #include <vector>
 #include <string>
 #include <memory>
 #include <iostream>
-
-#include "hardwarekey.h"
-#include "private-namedtypes.h"
-#include "capability.h"
-#include "accessor.h"
+#include <cassert>
 
 namespace stmi
 {

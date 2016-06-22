@@ -20,7 +20,6 @@
 
 #include "stddevice.h"
 
-
 namespace stmi
 {
 

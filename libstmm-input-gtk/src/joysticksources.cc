@@ -18,20 +18,18 @@
  * File:   joysticksources.cc
  */
 
-#include <cassert>
-#include <iostream>
+#include "joysticksources.h"
 
 #include <gdkmm.h>
+#include <glibmm.h>
 
 #include <gdk/gdkx.h>
 
-#include <linux/joystick.h>
-
 #include <X11/extensions/XI2.h>
-#include <glibmm.h>
-#include <list>
 
-#include "joysticksources.h"
+#ifndef NDEBUG
+#include <iostream>
+#endif //NDEBUG
 
 namespace stmi
 {
@@ -235,7 +233,7 @@ JoystickInputSource::~JoystickInputSource()
 {
 //std::cout << "JoystickInputSource::~JoystickInputSource()" << std::endl;
 }
-sigc::connection JoystickInputSource::connect(const sigc::slot<bool, const struct js_event*>& slot)
+sigc::connection JoystickInputSource::connect(const sigc::slot<bool, const struct ::js_event*>& slot)
 {
 	return connect_generic(slot);
 }
@@ -267,7 +265,7 @@ bool JoystickInputSource::dispatch(sigc::slot_base* p0Slot)
 //std::cout << "JoystickInputSource::dispatch" << std::endl;
 
 	if ((m_oPollFD.get_revents() & G_IO_IN) != 0) {
-		struct js_event aEvent[32];
+		struct ::js_event aEvent[32];
 		const int32_t nBufLen = sizeof aEvent;
 		while (true) {
 			const int32_t nReadLen = read(m_oPollFD.get_fd(), aEvent, nBufLen);
@@ -276,8 +274,8 @@ bool JoystickInputSource::dispatch(sigc::slot_base* p0Slot)
 			}
 			const int32_t nTotEvents = nReadLen / sizeof(aEvent[0]);
 			for (int32_t nIdx = 0; nIdx < nTotEvents; ++nIdx) {
-				struct js_event* p0Event = &(aEvent[nIdx]);
-				bContinue = (*static_cast<sigc::slot<bool, const struct js_event*>*>(p0Slot))(p0Event);
+				struct ::js_event* p0Event = &(aEvent[nIdx]);
+				bContinue = (*static_cast<sigc::slot<bool, const struct ::js_event*>*>(p0Slot))(p0Event);
 				if (!bContinue) {
 					// interrupt dispatching
 					return bContinue; // ---------------------------------------

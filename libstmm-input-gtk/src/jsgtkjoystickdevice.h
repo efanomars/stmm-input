@@ -21,11 +21,11 @@
 #ifndef _STMI_JS_GTK_JOYSTICK_DEVICE_H_
 #define _STMI_JS_GTK_JOYSTICK_DEVICE_H_
 
-#include <linux/joystick.h>
+#include "jsgtkdevicemanager.h"
 
 #include <stmm-input-base/stddevice.h>
 
-#include "jsgtkdevicemanager.h"
+#include <linux/joystick.h>
 
 namespace stmi
 {

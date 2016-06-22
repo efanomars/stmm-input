@@ -26,6 +26,8 @@
 #include <X11/extensions/XI2.h>
 #include <X11/extensions/XInput2.h>
 
+#include <memory>
+
 namespace stmi
 {
 

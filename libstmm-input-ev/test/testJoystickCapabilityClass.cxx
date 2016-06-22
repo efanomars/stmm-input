@@ -45,14 +45,14 @@ class JoystickCapabilityClassFixture : public ::testing::Test
 
 TEST_F(JoystickCapabilityClassFixture, NotEmpty)
 {
-	EXPECT_FALSE(JoystickCapability::getHats().empty());
+	EXPECT_FALSE(JoystickCapability::getHatValues().empty());
 	EXPECT_FALSE(JoystickCapability::getButtons().empty());
 	EXPECT_FALSE(JoystickCapability::getAxes().empty());
 }
 
 TEST_F(JoystickCapabilityClassFixture, HatsOrdered)
 {
-	auto& oAllHats = JoystickCapability::getHats();
+	auto& oAllHats = JoystickCapability::getHatValues();
 	EXPECT_TRUE(std::is_sorted(oAllHats.begin(), oAllHats.end()));
 }
 TEST_F(JoystickCapabilityClassFixture, ButtonsOrdered)
@@ -68,7 +68,7 @@ TEST_F(JoystickCapabilityClassFixture, AxesOrdered)
 
 TEST_F(JoystickCapabilityClassFixture, HatsFirstAndLastExist)
 {
-	auto& oAllHats = JoystickCapability::getHats();
+	auto& oAllHats = JoystickCapability::getHatValues();
 	EXPECT_TRUE(std::find(oAllHats.begin(), oAllHats.end(), stmi::JoystickCapability::HAT_CENTER) != oAllHats.end());
 	EXPECT_TRUE(std::find(oAllHats.begin(), oAllHats.end(), stmi::JoystickCapability::HAT_CENTER_CANCEL) != oAllHats.end());
 

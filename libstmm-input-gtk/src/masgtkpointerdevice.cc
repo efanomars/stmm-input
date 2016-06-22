@@ -19,6 +19,7 @@
  */
 
 #include "masgtkpointerdevice.h"
+
 #include "masgtkwindowdata.h"
 #include "masgtklistenerextradata.h"
 

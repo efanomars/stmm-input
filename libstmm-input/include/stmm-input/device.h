@@ -21,13 +21,13 @@
 #ifndef _STMI_DEVICE_H_
 #define _STMI_DEVICE_H_
 
+#include "capability.h"
+#include "private-namedtypes.h"
+
 #include <typeinfo>
 #include <vector>
 #include <string>
 #include <memory>
-
-#include "capability.h"
-#include "private-namedtypes.h"
 
 namespace stmi
 {

@@ -2,9 +2,6 @@
  * File:   barewindow.cc
  */
 
-#include <cassert>
-#include <iostream>
-
 #include "barewindow.h"
 
 namespace example

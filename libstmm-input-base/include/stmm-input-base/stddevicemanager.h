@@ -21,14 +21,12 @@
 #ifndef _STMI_STD_DEVICE_MANAGER_H_
 #define _STMI_STD_DEVICE_MANAGER_H_
 
+#include "childdevicemanager.h"
+
 #include <typeinfo>
 #include <unordered_map>
 #include <vector>
 #include <list>
-#include <string>
-
-#include "childdevicemanager.h"
-//#include "devicemgmtevent.h"
 
 namespace stmi
 {

@@ -21,13 +21,15 @@
 #ifndef _STMI_JOYSTICK_SOURCES_H_
 #define _STMI_JOYSTICK_SOURCES_H_
 
-#include <unordered_map>
-#include <cassert>
-#include <vector>
+#include <gtkmm.h>
+
+#include <linux/joystick.h>
 
 #include <sys/inotify.h>
 
-#include <gtkmm.h>
+#include <cassert>
+#include <vector>
+#include <string>
 
 namespace stmi
 {
@@ -115,7 +117,7 @@ public:
 	virtual ~JoystickInputSource();
 
 	// A source can have only one callback type, that is the slot given as parameter
-	sigc::connection connect(const sigc::slot<bool, const struct js_event*>& slot);
+	sigc::connection connect(const sigc::slot<bool, const struct ::js_event*>& slot);
 
 	//int32_t getJoystickFD() const;
 	const std::string& getJoystickPathName() const { return m_sPathName; }

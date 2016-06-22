@@ -21,12 +21,12 @@
 #ifndef _STMI_FLO_GTK_WINDOW_DATA_H_
 #define _STMI_FLO_GTK_WINDOW_DATA_H_
 
+#include "flogtkdevicemanager.h"
+
 #include <gtkmm.h>
 
 #include <X11/extensions/XI2.h>
 #include <X11/extensions/XInput2.h>
-
-#include "flogtkdevicemanager.h"
 
 namespace stmi
 {

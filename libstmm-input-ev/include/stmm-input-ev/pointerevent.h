@@ -21,12 +21,11 @@
 #ifndef _STMI_POINTER_EVENT_H_
 #define _STMI_POINTER_EVENT_H_
 
-#include <cassert>
-#include <iostream>
+#include "pointercapability.h"
 
 #include <stmm-input/xyevent.h>
 
-#include "pointercapability.h"
+#include <cassert>
 
 namespace stmi
 {

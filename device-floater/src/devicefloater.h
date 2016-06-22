@@ -18,13 +18,10 @@
 #ifndef _STMI_DEVICE_FLOATER_
 #define _STMI_DEVICE_FLOATER_
 
-#include <set>
-
 #include <gtkmm.h>
 
 #include <sigc++/signal.h>
 
-#include <X11/Xlib.h>
 #include <X11/extensions/XInput2.h>
 
 namespace stmi

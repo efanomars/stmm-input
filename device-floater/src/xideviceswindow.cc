@@ -15,11 +15,12 @@
  * File:   xideviceswindow.cc
  */
 
+#include "xideviceswindow.h"
+
+#include "config.h"
+
 #include <cassert>
 #include <iostream>
-
-#include "xideviceswindow.h"
-#include "config.h"
 
 namespace stmi
 {

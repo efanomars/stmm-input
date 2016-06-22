@@ -21,11 +21,10 @@
 #ifndef _STMI_JOYSTICK_CAPABILITY_H_
 #define _STMI_JOYSTICK_CAPABILITY_H_
 
-#include <cassert>
-#include <iostream>
-#include <algorithm>
-
 #include <stmm-input/capability.h>
+
+//#include <cassert>
+#include <algorithm>
 
 namespace stmi
 {
@@ -55,7 +54,7 @@ public:
 	 * The singleton vector is only created when this function is first called.
 	 * @return The hat values as a std::vector.
 	 */
-	static const std::vector<HAT_VALUE>& getHats()
+	static const std::vector<HAT_VALUE>& getHatValues()
 	{
 		static const std::vector<HAT_VALUE> s_oSet{
 			HAT_CENTER
@@ -79,8 +78,8 @@ public:
 	 */
 	static bool isValidHatValue(HAT_VALUE eValue)
 	{
-		auto& aHats = getHats();
-		return std::binary_search(aHats.begin(), aHats.end(), eValue);
+		auto& aHatValues = getHatValues();
+		return std::binary_search(aHatValues.begin(), aHatValues.end(), eValue);
 	}
 	// See <linux/input.h>
 	/** The valid buttons.
