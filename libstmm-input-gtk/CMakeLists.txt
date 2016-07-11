@@ -47,7 +47,7 @@ set(STMM_INPUT_EV_MAJOR_VERSION_REQ 0)
 set(STMM_INPUT_EV_MINOR_VERSION_REQ 1)
 set(STMM_INPUT_EV_VERSION_REQ "${STMM_INPUT_EV_MAJOR_VERSION_REQ}.${STMM_INPUT_EV_MINOR_VERSION_REQ}")
 
-set(GTKMM_VERSION_REQ "3.4.2")
+set(GTKMM_VERSION_REQ "3.14.0")
 set(XI_VERSION_REQ "1.7.4")
 
 # Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
