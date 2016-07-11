@@ -25,6 +25,8 @@
 #include "flogtkdevicemanager.h"
 #include "jsgtkdevicemanager.h"
 
+#include "parentdevicemanager.h"
+
 namespace stmi
 {
 
