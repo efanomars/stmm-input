@@ -259,9 +259,9 @@ bool GtkPointerDevice::handleGdkEventScroll(GdkEventScroll* p0ScrollEv, const sh
 		}
 		const bool bSent = p0ListenerData->handleEventCallIf(p0Owner->m_nClassIdxPointerScrollEvent, refEvent);
 		if (bSent) {
-			if (refEvent->getIsModified() || !refEvent.unique()) {
+			if ((!refEvent.unique()) || refEvent->getIsModified()) {
+				// If the event is referenced by another shared_ptr (ex. an event queue), can't reuse, it might change later.
 				// If the event was modified can't reuse it for the next listener.
-				// If the event is referenced by another shared_ptr (ex. an event queue), can't reuse either.
 				//TODO RECYCLING!? (needs subclassing)
 				refEvent.reset();
 			}
@@ -562,9 +562,9 @@ void GtkPointerDevice::sendPointerEventToListener(
 	}
 	const bool bSent = oListenerData.handleEventCallIf(p0Owner->m_nClassIdxPointerEvent, refEvent);
 	if (bSent) {
-		if (refEvent->getIsModified() || !refEvent.unique()) {
+		if ((!refEvent.unique()) || refEvent->getIsModified()) {
+			// If the event is referenced by another shared_ptr (ex. an event queue), can't reuse, it might change later.
 			// If the event was modified can't reuse it for the next listener.
-			// If the event is referenced by another shared_ptr (ex. an event queue), can't reuse either.
 			// TODO RECYCLING!? (needs subclassing)
 			refEvent.reset();
 		}
@@ -590,9 +590,9 @@ void GtkPointerDevice::sendTouchEventToListener(
 	}
 	const bool bSent = oListenerData.handleEventCallIf(p0Owner->m_nClassIdxTouchEvent, refEvent);
 	if (bSent) {
-		if (refEvent->getIsModified() || !refEvent.unique()) {
+		if ((!refEvent.unique()) || refEvent->getIsModified()) {
+			// If the event is referenced by another shared_ptr (ex. an event queue), can't reuse, it might change later.
 			// If the event was modified can't reuse it for the next listener.
-			// If the event is referenced by another shared_ptr (ex. an event queue), can't reuse either, it might change later.
 			// TODO RECYCLING!? (needs subclassing)
 			refEvent.reset();
 		}
