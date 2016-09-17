@@ -32,6 +32,8 @@
 namespace stmi
 {
 
+uint64_t StdDeviceManager::s_nUniqueTimeStamp = 0;
+
 StdDeviceManager::StdDeviceManager(const std::vector<Capability::Class>& aCapabitityClass
 									, const std::vector<Event::Class>& aEventClass
 									, bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass)
@@ -129,7 +131,7 @@ bool StdDeviceManager::addEventListener(const shared_ptr<EventListener>& refEven
 
 	oListenerData.m_p1Owner = this;
 	oListenerData.m_refEventListener = refEventListener;
-	oListenerData.m_nAddedTimeUsec = DeviceManager::getNowTimeMicroseconds();
+	oListenerData.m_nAddedTimeStamp = StdDeviceManager::getUniqueTimeStamp();
 	oListenerData.m_refCallIf = refCallIf;
 	oListenerData.m_p0EventListener = p0EventListener;
 	oListenerData.m_itListeners = itListeners;
@@ -278,9 +280,9 @@ int32_t StdDeviceManager::getEventClassIndex(const Event::Class& oEventClass) co
 	}
 	return -1;
 }
-bool StdDeviceManager::getEventClassEnabled(const Event::Class& oEventClass) const
+bool StdDeviceManager::isEventClassEnabled(const Event::Class& oEventClass) const
 {
-//std::cout << "getEventClassEnabled=" << oEventClass.name() << " m_aEventClass.size()=" << m_aEventClass.size() << std::endl;
+//std::cout << "isEventClassEnabled=" << oEventClass.name() << " m_aEventClass.size()=" << m_aEventClass.size() << std::endl;
 	const int32_t nIdx = getEventClassIndex(oEventClass);
 	if (nIdx < 0) {
 		return false;

@@ -102,9 +102,9 @@ public:
 	 * @param oEventClass The registered event class.
 	 * @return Tells whether the event class is enabled.
 	 */
-	virtual bool getEventClassEnabled(const Event::Class& oEventClass) const = 0;
+	virtual bool isEventClassEnabled(const Event::Class& oEventClass) const = 0;
 	/** Enables an event class.
-	 * @see getEventClassEnabled(const Event::Class&)
+	 * @see isEventClassEnabled(const Event::Class&)
 	 * @param oEventClass The event class to enable.
 	 */
 	virtual void enableEventClass(const Event::Class& oEventClass) = 0;

@@ -23,6 +23,8 @@
 
 #include "masgtkdevicemanager.h"
 
+#include "recycler.h"
+
 #include <stmm-input-base/stddevice.h>
 
 namespace stmi
@@ -40,13 +42,14 @@ class GtkKeyboardDevice final : public StdDevice<MasGtkDeviceManager>, public Ke
 								, public std::enable_shared_from_this<GtkKeyboardDevice>
 {
 public:
-	GtkKeyboardDevice(std::string sName, const Glib::RefPtr<Gdk::Device>& refKeyboard, const shared_ptr<MasGtkDeviceManager>& refMasGtkDeviceManager)
+	GtkKeyboardDevice(std::string sName, const shared_ptr<MasGtkDeviceManager>& refMasGtkDeviceManager)
 	: StdDevice<MasGtkDeviceManager>(sName, refMasGtkDeviceManager)
-	, m_refGdkKeyboard(refKeyboard)
 	{
 	}
 	virtual ~GtkKeyboardDevice();
 	shared_ptr<Capability> getCapability(const Capability::Class& oClass) const override;
+	shared_ptr<Capability> getCapability(int32_t nCapabilityId) const override;
+	std::vector<int32_t> getCapabilities() const override;
 	std::vector<Capability::Class> getCapabilityClasses() const override;
 	//
 	shared_ptr<Device> getDevice() const override;
@@ -54,28 +57,46 @@ public:
 	bool isKeyboard() const override { return true; }
 
 private:
-	const Glib::RefPtr<Gdk::Device>& getGdkDevice() const { return m_refGdkKeyboard; }
+	friend class stmi::MasGtkDeviceManager;
 
 	bool handleGdkEventKey(GdkEventKey* p0KeyEv, const shared_ptr<GtkWindowData>& refWindowData);
 
 	void cancelSelectedAccessorKeys();
 	void finalizeListener(MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec);
 	void removingDevice();
-
+	class ReKeyEvent;
 	void sendKeyEventToListener(const MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
-								, int64_t nTimePressedUsec
+								, uint64_t nTimePressedStamp
 								, KeyEvent::KEY_INPUT_TYPE eInputType, HARDWARE_KEY eHardwareKey
 								, const shared_ptr<GtkAccessor>& refAccessor
 								, MasGtkDeviceManager* p0Owner
-								, shared_ptr<KeyEvent>& refEvent);
+								, shared_ptr<ReKeyEvent>& refEvent);
 private:
-	const Glib::RefPtr<Gdk::Device> m_refGdkKeyboard;
 	struct KeyData
 	{
-		int64_t m_nPressedTimeUsec;
+		uint64_t m_nPressedTimeStamp;
 	};
 	std::unordered_map<HARDWARE_KEY, KeyData> m_oPressedKeys;
-	friend class stmi::MasGtkDeviceManager;
+	//
+	class ReKeyEvent :public KeyEvent
+	{
+	public:
+		ReKeyEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+					, const shared_ptr<KeyCapability>& refKeyCapability, KEY_INPUT_TYPE eType, HARDWARE_KEY eKey)
+		: KeyEvent(nTimeUsec, refAccessor, refKeyCapability, eType, eKey)
+		{
+		}
+		void reInit(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+				, const shared_ptr<KeyCapability>& refKeyCapability, KEY_INPUT_TYPE eType, HARDWARE_KEY eKey)
+		{
+			setTimeUsec(nTimeUsec);
+			setAccessor(refAccessor);
+			setKeyCapability(refKeyCapability);
+			setType(eType);
+			setKey(eKey);
+		}
+	};
+	Private::Recycler<ReKeyEvent> m_oKeyEventRecycler;
 private:
 	GtkKeyboardDevice(const GtkKeyboardDevice& oSource);
 	GtkKeyboardDevice& operator=(const GtkKeyboardDevice& oSource);

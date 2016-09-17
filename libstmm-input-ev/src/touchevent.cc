@@ -29,21 +29,13 @@ Event::RegisterClass<TouchEvent> TouchEvent::s_oInstall(s_sClassId);
 TouchEvent::TouchEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
 						, const shared_ptr<TouchCapability>& refTouchCapability, TOUCH_INPUT_TYPE eType
 						, double fX, double fY, int64_t nFingerId)
-: XYEvent(s_oInstall.getEventClass(), nTimeUsec, refAccessor, fX, fY, XY_HOVER, nFingerId)
+: XYEvent(s_oInstall.getEventClass(), nTimeUsec, (refTouchCapability ? refTouchCapability->getId() : -1)
+		, refAccessor, fX, fY, XY_HOVER, nFingerId)
 , m_eType(eType)
 , m_nFingerId(nFingerId)
 , m_refTouchCapability(refTouchCapability)
 {
-	assert((eType >= TOUCH_BEGIN) && (eType <= TOUCH_CANCEL));
-	XY_GRAB_INPUT_TYPE eXYGrabType = XY_UNGRAB_CANCEL;
-	switch (eType) {
-	case TOUCH_BEGIN: eXYGrabType = XY_GRAB; break;
-	case TOUCH_UPDATE: eXYGrabType = XY_MOVE; break;
-	case TOUCH_END: eXYGrabType = XY_UNGRAB; break;
-	case TOUCH_CANCEL: eXYGrabType = XY_UNGRAB_CANCEL; break;
-	default: assert(false);
-	}
-	setXYGrab(eXYGrabType, nFingerId);
+	setTypeAndFinger(eType, nFingerId);
 }
 
 } // namespace stmi

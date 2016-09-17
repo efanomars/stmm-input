@@ -25,8 +25,12 @@
 
 #include <gtkmm.h>
 
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
+
 #include <X11/extensions/XI2.h>
 #include <X11/extensions/XInput2.h>
+
 
 namespace stmi
 {
@@ -39,11 +43,13 @@ namespace Flo
 using std::shared_ptr;
 using std::weak_ptr;
 
-class GtkWindowData final : public std::enable_shared_from_this<GtkWindowData>, public sigc::trackable
+////////////////////////////////////////////////////////////////////////////////
+class GtkWindowData : public std::enable_shared_from_this<GtkWindowData>, public sigc::trackable
 {
 public:
 	GtkWindowData()
 	: m_p0Owner(nullptr)
+	, m_p0XDisplay(nullptr)
 	, m_nXWinId(None)
 	, m_bIsEnabled(false)
 	, m_bIsRealized(false)
@@ -53,120 +59,112 @@ public:
 	{
 		disable();
 	}
-	//
-	void enable(const shared_ptr<GtkAccessor>& refAccessor, ::Window nXWinId, FloGtkDeviceManager* p0Owner)
+	void reInit()
 	{
-		assert(refAccessor);
-		assert(p0Owner != nullptr);
-		assert(!m_oIsActiveConn.connected());
-		m_refAccessor = refAccessor;
-		m_nXWinId = nXWinId;
+	}
+	//
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
+	void enable(const shared_ptr<GtkAccessor>& refAccessor, FloGtkDeviceManager* p0Owner);
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
+	void disable();
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	bool isEnabled() const { return m_bIsEnabled; }
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	void connectAllDevices()
+	{
+		checkXWin();
+		if (m_nXWinId != None) {
+			setXIEventsForAllDevices(true);
+		}
+	}
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	void connectDevice(int32_t nXDeviceId)
+	{
+		checkXWin();
+		if (m_nXWinId != None) {
+			setXIEventsForDevice(nXDeviceId, true);
+		}
+	}
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	const shared_ptr<GtkAccessor>& getAccessor() { return m_refAccessor; }
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	bool isWindowActive() const
+	{
+		assert(m_refAccessor);
+		auto p0GtkmmWindow = m_refAccessor->getGtkmmWindow();
+		return p0GtkmmWindow->get_realized() && p0GtkmmWindow->get_visible() && p0GtkmmWindow->is_active();
+	}
+	//
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline 
+	#endif
+	::Window getXWindow() const { return m_nXWinId; }
+	//
+protected:
+	inline void setOwner(FloGtkDeviceManager* p0Owner)
+	{
 		m_p0Owner = p0Owner;
-		Gtk::Window* p0GtkmmWindow = m_refAccessor->getGtkmmWindow();
-		m_oIsActiveConn = p0GtkmmWindow->property_is_active().signal_changed().connect(sigc::mem_fun(this, &GtkWindowData::onSigIsActiveChanged));
-		m_bIsEnabled = true;
 	}
-	void disable()
-	{
-		m_oIsActiveConn.disconnect();
-		disconnectAllDevices();
-		m_bIsEnabled = false;
-	}
-	inline bool isEnabled() const { return m_bIsEnabled; }
-	inline void connectAllDevices()
-	{
-		setXIEventsForAllDevices(true);
-	}
-	inline void disconnectAllDevices()
-	{
-		setXIEventsForAllDevices(false);
-	}
-	inline void connectDevice(int32_t nXDeviceId)
-	{
-		setXIEventsForDevice(nXDeviceId, true);
-	}
-	inline void disconnectDevice(int32_t nXDeviceId)
-	{
-		setXIEventsForDevice(nXDeviceId, false);
-	}
-	//
-	inline const shared_ptr<GtkAccessor>& getAccessor() { return m_refAccessor; }
-	inline ::Window getXWindow() const { return m_nXWinId; }
-	inline void setXWindow(::Window nXWinId)
-	{
-		assert(nXWinId != None);
-		m_nXWinId = nXWinId;
-	}
-	//
-private:
 	//
 	void onSigIsActiveChanged() { m_p0Owner->onIsActiveChanged(shared_from_this()); }
-	void setXIEventsForAllDevices(bool bSet)
+private:
+	void checkXWin()
 	{
-		assert(m_p0Owner != nullptr);
-		for (auto& oPair : m_p0Owner->m_oKeyboardDevices) {
-			const int32_t nDeviceId = oPair.first;
-			const bool bConnectedAll = setXIEventsForDevice(nDeviceId, bSet);
-			if (bConnectedAll) {
-				break; // for -----------
-			}
+		if (m_nXWinId != None) {
+			return;
 		}
+		if (m_refAccessor->isDeleted())  {
+			return;
+		}
+		// When added the window wasn't realized
+		setXWinAndXDisplay(m_refAccessor->getGtkmmWindow());
 	}
+	void setXWinAndXDisplay(Gtk::Window* p0GtkmmWindow);
+
+	inline void disconnectAllDevices()
+	{
+		checkXWin();
+		setXIEventsForAllDevices(false);
+	}
+	void setXIEventsForAllDevices(bool bSet);
 	// returns true if connected all because just realized
-	bool setXIEventsForDevice(int32_t nXDeviceId, bool bSet)
-	{
-//std::cout << "Flo::GtkWindowData::selectXIEvents()  nXDeviceId=" << nXDeviceId << "  nXWinId=" << m_nXWinId << "  bSet=" << bSet << std::endl;
-		assert(m_p0Owner != nullptr);
-		assert(m_bIsEnabled);
-
-		if (!m_bIsRealized) {
-			if (m_refAccessor->isDeleted()) {
-				return false; //------------------------------------------------
-			}
-			const bool bIsRealized = m_refAccessor->getGtkmmWindow()->get_realized();
-			if (!bIsRealized) {
-				// the xwindow doesn't even exist yet!'
-				// just return, set a flag that tells to connect to all devices
-				// as soon as the window is real
-				return false; //------------------------------------------------
-			}
-			m_bIsRealized = true;
-//std::cout << "Flo::GtkWindowData::selectXIEvents()  just realized!" << std::endl;
-			setXIEventsForAllDevices(bSet);
-			return true; //-----------------------------------------------------
-		}
-		XIEventMask oEvMasks[ 1 ];
-
-		// TODO maybe use GetMask | key press + key release
-		unsigned char oMask1[ ( XI_LASTEVENT + 7 ) / 8 ];
-		memset( oMask1, 0, sizeof( oMask1 ) );
-
-		// Select for key events from all devices.
-		if (bSet) {
-			XISetMask( oMask1, XI_KeyPress );
-			XISetMask( oMask1, XI_KeyRelease );
-		}
-		oEvMasks[ 0 ].deviceid = nXDeviceId; //XIAllDevices;
-		oEvMasks[ 0 ].mask_len = sizeof( oMask1 );
-		oEvMasks[ 0 ].mask = oMask1;
-
-		auto nStatus = XISelectEvents( m_p0Owner->m_p0XDisplay, m_nXWinId, oEvMasks, sizeof(oEvMasks) / sizeof(oEvMasks[0]));
-		if ((nStatus == BadValue) || (nStatus == BadWindow)) {
-			std::cout << "FloGtkDeviceManager: XISelectEvents oEvMasks returns ";
-			if (nStatus == BadValue) {
-				std::cout << "BadValue";
-			} else if (nStatus == BadWindow) {
-				std::cout << "BadWindow";
-			} else {
-				assert(false);
-			}
-			std::cout << std::endl;
-			assert(false);
-		}
-		return false;
-	}
+	bool setXIEventsForDevice(int32_t nXDeviceId, bool bSet);
 private:
 	FloGtkDeviceManager* m_p0Owner;
+	// Although the display is also stored in the backend, it's better to
+	// keep a ref here so that while disconnecting in destructor we don't
+	// have to rely on the backend to still be there.
+	Glib::RefPtr<Gdk::Display> m_refGdkDisplay;
+	Display* m_p0XDisplay; // shortcut from m_refGdkDisplay
 	shared_ptr<GtkAccessor> m_refAccessor;
 	::Window m_nXWinId;
 	//
@@ -174,6 +172,21 @@ private:
 	bool m_bIsRealized;
 
 	sigc::connection m_oIsActiveConn;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class GtkWindowDataFactory
+{
+public:
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
+	std::shared_ptr<GtkWindowData> create()
+	{
+		return m_oRecycler.create();
+	}
+private:
+	Recycler<GtkWindowData> m_oRecycler;
 };
 
 } // namespace Flo

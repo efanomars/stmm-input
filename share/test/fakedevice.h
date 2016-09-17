@@ -76,6 +76,19 @@ public:
 		shared_ptr<FakeDevice<CAPA>> refThis = FakeDevice<CAPA>::shared_from_this();
 		return refThis;
 	}
+	shared_ptr<Capability> getCapability(int32_t nCapabilityId) const override
+	{
+		if (nCapabilityId != Capability::getId()) {
+			return shared_ptr<Capability>{};
+		}
+		shared_ptr<const FakeDevice<CAPA> > refConstThis = FakeDevice<CAPA>::shared_from_this();
+		shared_ptr<FakeDevice<CAPA>> refThis = std::const_pointer_cast<FakeDevice<CAPA>>(refConstThis);
+		return refThis;
+	}
+	std::vector<int32_t> getCapabilities() const override
+	{
+		return {Capability::getId()};
+	}
 };
 
 } // namespace testing

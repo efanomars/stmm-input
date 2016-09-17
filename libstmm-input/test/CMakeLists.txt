@@ -13,6 +13,6 @@ set(STMMI_TEST_SOURCES
         ${STMMI_TEST_SOURCES_DIR}/testHardwareKeys.cxx
       )
 
-TestFiles("stmm-input" FALSE "${STMMI_TEST_SOURCES}")
+TestFiles("stmm-input" FALSE "${STMMI_TEST_SOURCES}" "" FALSE)
 
 include(CTest)

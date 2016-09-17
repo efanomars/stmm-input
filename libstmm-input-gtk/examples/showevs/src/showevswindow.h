@@ -5,16 +5,16 @@
 #ifndef _EXAMPLE_SHOW_EVS_WINDOW_
 #define _EXAMPLE_SHOW_EVS_WINDOW_
 
-#include <string>
-#include <memory>
-
-#include <gtkmm.h>
-#include <gdkmm.h>
+#include "inputstrings.h"
 
 #include <stmm-input-ev/stmm-input-ev.h>
 #include <stmm-input-gtk/gtkaccessor.h>
 
-#include "inputstrings.h"
+#include <gtkmm.h>
+#include <gdkmm.h>
+
+#include <string>
+#include <memory>
 
 namespace example
 {

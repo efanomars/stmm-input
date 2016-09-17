@@ -23,12 +23,11 @@
 namespace stmi
 {
 
-int32_t Device::s_nNewIdCounter = 0;
+std::atomic<int32_t> Device::s_nNewIdCounter(0);
 
 int32_t Device::getNewDeviceId()
 {
-	const int32_t nNewId = s_nNewIdCounter;
-	++s_nNewIdCounter;
+	const int32_t nNewId = ++s_nNewIdCounter;
 	return nNewId;
 }
 Device::Device()

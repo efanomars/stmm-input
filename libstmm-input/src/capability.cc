@@ -52,8 +52,17 @@ std::string Capability::getCapabilityTypeClassId(const std::type_info& oType)
 	return p0TypeId;
 }
 
+std::atomic<int32_t> Capability::s_nNewIdCounter(0);
+
+int32_t Capability::getNewCapabilityId()
+{
+	const int32_t nNewId = ++s_nNewIdCounter;
+	return nNewId;
+}
+
 Capability::Capability(const Class& oClass)
 : m_oClass(oClass)
+, m_nCapabilityId(getNewCapabilityId())
 {
 	assert(oClass);
 }

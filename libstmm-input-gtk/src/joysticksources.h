@@ -39,7 +39,8 @@ namespace Private
 namespace Js
 {
 
-// INotify tracking of added and removed devices in a folder
+////////////////////////////////////////////////////////////////////////////////
+/* INotify tracking of added and removed devices in a folder */
 class JoystickLifeSource : public Glib::Source
 {
 public:
@@ -108,19 +109,21 @@ private:
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// For polling joystick events
+/* For polling joystick events */
 class JoystickInputSource : public Glib::Source
 {
 public:
-	JoystickInputSource(int32_t nFD, const std::string& sPathName);
+	JoystickInputSource(int32_t nFD, const std::string& sPathName, int64_t nFileSysDeviceId, int32_t nDeviceId);
 	// Closes file descriptor on destruction
 	virtual ~JoystickInputSource();
 
 	// A source can have only one callback type, that is the slot given as parameter
 	sigc::connection connect(const sigc::slot<bool, const struct ::js_event*>& slot);
 
-	//int32_t getJoystickFD() const;
-	const std::string& getJoystickPathName() const { return m_sPathName; }
+	inline const std::string& getJoystickPathName() const { return m_sPathName; }
+	inline int32_t getJoystickFD() const { return m_oPollFD.get_fd(); }
+	inline int64_t getJoystickFileSysDeviceId() const { return m_nFileSysDeviceId; }
+	inline int32_t getJoystickId() const { return m_nDeviceId; }
 protected:
 	bool prepare(int& timeout) override;
 	bool check() override;
@@ -128,8 +131,11 @@ protected:
 
 private:
 	//
-	Glib::PollFD m_oPollFD;
+	Glib::PollFD m_oPollFD; // The file descriptor is open until destructor is called
 	std::string m_sPathName; // "/dev/input/jsN"
+	//
+	const int64_t m_nFileSysDeviceId; // The stat rdev field (should be unique)
+	const int32_t m_nDeviceId;
 	//
 private:
 	JoystickInputSource(const JoystickInputSource& oSource) = delete;

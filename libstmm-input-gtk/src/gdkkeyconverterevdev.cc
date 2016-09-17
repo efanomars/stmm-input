@@ -22,7 +22,7 @@
 
 #include <cassert>
 
-// Evdev formula from Daniel Berrange's https://www.berrange.com/tags/key-codes/
+/* Evdev formula from Daniel Berrange's https://www.berrange.com/tags/key-codes/ */
 
 namespace stmi
 {

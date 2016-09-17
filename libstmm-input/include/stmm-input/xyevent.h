@@ -114,24 +114,27 @@ protected:
 	 * Sets grab type to `XY_HOVER` and the modified flag to `false`.
 	 * @param oClass See Event::Event(const Class&, int64_t, const shared_ptr<Accessor>&)
 	 * @param nTimeUsec See Event::Event(const Class&, int64_t, const shared_ptr<Accessor>&)
+	 * @param nCapabilityId The id of the capability that generated this event. Must be >= 0.
 	 * @param refAccessor See Event::Event(const Class&, int64_t, const shared_ptr<Accessor>&)
 	 * @param fX The X coordinate.
 	 * @param fY The Y coordinate.
 	 */
-	XYEvent(const Class& oClass, int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
-			, double fX, double fY);
+	XYEvent(const Class& oClass, int64_t nTimeUsec, int32_t nCapabilityId
+			, const shared_ptr<Accessor>& refAccessor, double fX, double fY);
 	/** Constructor.
 	 * The modified flag is set to `false`.
 	 * @param oClass See Event::Event(const Class&, int64_t, const shared_ptr<Accessor>&)
 	 * @param nTimeUsec See Event::Event(const Class&, int64_t, const shared_ptr<Accessor>&)
+	 * @param nCapabilityId The id of the capability that generated this event. Must be >= 0.
 	 * @param refAccessor See Event::Event(const Class&, int64_t, const shared_ptr<Accessor>&)
 	 * @param fX The X coordinate.
 	 * @param fY The Y coordinate.
 	 * @param eXYGrabType The grab type.
 	 * @param nGrabId The grab id.
 	 */
-	XYEvent(const Class& oClass, int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
-			, double fX, double fY, XY_GRAB_INPUT_TYPE eXYGrabType, int64_t nGrabId);
+	XYEvent(const Class& oClass, int64_t nTimeUsec, int32_t nCapabilityId
+			, const shared_ptr<Accessor>& refAccessor, double fX, double fY
+			, XY_GRAB_INPUT_TYPE eXYGrabType, int64_t nGrabId);
 	/** Sets X.
 	 * The modified flag is not changed by this function.
 	 * @param fX The new value.
@@ -143,6 +146,9 @@ protected:
 	 */
 	inline void setY(double fY) { m_fY = fY; }
 	/** Sets the modified flag.
+	 * Listeners receiving the event should only call this function with argument
+	 * `true`. Device managers owning and recycling the event call this function 
+	 * with argument `false`.
 	 * @param bIsModified The new flag value.
 	 */
 	inline void setIsModified(bool bIsModified) { m_bIsModified = bIsModified; }

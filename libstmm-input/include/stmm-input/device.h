@@ -28,6 +28,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <atomic>
 
 namespace stmi
 {
@@ -40,7 +41,7 @@ class Device
 public:
 	virtual ~Device() = default;
 
-	/**
+	/** The device id.
 	 * @return The unique id of the device.
 	 */
 	int32_t getId() const { return m_nDeviceId; }
@@ -83,6 +84,13 @@ public:
 	 * @return The capability or null.
 	 */
 	virtual shared_ptr<Capability> getCapability(const Capability::Class& oClass) const = 0;
+	/** Returns the capability with the given id, or null if not found.
+	 */
+	virtual shared_ptr<Capability> getCapability(int32_t nCapabilityId) const = 0;
+	/** Returns the ids of all the device's capabilities.
+	 * @return The set of capability ids.
+	 */
+	virtual std::vector<int32_t> getCapabilities() const = 0;
 	/** The capability classes supported by this device.
 	 * @return The set of registered capability classes.
 	 */
@@ -94,7 +102,7 @@ private:
 	static int32_t getNewDeviceId();
 private:
 	int32_t m_nDeviceId;
-	static int32_t s_nNewIdCounter;
+	static std::atomic<int32_t> s_nNewIdCounter;
 private:
 	Device(const Device& oSource) = delete;
 	Device& operator=(const Device& oSource) = delete;

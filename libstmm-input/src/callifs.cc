@@ -77,6 +77,17 @@ CallIfCapability::CallIfCapability(const shared_ptr<Capability>& refCapability)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+CallIfCapabilityId::CallIfCapabilityId()
+: m_nCapabilityId(-1)
+{
+}
+CallIfCapabilityId::CallIfCapabilityId(int32_t nCapabilityId)
+: m_nCapabilityId(nCapabilityId)
+{
+	assert(nCapabilityId >= 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 CallIfCapabilityClass::CallIfCapabilityClass(const Capability::Class& oClass)
 : m_oClass(oClass)
 {

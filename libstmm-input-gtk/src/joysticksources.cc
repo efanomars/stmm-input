@@ -136,7 +136,6 @@ bool JoystickLifeSource::check()
 }
 bool JoystickLifeSource::dispatch(sigc::slot_base* p0Slot)
 {
-//static int32_t s_nCounter = 0;
 	bool bContinue = true;
 
 	if (p0Slot == nullptr) {
@@ -217,8 +216,10 @@ bool DevInitTimeoutSource::callback()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-JoystickInputSource::JoystickInputSource(int32_t nFD, const std::string& sPathName)
+JoystickInputSource::JoystickInputSource(int32_t nFD, const std::string& sPathName, int64_t nFileSysDeviceId, int32_t nDeviceId)
 : m_sPathName(sPathName)
+, m_nFileSysDeviceId(nFileSysDeviceId)
+, m_nDeviceId(nDeviceId)
 {
 	static_assert(sizeof(int) <= sizeof(int32_t), "");
 	static_assert(false == FALSE, "");
@@ -256,7 +257,6 @@ bool JoystickInputSource::check()
 }
 bool JoystickInputSource::dispatch(sigc::slot_base* p0Slot)
 {
-//static int32_t s_nCounter = 0;
 	bool bContinue = true;
 
 	if (p0Slot == nullptr) {

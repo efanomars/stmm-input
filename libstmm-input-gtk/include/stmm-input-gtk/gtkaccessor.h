@@ -40,8 +40,8 @@ void notify_window_destroyed(gpointer p0Data, GObject *p0Window);
  * Device managers that want to receive mouse and keyboard events directed 
  * to a gtk window need this accessor.
  */
-// In absence of a weak_ptr in the Glib library an instance of this class
-// will be informed through a callback by its window if it's about to be deleted.
+/* In absence of a weak_ptr in the Glib library an instance of this class
+ * will be informed through a callback by its window if it's about to be deleted. */
 class GtkAccessor final : public Accessor
 {
 public:

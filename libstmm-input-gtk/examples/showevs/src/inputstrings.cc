@@ -326,7 +326,7 @@ void InputStrings::initKeyMap()
 
 	addKey(stmi::HK_MICMUTE, "MICMUTE");
 
-	addKey(stmi::HK_BTN_MISC, "BTN_MISC");
+		//addKey(stmi::HK_BTN_MISC, "BTN_MISC");
 	addKey(stmi::HK_BTN_0, "BTN_0");
 	addKey(stmi::HK_BTN_1, "BTN_1");
 	addKey(stmi::HK_BTN_2, "BTN_2");
@@ -363,7 +363,7 @@ void InputStrings::initKeyMap()
 	addKey(stmi::HK_BTN_BASE6, "BTN_BASE6");
 	addKey(stmi::HK_BTN_DEAD, "BTN_DEAD");
 
-	addKey(stmi::HK_BTN_GAMEPAD, "BTN_GAMEPAD");
+		//addKey(stmi::HK_BTN_GAMEPAD, "BTN_GAMEPAD");
 	addKey(stmi::HK_BTN_A, "BTN_A");
 		//, HK_BTN_SOUTH = HK_BTN_A
 	addKey(stmi::HK_BTN_B, "BTN_B");
@@ -384,7 +384,7 @@ void InputStrings::initKeyMap()
 	addKey(stmi::HK_BTN_THUMBL, "BTN_THUMBL");
 	addKey(stmi::HK_BTN_THUMBR, "BTN_THUMBR");
 
-	addKey(stmi::HK_BTN_DIGI, "BTN_DIGI");
+		//addKey(stmi::HK_BTN_DIGI, "BTN_DIGI");
 	addKey(stmi::HK_BTN_TOOL_PEN, "BTN_TOOL_PEN");
 	addKey(stmi::HK_BTN_TOOL_RUBBER, "BTN_TOOL_RUBBER");
 	addKey(stmi::HK_BTN_TOOL_BRUSH, "BTN_TOOL_BRUSH");
@@ -401,7 +401,7 @@ void InputStrings::initKeyMap()
 	addKey(stmi::HK_BTN_TOOL_TRIPLETAP, "BTN_TOOL_TRIPLETAP");
 	addKey(stmi::HK_BTN_TOOL_QUADTAP, "BTN_TOOL_QUADTAP");
 
-	addKey(stmi::HK_BTN_WHEEL, "BTN_WHEEL");
+		//addKey(stmi::HK_BTN_WHEEL, "BTN_WHEEL");
 	addKey(stmi::HK_BTN_GEAR_DOWN, "BTN_GEAR_DOWN");
 	addKey(stmi::HK_BTN_GEAR_UP, "BTN_GEAR_UP");
 
@@ -595,7 +595,7 @@ void InputStrings::initKeyMap()
 	addKey(stmi::HK_KBDINPUTASSIST_ACCEPT, "KBDINPUTASSIST_ACCEPT");
 	addKey(stmi::HK_KBDINPUTASSIST_CANCEL, "KBDINPUTASSIST_CANCEL");
 
-	addKey(stmi::HK_BTN_TRIGGER_HAPPY, "BTN_TRIGGER_HAPPY");
+		//addKey(stmi::HK_BTN_TRIGGER_HAPPY, "BTN_TRIGGER_HAPPY");
 	addKey(stmi::HK_BTN_TRIGGER_HAPPY1, "BTN_TRIGGER_HAPPY1");
 	addKey(stmi::HK_BTN_TRIGGER_HAPPY2, "BTN_TRIGGER_HAPPY2");
 	addKey(stmi::HK_BTN_TRIGGER_HAPPY3, "BTN_TRIGGER_HAPPY3");

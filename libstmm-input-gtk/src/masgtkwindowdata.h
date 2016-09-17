@@ -22,8 +22,10 @@
 #define _STMI_MAS_GTK_WINDOW_DATA_H_
 
 #include "masgtkdevicemanager.h"
+#include "recycler.h"
 
 #include <gtkmm.h>
+
 
 namespace stmi
 {
@@ -36,7 +38,7 @@ namespace Mas
 using std::shared_ptr;
 using std::weak_ptr;
 
-class GtkWindowData final : public std::enable_shared_from_this<GtkWindowData>, public sigc::trackable
+class GtkWindowData : public std::enable_shared_from_this<GtkWindowData>, public sigc::trackable
 {
 public:
 	GtkWindowData()
@@ -49,103 +51,75 @@ public:
 		//std::cout << "GtkWindowData::~GtkWindowData()" << std::endl;
 		disable();
 	}
-	void enable(const shared_ptr<GtkAccessor>& refAccessor, MasGtkDeviceManager* p0Owner)
-	{
-		assert(refAccessor);
-		assert(p0Owner != nullptr);
-		assert(!m_oKeyPressConn.connected());
-		assert(!m_oKeyReleaseConn.connected());
-		assert(!m_oMotionNotifyConn.connected());
-		assert(!m_oButtonPressConn.connected());
-		assert(!m_oButtonReleaseConn.connected());
-		assert(!m_oScrollConn.connected());
-		assert(!m_oTouchConn.connected());
-		assert(!m_oIsActiveConn.connected());
-		m_oAddEvMask = (Gdk::EventMask)0;
-		m_refAccessor = refAccessor;
-		m_p0Owner = p0Owner;
-		m_bIsEnabled = true;
-		Gtk::Window* p0GtkmmWindow = m_refAccessor->getGtkmmWindow();
-		m_oIsActiveConn = p0GtkmmWindow->property_is_active().signal_changed().connect(sigc::mem_fun(this, &GtkWindowData::onSigIsActiveChanged));
-	}
+	void reInit() {}
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
+	void enable(const shared_ptr<GtkAccessor>& refAccessor, MasGtkDeviceManager* p0Owner);
 	// !!! Doesn't reset accessor!
-	void disable()
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
+	void disable();
+	
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	bool isEnabled() const { return m_bIsEnabled; }
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
+	void connect();
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	const shared_ptr<GtkAccessor>& getAccessor() { return m_refAccessor; }
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	bool isWindowActive() const
 	{
-		m_bIsEnabled = false;
-		disconnect();
-		m_oIsActiveConn.disconnect();
+		assert(m_refAccessor);
+		auto p0GtkmmWindow = m_refAccessor->getGtkmmWindow();
+		return p0GtkmmWindow->get_realized() && p0GtkmmWindow->get_visible() && p0GtkmmWindow->is_active();
 	}
-	inline bool isEnabled() const { return m_bIsEnabled; }
-	inline void connect()
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
+	bool isAccesorWindow(GdkWindow* p0Window) const;
+protected:
+	inline void setOwner(MasGtkDeviceManager* p0Owner)
+	{
+		m_p0Owner = p0Owner;
+	}
+	inline bool onSigKeyPress(GdkEventKey* p0KeyEv) { return m_p0Owner->onKeyPress(p0KeyEv, shared_from_this()); }
+	inline bool onSigKeyRelease(GdkEventKey* p0KeyEv) { return m_p0Owner->onKeyRelease(p0KeyEv, shared_from_this()); }
+	inline bool onSigMotionNotify(GdkEventMotion* p0MotionEv) { return m_p0Owner->onMotionNotify(p0MotionEv, shared_from_this()); }
+	inline bool onSigButtonPress(GdkEventButton* p0ButtonEv) { return m_p0Owner->onButtonPress(p0ButtonEv, shared_from_this()); }
+	inline bool onSigButtonRelease(GdkEventButton* p0ButtonEv) { return m_p0Owner->onButtonRelease(p0ButtonEv, shared_from_this()); }
+	inline bool onSigScroll(GdkEventScroll* p0ScrollEv) { return m_p0Owner->onScroll(p0ScrollEv, shared_from_this()); }
+	inline bool onSigTouch(GdkEventTouch* p0TouchEv) { return m_p0Owner->onTouch(p0TouchEv, shared_from_this()); }
+	inline void onSigIsActiveChanged() { m_p0Owner->onIsActiveChanged(shared_from_this()); }
+
+	inline bool isEventClassEnabled(const Event::Class& oEventClass) const
 	{
 		assert(m_p0Owner != nullptr);
-		Gtk::Window* p0GtkmmWindow = m_refAccessor->getGtkmmWindow();
-		if (m_p0Owner->getEventClassEnabled(typeid(KeyEvent)) && !m_oKeyPressConn.connected()) {
-			m_oAddEvMask |= Gdk::KEY_PRESS_MASK;
-			m_oAddEvMask |= Gdk::KEY_RELEASE_MASK;
-			m_oKeyPressConn = p0GtkmmWindow->signal_key_press_event().connect(sigc::mem_fun(this, &GtkWindowData::onSigKeyPress));
-			m_oKeyReleaseConn = p0GtkmmWindow->signal_key_release_event().connect(sigc::mem_fun(this, &GtkWindowData::onSigKeyRelease));
-		}
-		if (m_p0Owner->getEventClassEnabled(typeid(PointerEvent)) && !m_oMotionNotifyConn.connected()) {
-			m_oAddEvMask |= Gdk::POINTER_MOTION_MASK;
-			m_oAddEvMask |= Gdk::BUTTON_PRESS_MASK;
-			m_oAddEvMask |= Gdk::BUTTON_RELEASE_MASK;
-			m_oMotionNotifyConn = p0GtkmmWindow->signal_motion_notify_event().connect(sigc::mem_fun(this, &GtkWindowData::onSigMotionNotify));
-			m_oButtonPressConn = p0GtkmmWindow->signal_button_press_event().connect(sigc::mem_fun(this, &GtkWindowData::onSigButtonPress));
-			m_oButtonReleaseConn = p0GtkmmWindow->signal_button_release_event().connect(sigc::mem_fun(this, &GtkWindowData::onSigButtonRelease));
-		}
-		if (m_p0Owner->getEventClassEnabled(typeid(PointerScrollEvent)) && !m_oScrollConn.connected()) {
-			m_oAddEvMask |= Gdk::SCROLL_MASK;
-			m_oScrollConn = p0GtkmmWindow->signal_scroll_event().connect(sigc::mem_fun(this, &GtkWindowData::onSigScroll));
-		}
-		if (m_p0Owner->getEventClassEnabled(typeid(TouchEvent)) && !m_oTouchConn.connected()) {
-			m_oAddEvMask |= Gdk::TOUCH_MASK;
-			m_oTouchConn = p0GtkmmWindow->signal_touch_event().connect(sigc::mem_fun(this, &GtkWindowData::onSigTouch));
-		}
-		if (p0GtkmmWindow->get_realized()) {
-			p0GtkmmWindow->add_events(m_oAddEvMask);
-		} else {
-			const Gdk::EventMask oCurMask = p0GtkmmWindow->get_events();
-			const Gdk::EventMask oNewMask = oCurMask | m_oAddEvMask;
-			if (oNewMask != oCurMask) {
-				p0GtkmmWindow->set_events(oNewMask);
-			}
-		}
-	}
-	void disconnect()
-	{
-//std::cout << "GtkWindowData::disconnect()" << std::endl;
-		m_oKeyPressConn.disconnect();
-		m_oKeyReleaseConn.disconnect();
-		m_oMotionNotifyConn.disconnect();
-		m_oButtonPressConn.disconnect();
-		m_oButtonReleaseConn.disconnect();
-		m_oScrollConn.disconnect();
-		m_oTouchConn.disconnect();
-	}
-	inline const shared_ptr<GtkAccessor>& getAccessor() { return m_refAccessor; }
-
-	const GdkWindow* getWindowDataGdkWindow()
-	{
-		assert(m_bIsEnabled);
-		assert(!m_refAccessor->isDeleted()); // Cannot receive events from a deleted window
-		Gtk::Window* p0GtkmmWindow = m_refAccessor->getGtkmmWindow();
-		Glib::RefPtr<Gdk::Window> refGdkWindow = p0GtkmmWindow->get_window();
-		if (!refGdkWindow) {
-			return nullptr; //--------------------------------------------------
-		}
-		const GdkWindow* p0AccessorGdkWindow = refGdkWindow->gobj();
-		return p0AccessorGdkWindow;
+		return m_p0Owner->isEventClassEnabled(oEventClass);
 	}
 private:
-	bool onSigKeyPress(GdkEventKey* p0KeyEv) { return m_p0Owner->onKeyPress(p0KeyEv, shared_from_this()); }
-	bool onSigKeyRelease(GdkEventKey* p0KeyEv) { return m_p0Owner->onKeyRelease(p0KeyEv, shared_from_this()); }
-	bool onSigMotionNotify(GdkEventMotion* p0MotionEv) { return m_p0Owner->onMotionNotify(p0MotionEv, shared_from_this()); }
-	bool onSigButtonPress(GdkEventButton* p0ButtonEv) { return m_p0Owner->onButtonPress(p0ButtonEv, shared_from_this()); }
-	bool onSigButtonRelease(GdkEventButton* p0ButtonEv) { return m_p0Owner->onButtonRelease(p0ButtonEv, shared_from_this()); }
-	bool onSigScroll(GdkEventScroll* p0ScrollEv) { return m_p0Owner->onScroll(p0ScrollEv, shared_from_this()); }
-	bool onSigTouch(GdkEventTouch* p0TouchEv) { return m_p0Owner->onTouch(p0TouchEv, shared_from_this()); }
-	void onSigIsActiveChanged() { m_p0Owner->onIsActiveChanged(shared_from_this()); }
+	void disconnect();
+
 private:
 	//
 	shared_ptr<GtkAccessor> m_refAccessor;
@@ -164,6 +138,21 @@ private:
 	sigc::connection m_oIsActiveConn;
 	//TODO this should be in MasGtkDeviceManager because it's common among all windows!
 	Gdk::EventMask m_oAddEvMask; // The current mask required by this DeviceManager
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class GtkWindowDataFactory
+{
+public:
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
+	std::shared_ptr<GtkWindowData> create()
+	{
+		return m_oRecycler.create();
+	}
+private:
+	Recycler<GtkWindowData> m_oRecycler;
 };
 
 } // namespace Mas

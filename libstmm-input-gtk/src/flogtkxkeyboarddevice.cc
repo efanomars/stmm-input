@@ -56,6 +56,20 @@ shared_ptr<Capability> GtkXKeyboardDevice::getCapability(const Capability::Class
 	}
 	return refCapa;
 }
+shared_ptr<Capability> GtkXKeyboardDevice::getCapability(int32_t nCapabilityId) const
+{
+	const auto nKeyCapaId = KeyCapability::getId();
+	if (nCapabilityId != nKeyCapaId) {
+		return shared_ptr<Capability>{};
+	}
+	shared_ptr<const GtkXKeyboardDevice> refConstThis = shared_from_this();
+	shared_ptr<GtkXKeyboardDevice> refThis = std::const_pointer_cast<GtkXKeyboardDevice>(refConstThis);
+	return refThis;
+}
+std::vector<int32_t> GtkXKeyboardDevice::getCapabilities() const
+{
+	return {KeyCapability::getId()};
+}
 std::vector<Capability::Class> GtkXKeyboardDevice::getCapabilityClasses() const
 {
 	return {KeyCapability::getClass()};
@@ -66,7 +80,7 @@ bool GtkXKeyboardDevice::isKeyboard() const
 }
 bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, const shared_ptr<GtkWindowData>& refWindowData)
 {
-//std::cout << "GtkXKeyboardDevice::handleXIDeviceEvent()" << std::endl;
+//std::cout << "GtkXKeyboardDevice::handleXIDeviceEvent()" << '\n';
 	const bool bContinue = true;
 	auto refOwner = getOwnerDeviceManager();
 	if (!refOwner) {
@@ -84,7 +98,7 @@ bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, con
 	}
 	auto refListeners = p0Owner->getListeners();
 	const int32_t nEvType = p0XIDeviceEvent->evtype;
-	int64_t nTimePressedUsec = std::numeric_limits<int64_t>::max();
+	uint64_t nPressedTimeStamp = std::numeric_limits<uint64_t>::max();
 	auto itFind = m_oPressedKeys.find(eHardwareKey);
 	const bool bHardwareKeyPressed = (itFind != m_oPressedKeys.end());
 	KeyEvent::KEY_INPUT_TYPE eInputType;
@@ -105,12 +119,12 @@ bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, con
 			} else {
 				eAddInputType = KeyEvent::KEY_RELEASE_CANCEL;
 			}
-			auto nTimePressed = oKeyData.m_nPressedTimeUsec;
+			const auto nTimePressedStamp = oKeyData.m_nPressedTimeStamp;
 			m_oPressedKeys.erase(itFind);
-			shared_ptr<KeyEvent> refEvent;
+			shared_ptr<ReKeyEvent> refEvent;
 			const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
 			for (auto& p0ListenerData : *refListeners) {
-				sendKeyEventToListener(*p0ListenerData, nEventTimeUsec, nTimePressed, eAddInputType, eHardwareKey
+				sendKeyEventToListener(*p0ListenerData, nEventTimeUsec, nTimePressedStamp, eAddInputType, eHardwareKey
 										, refWindowAccessor, refCapability, p0Owner->m_nClassIdxKeyEvent, refEvent);
 			}
 			if (!refWindowData->isEnabled()) {
@@ -118,9 +132,9 @@ bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, con
 				return bContinue; //--------------------------------------------
 			}
 		}
-		nTimePressedUsec = DeviceManager::getNowTimeMicroseconds();
+		nPressedTimeStamp = StdDeviceManager::getUniqueTimeStamp();
 		KeyData oKeyData;
-		oKeyData.m_nPressedTimeUsec = nTimePressedUsec;
+		oKeyData.m_nPressedTimeStamp = nPressedTimeStamp;
 		m_oPressedKeys.emplace(eHardwareKey, oKeyData);
 		eInputType = KeyEvent::KEY_PRESS;
 	} else {
@@ -131,14 +145,14 @@ bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, con
 			return bContinue; //------------------------------------------------
 		}
 		KeyData& oKeyData = itFind->second;
-		nTimePressedUsec = oKeyData.m_nPressedTimeUsec;
+		nPressedTimeStamp = oKeyData.m_nPressedTimeStamp;
 		eInputType = KeyEvent::KEY_RELEASE;
 		m_oPressedKeys.erase(itFind);
 	}
-	shared_ptr<KeyEvent> refEvent;
+	shared_ptr<ReKeyEvent> refEvent;
 	const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	for (auto& p0ListenerData : *refListeners) {
-		sendKeyEventToListener(*p0ListenerData, nEventTimeUsec, nTimePressedUsec, eInputType, eHardwareKey
+		sendKeyEventToListener(*p0ListenerData, nEventTimeUsec, nPressedTimeStamp, eInputType, eHardwareKey
 								, refWindowAccessor, refCapability, p0Owner->m_nClassIdxKeyEvent, refEvent);
 		if ((eInputType == KeyEvent::KEY_PRESS) && (m_oPressedKeys.find(eHardwareKey) == m_oPressedKeys.end())) {
 			// The key was canceled by the callback
@@ -156,7 +170,7 @@ void GtkXKeyboardDevice::finalizeListener(FloGtkDeviceManager::ListenerData& oLi
 		return;
 	}
 	FloGtkDeviceManager* p0Owner = refOwner.get();
-	if (!p0Owner->getEventClassEnabled(typeid(KeyEvent))) {
+	if (!p0Owner->isEventClassEnabled(typeid(KeyEvent))) {
 		return; //--------------------------------------------------------------
 	}
 	auto& refSelected = p0Owner->m_refSelected;
@@ -178,7 +192,7 @@ void GtkXKeyboardDevice::finalizeListener(FloGtkDeviceManager::ListenerData& oLi
 		const int32_t nHardwareKey = oPair.first;
 		const KeyData& oKeyData = oPair.second;
 		//
-		const auto nKeyPressedTime = oKeyData.m_nPressedTimeUsec;
+		const auto nKeyPressedTimeStamp = oKeyData.m_nPressedTimeStamp;
 		const HARDWARE_KEY eHardwareKey = static_cast<HARDWARE_KEY>(nHardwareKey);
 		//
 		if (p0ExtraData->isKeyCanceled(nHardwareKey)) {
@@ -186,8 +200,8 @@ void GtkXKeyboardDevice::finalizeListener(FloGtkDeviceManager::ListenerData& oLi
 		}
 		p0ExtraData->setKeyCanceled(nHardwareKey);
 		//
-		shared_ptr<KeyEvent> refEvent;
-		sendKeyEventToListener(oListenerData, nEventTimeUsec, nKeyPressedTime, KeyEvent::KEY_RELEASE_CANCEL
+		shared_ptr<ReKeyEvent> refEvent;
+		sendKeyEventToListener(oListenerData, nEventTimeUsec, nKeyPressedTimeStamp, KeyEvent::KEY_RELEASE_CANCEL
 								, eHardwareKey, refSelectedAccessor, refCapability, p0Owner->m_nClassIdxKeyEvent, refEvent);
 		if (!refSelected) {
 			// There can't be pressed keys without an active window
@@ -206,7 +220,7 @@ void GtkXKeyboardDevice::cancelSelectedAccessorKeys()
 		return;
 	}
 	FloGtkDeviceManager* p0Owner = refOwner.get();
-	if (!p0Owner->getEventClassEnabled(typeid(KeyEvent))) {
+	if (!p0Owner->isEventClassEnabled(typeid(KeyEvent))) {
 		return; // -------------------------------------------------------------
 	}
 	auto& refSelected = p0Owner->m_refSelected;
@@ -228,9 +242,9 @@ void GtkXKeyboardDevice::cancelSelectedAccessorKeys()
 		const KeyData& oKeyData = oPair.second;
 		//
 		const HARDWARE_KEY eHardwareKey = static_cast<HARDWARE_KEY>(nHardwareKey);
-		const auto nKeyPressedTime = oKeyData.m_nPressedTimeUsec;
+		const auto nKeyPressedTimeStamp = oKeyData.m_nPressedTimeStamp;
 		//
-		shared_ptr<KeyEvent> refEvent;
+		shared_ptr<ReKeyEvent> refEvent;
 		for (auto& p0ListenerData : *refListeners) {
 			FloGtkListenerExtraData* p0ExtraData = nullptr;
 			p0ListenerData->getExtraData(p0ExtraData);
@@ -239,33 +253,32 @@ void GtkXKeyboardDevice::cancelSelectedAccessorKeys()
 			}
 			p0ExtraData->setKeyCanceled(nHardwareKey);
 			//
-			sendKeyEventToListener(*p0ListenerData, nEventTimeUsec, nKeyPressedTime, KeyEvent::KEY_RELEASE_CANCEL
+			sendKeyEventToListener(*p0ListenerData, nEventTimeUsec, nKeyPressedTimeStamp, KeyEvent::KEY_RELEASE_CANCEL
 									, eHardwareKey, refSelectedAccessor, refCapability, p0Owner->m_nClassIdxKeyEvent, refEvent);
 		}
 	}
 	m_oPressedKeys.clear();
 }
 void GtkXKeyboardDevice::sendKeyEventToListener(const StdDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
-												, int64_t nTimePressedUsec
+												, uint64_t nPressedTimeStamp
 												, KeyEvent::KEY_INPUT_TYPE eInputType, HARDWARE_KEY eHardwareKey
 												, const shared_ptr<GtkAccessor>& refAccessor
 												, const shared_ptr<KeyCapability>& refCapability
 												, int32_t nClassIdxKeyEvent
-												, shared_ptr<KeyEvent>& refEvent)
+												, shared_ptr<ReKeyEvent>& refEvent)
 {
-	const int64_t nAddTimeUsec = oListenerData.getAddedTime();
+	const auto nAddTimeStamp = oListenerData.getAddedTimeStamp();
 //std::cout << "GtkXKeyboardDevice::sendKeyEventToListener nAddTimeUsec=" << nAddTimeUsec;
-//std::cout << "  nTimePressedUsec=" << nTimePressedUsec << "  nEventTimeUsec=" << nEventTimeUsec << std::endl;
-	if (nTimePressedUsec < nAddTimeUsec) {
+//std::cout << "  nTimePressedUsec=" << nTimePressedUsec << "  nEventTimeUsec=" << nEventTimeUsec << '\n';
+	if (nPressedTimeStamp < nAddTimeStamp) {
 		// The listener was added after the key was pressed
 		return;
 	}
 	if (!refEvent) {
-		refEvent = std::make_shared<KeyEvent>(nEventTimeUsec, refAccessor, refCapability, eInputType, eHardwareKey);
+		refEvent = m_oKeyEventRecycler.create(nEventTimeUsec, refAccessor, refCapability, eInputType, eHardwareKey);
 	}
 	oListenerData.handleEventCallIf(nClassIdxKeyEvent, refEvent);
-		// no need to reset because KeyEvent cannot be modified. refEvent.reset();
-		//TODO Recycling
+		// no need to reset because KeyEvent cannot be modified.
 }
 
 } // namespace Flo

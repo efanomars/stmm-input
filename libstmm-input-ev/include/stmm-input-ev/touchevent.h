@@ -49,7 +49,7 @@ public:
 	/** Constructor.
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
-	 * @param refTouchCapability The capability that generated this event.
+	 * @param refTouchCapability The capability that generated this event. Cannot be null.
 	 * @param eType The touch event type.
 	 * @param fX The X position of the touch.
 	 * @param fY The Y position of the touch.
@@ -76,15 +76,32 @@ public:
 		return s_oTouchClass;
 	}
 protected:
-	inline void setType(TOUCH_INPUT_TYPE eType)
+	/** Sets touch and grab fields.
+	 * This method also calls XYEvent::setXYGrab().
+	 * @param eType The touch event type.
+	 * @param nFingerId The finger id performing the touch.
+	 */
+	inline void setTypeAndFinger(TOUCH_INPUT_TYPE eType, int64_t nFingerId)
 	{
-		assert((eType >= TOUCH_BEGIN) && (eType <= TOUCH_CANCEL));
+		XY_GRAB_INPUT_TYPE eXYGrabType = XY_UNGRAB_CANCEL;
+		switch (eType) {
+		case TOUCH_BEGIN: eXYGrabType = XY_GRAB; break;
+		case TOUCH_UPDATE: eXYGrabType = XY_MOVE; break;
+		case TOUCH_END: eXYGrabType = XY_UNGRAB; break;
+		case TOUCH_CANCEL: eXYGrabType = XY_UNGRAB_CANCEL; break;
+		default: assert(false);
+		}
+		setXYGrab(eXYGrabType, nFingerId);
+		m_nFingerId = nFingerId;
 		m_eType = eType;
 	}
-	inline void setFingerId(int64_t nFingerId) { m_nFingerId = nFingerId; }
+	/** Sets the capability.
+	 * @param refTouchCapability The capability that generated this event. Cannot be null.
+	 */
 	inline void setTouchCapability(const shared_ptr<TouchCapability>& refTouchCapability)
 	{
 		assert(refTouchCapability);
+		setCapabilityId(refTouchCapability->getId());
 		m_refTouchCapability = refTouchCapability;
 	}
 private:

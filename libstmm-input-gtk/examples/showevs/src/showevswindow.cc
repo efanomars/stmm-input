@@ -461,7 +461,7 @@ void ShowEvsWindow::recreateDeviceList()
 		auto sDevName = refDevice->getName();
 		std::vector<stmi::Capability::Class> aCapaClass = refDevice->getCapabilityClasses();
 		Glib::ustring sCapas;
-		for (auto oCapaClass : aCapaClass) {
+		for (auto& oCapaClass : aCapaClass) {
 			if (!sCapas.empty()) {
 				sCapas = sCapas + ", ";
 			}

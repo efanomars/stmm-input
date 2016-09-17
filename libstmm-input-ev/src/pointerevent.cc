@@ -29,7 +29,8 @@ Event::RegisterClass<PointerEvent> PointerEvent::s_oInstall(s_sClassId);
 PointerEvent::PointerEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
 							, const shared_ptr<PointerCapability>& refPointerCapability, double fX, double fY
 							, POINTER_INPUT_TYPE eType, int32_t nButton, bool bAnyButtonPressed, bool bWasAnyButtonPressed)
-: XYEvent(s_oInstall.getEventClass(), nTimeUsec, refAccessor, fX, fY, XY_HOVER, PointerEvent::s_nPointerNotGrabbedId)
+: XYEvent(s_oInstall.getEventClass(), nTimeUsec, (refPointerCapability ? refPointerCapability->getId() : -1)
+			, refAccessor, fX, fY, XY_HOVER, PointerEvent::s_nPointerNotGrabbedId)
 , m_eType(eType)
 , m_nButton(nButton)
 , m_refPointerCapability(refPointerCapability)
@@ -126,7 +127,8 @@ Event::RegisterClass<PointerScrollEvent> PointerScrollEvent::s_oInstall(s_sClass
 PointerScrollEvent::PointerScrollEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
 										, const shared_ptr<PointerCapability>& refPointerCapability
 										, POINTER_SCROLL_DIR eScrollDir, double fX, double fY, bool bAnyButtonPressed)
-: XYEvent(s_oInstall.getEventClass(), nTimeUsec, refAccessor, fX, fY, XY_HOVER, PointerEvent::s_nPointerNotGrabbedId)
+: XYEvent(s_oInstall.getEventClass(), nTimeUsec, (refPointerCapability ? refPointerCapability->getId() : -1)
+			, refAccessor, fX, fY, XY_HOVER, PointerEvent::s_nPointerNotGrabbedId)
 , m_eScrollDir(eScrollDir)
 , m_refPointerCapability(refPointerCapability)
 {

@@ -60,20 +60,41 @@ shared_ptr<Capability> GtkPointerDevice::getCapability(const Capability::Class& 
 	}
 	return refCapa;
 }
+shared_ptr<Capability> GtkPointerDevice::getCapability(int32_t nCapabilityId) const
+{
+	shared_ptr<Capability> refCapa;
+	const auto nPointerCapaId = PointerCapability::getId();
+	const auto nTouchCapaId = TouchCapability::getId();
+	assert(nPointerCapaId != nTouchCapaId);
+	if (nCapabilityId == nPointerCapaId) {
+		shared_ptr<const GtkPointerDevice > refConstThis = shared_from_this();
+		shared_ptr<GtkPointerDevice> refThis = std::const_pointer_cast<GtkPointerDevice>(refConstThis);
+		refCapa = shared_ptr<PointerCapability>(refThis);
+	} else if (nCapabilityId == nTouchCapaId) {
+		shared_ptr<const GtkPointerDevice > refConstThis = shared_from_this();
+		shared_ptr<GtkPointerDevice> refThis = std::const_pointer_cast<GtkPointerDevice>(refConstThis);
+		refCapa = shared_ptr<TouchCapability>(refThis);
+	}
+	return refCapa;
+}
+std::vector<int32_t> GtkPointerDevice::getCapabilities() const
+{
+	return {PointerCapability::getId(), TouchCapability::getId()};
+}
 std::vector<Capability::Class> GtkPointerDevice::getCapabilityClasses() const
 {
 	return {PointerCapability::getClass(), TouchCapability::getClass()};
 }
 bool GtkPointerDevice::handleGdkEventMotion(GdkEventMotion* p0MotionEv, const shared_ptr<GtkWindowData>& refWindowData)
 {
+//std::cout << "GtkPointerDevice::handleGdkEventMotion" << '\n';
+	assert(p0MotionEv != nullptr);
 	const bool bContinue = true;
 	auto refOwner = getOwnerDeviceManager();
 	if (!refOwner) {
 		return !bContinue; //---------------------------------------------------
 	}
-	const GdkWindow* p0AccessorGdkWindow = refWindowData->getWindowDataGdkWindow();
-	const GdkWindow* p0GdkWindow = p0MotionEv->window;
-	if (p0GdkWindow != p0AccessorGdkWindow) {
+	if (! refWindowData->isAccesorWindow(p0MotionEv->window)) {
 		// This device manager suppresses events sent to a modal Gtk::Dialog
 		// that relate to the parent
 		return bContinue; //----------------------------------------------------
@@ -99,12 +120,18 @@ bool GtkPointerDevice::handleGdkEventMotion(GdkEventMotion* p0MotionEv, const sh
 	const PointerEvent::POINTER_INPUT_TYPE eInputType = (bAnyButtonPressed ? PointerEvent::POINTER_MOVE : PointerEvent::POINTER_HOVER);
 	//
 	auto refSaveAccessor = refWindowData->getAccessor(); // might be removed in callbacks
-	shared_ptr<PointerEvent> refEvent;
 	const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
+	shared_ptr<RePointerEvent> refEvent;
 	for (auto& p0ListenerData : *refListeners) {
 		sendPointerEventToListener(*p0ListenerData, nEventTimeUsec, fX, fY, eInputType, nButton
 									, bWasAnyButtonPressed, bAnyButtonPressed, refSaveAccessor, p0Owner
 									, refEvent);
+		if (!refWindowData->isEnabled()) {
+			// The accessor was removed during the callbacks
+			// All the listeners have (if finalized) received a cancel
+			// for all buttons
+			return bContinue; //--------------------------------------------
+		}
 	}
 	return bContinue;
 }
@@ -115,9 +142,7 @@ bool GtkPointerDevice::handleGdkEventButton(GdkEventButton* p0ButtonEv, const sh
 	if (!refOwner) {
 		return !bContinue; //---------------------------------------------------
 	}
-	const GdkWindow* p0AccessorGdkWindow = refWindowData->getWindowDataGdkWindow();
-	const GdkWindow* p0GdkWindow = p0ButtonEv->window;
-	if (p0GdkWindow != p0AccessorGdkWindow) {
+	if (! refWindowData->isAccesorWindow(p0ButtonEv->window)) {
 		// This device manager suppresses events sent to a modal Gtk::Dialog
 		// that relate to the parent
 		return bContinue; //----------------------------------------------------
@@ -128,7 +153,7 @@ bool GtkPointerDevice::handleGdkEventButton(GdkEventButton* p0ButtonEv, const sh
 		//TODO There probably should be an assert(false) here
 		return bContinue; //----------------------------------------------------
 	}
-	const int64_t nTimeUsec = DeviceManager::getNowTimeMicroseconds(); //((int64_t)p0ButtonEv->time) * 1000;
+	const uint64_t nTimeStamp = StdDeviceManager::getUniqueTimeStamp();
 	const GdkEventType eGdkType = p0ButtonEv->type;
 	const bool bIsButtonPress = (eGdkType == GDK_BUTTON_PRESS);
 	if (! (bIsButtonPress || (eGdkType == GDK_BUTTON_RELEASE))) {
@@ -179,10 +204,10 @@ bool GtkPointerDevice::handleGdkEventButton(GdkEventButton* p0ButtonEv, const sh
 	}
 	if (bAnyButtonPressed && !bWasAnyButtonPressed) {
 		// from no-buttons-pressed to a-button-pressed transition
-		m_nAnyButtonPressTimeUsec = nTimeUsec;
+		m_nAnyButtonPressTimeStamp = nTimeStamp;
 	}
 	//
-	shared_ptr<PointerEvent> refEvent;
+	shared_ptr<RePointerEvent> refEvent;
 	const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	auto refListeners = p0Owner->getListeners();
 	for (auto& p0ListenerData : *refListeners) {
@@ -197,7 +222,7 @@ bool GtkPointerDevice::handleGdkEventButton(GdkEventButton* p0ButtonEv, const sh
 	}
 	if (!bAnyButtonPressed) {
 		// from a-button-pressed to no-buttons-pressed transition
-		m_nAnyButtonPressTimeUsec = std::numeric_limits<int64_t>::max();
+		m_nAnyButtonPressTimeStamp = std::numeric_limits<uint64_t>::max();
 	}
 	return bContinue;
 }
@@ -208,9 +233,7 @@ bool GtkPointerDevice::handleGdkEventScroll(GdkEventScroll* p0ScrollEv, const sh
 	if (!refOwner) {
 		return !bContinue;
 	}
-	const GdkWindow* p0AccessorGdkWindow = refWindowData->getWindowDataGdkWindow();
-	const GdkWindow* p0GdkWindow = p0ScrollEv->window;
-	if (p0GdkWindow != p0AccessorGdkWindow) {
+	if (! refWindowData->isAccesorWindow(p0ScrollEv->window)) {
 		// This device manager suppresses events sent to a modal Gtk::Dialog
 		// that relate to the parent
 		return bContinue; //----------------------------------------------------
@@ -241,28 +264,33 @@ bool GtkPointerDevice::handleGdkEventScroll(GdkEventScroll* p0ScrollEv, const sh
 		case GDK_SCROLL_RIGHT: eScrollDir = PointerScrollEvent::SCROLL_RIGHT; break;
 		default: return bContinue; //---------------------------------------
 	}
-	shared_ptr<PointerScrollEvent> refEvent;
+	shared_ptr<RePointerScrollEvent> refEvent;
 	auto refSaveAccessor = refWindowData->getAccessor();
 	auto refListeners = p0Owner->getListeners();
+	const bool bAnyButtonPressed = !m_aButtons.empty();
 	for (auto& p0ListenerData : *refListeners) {
-		const int64_t nAddTimeUsec = p0ListenerData->getAddedTime();
-		if (m_nAnyButtonPressTimeUsec < nAddTimeUsec) {
+		const auto nAddTimeStamp = p0ListenerData->getAddedTimeStamp();
+		if (m_nAnyButtonPressTimeStamp < nAddTimeStamp) {
 			// The listener was added after the last no-button to a-button pressed transition.
 			// As for movement events a newly added listener starts to receive scroll events 
 			// only after all buttons are released (the pointer is ungrabbed)
 			continue; // for --------
 		}
 		if (!refEvent) {
-			const bool bAnyButtonPressed = !m_aButtons.empty();
-			refEvent = std::make_shared<PointerScrollEvent>(nTimeUsec, refSaveAccessor, p0Owner->m_refPointerDevice, eScrollDir
+			refEvent = m_oPointerScrollEventRecycler.create(nTimeUsec, refSaveAccessor, p0Owner->m_refPointerDevice, eScrollDir
 															, fX, fY, bAnyButtonPressed);
 		}
 		const bool bSent = p0ListenerData->handleEventCallIf(p0Owner->m_nClassIdxPointerScrollEvent, refEvent);
 		if (bSent) {
-			if ((!refEvent.unique()) || refEvent->getIsModified()) {
+			if (!refWindowData->isEnabled()) {
+				// The accessor was removed during the callbacks
+				// All the listeners have (if finalized) received a cancel
+				// for all buttons
+				return bContinue; //--------------------------------------------
+			}
+			if ((refEvent.use_count() > 2) || refEvent->getIsModified()) {
 				// If the event is referenced by another shared_ptr (ex. an event queue), can't reuse, it might change later.
 				// If the event was modified can't reuse it for the next listener.
-				//TODO RECYCLING!? (needs subclassing)
 				refEvent.reset();
 			}
 		}
@@ -276,9 +304,7 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 	if (!refOwner) {
 		return !bContinue; //---------------------------------------------------
 	}
-	const GdkWindow* p0AccessorGdkWindow = refWindowData->getWindowDataGdkWindow();
-	const GdkWindow* p0GdkWindow = p0TouchEv->window;
-	if (p0GdkWindow != p0AccessorGdkWindow) {
+	if (! refWindowData->isAccesorWindow(p0TouchEv->window)) {
 		// This device manager suppresses events sent to a modal Gtk::Dialog
 		// that relate to the parent
 		return bContinue; //----------------------------------------------------
@@ -303,7 +329,7 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 		case GDK_TOUCH_CANCEL: eType = TouchEvent::TOUCH_CANCEL; break;
 		default: return bContinue; //-------------------------------------------
 	}
-	int64_t nSequenceStartTime = std::numeric_limits<int64_t>::max();
+	uint64_t nSequenceStartTimeStamp = std::numeric_limits<uint64_t>::max();
 	auto itFind = m_oSequences.find(p0Sequence);
 	const bool bSequenceExists = (itFind != m_oSequences.end());
 	if (eType == TouchEvent::TOUCH_BEGIN) {
@@ -311,15 +337,15 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 			SequenceData& oSequenceData = itFind->second;
 			// TOUCH_END missing + the sequence was probably recycled or GTK weirdness
 			// Send TOUCH_CANCEL for old accessor before sending TOUCH_BEGIN for new one
-			const auto nSequenceStartTime = oSequenceData.m_nTouchStartTimeUsec;
+			const auto nSequenceStartTimeStamp = oSequenceData.m_nTouchStartTimeStamp;
 			const auto fLastX = oSequenceData.m_fLastX;
 			const auto fLastY = oSequenceData.m_fLastY;
 			auto refSaveAccessor = refWindowData->getAccessor();
 			m_oSequences.erase(itFind);
-			shared_ptr<TouchEvent> refEvent;
+			shared_ptr<ReTouchEvent> refEvent;
 			const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
 			for (auto& p0ListenerData : *refListeners) {
-				sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, nSequenceStartTime
+				sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, nSequenceStartTimeStamp
 										, fLastX, fLastY, TouchEvent::TOUCH_CANCEL, (int64_t)p0Sequence
 										, refSaveAccessor, p0Owner, refEvent);
 			}
@@ -328,10 +354,9 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 				return bContinue; //--------------------------------------------
 			}
 		}
-		const int64_t nTimeUsec = DeviceManager::getNowTimeMicroseconds();
-		nSequenceStartTime = nTimeUsec;
+		nSequenceStartTimeStamp = StdDeviceManager::getUniqueTimeStamp();
 		SequenceData oSequenceData;
-		oSequenceData.m_nTouchStartTimeUsec = nSequenceStartTime;
+		oSequenceData.m_nTouchStartTimeStamp = nSequenceStartTimeStamp;
 		oSequenceData.m_fLastX = fLastX;
 		oSequenceData.m_fLastY = fLastY;
 		m_oSequences.emplace(p0Sequence, oSequenceData);
@@ -341,17 +366,16 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 			return bContinue; //------------------------------------------------
 		}
 		SequenceData& oSequenceData = itFind->second;
-		nSequenceStartTime = oSequenceData.m_nTouchStartTimeUsec;
+		nSequenceStartTimeStamp = oSequenceData.m_nTouchStartTimeStamp;
 		if (eType != TouchEvent::TOUCH_UPDATE) {
 			m_oSequences.erase(itFind);
 		}
 	}
-//std::cout << "GtkPointerDevice::handleGdkEventTouch 8" << std::endl;
 	auto refSaveAccessor = refWindowData->getAccessor();
-	shared_ptr<TouchEvent> refEvent;
+	shared_ptr<ReTouchEvent> refEvent;
 	const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	for (auto& p0ListenerData : *refListeners) {
-		sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, nSequenceStartTime, fLastX, fLastY, eType, (int64_t)p0Sequence
+		sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, nSequenceStartTimeStamp, fLastX, fLastY, eType, (int64_t)p0Sequence
 								, refSaveAccessor, p0Owner, refEvent);
 		if ( ((eType == TouchEvent::TOUCH_UPDATE) || (eType == TouchEvent::TOUCH_BEGIN))
 					&& (m_oSequences.find(p0Sequence) == m_oSequences.end())) {
@@ -359,7 +383,6 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 			break; // for -------
 		}
 	}
-//std::cout << "GtkPointerDevice::handleGdkEventTouch 9" << std::endl;
 	return bContinue;
 }
 void GtkPointerDevice::finalizeListener(MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec)
@@ -375,10 +398,10 @@ void GtkPointerDevice::finalizeListener(MasGtkDeviceManager::ListenerData& oList
 		return; //--------------------------------------------------------------
 	}
 	// Send XXX_CANCEL for the currently pressed buttons and open touch sequences to the listener
-	if (p0Owner->getEventClassEnabled(typeid(PointerEvent))) {
+	if (p0Owner->isEventClassEnabled(typeid(PointerEvent))) {
 		finalizeListenerButton(oListenerData, nEventTimeUsec, p0Owner);
 	}
-	if (p0Owner->getEventClassEnabled(typeid(TouchEvent))) {
+	if (p0Owner->isEventClassEnabled(typeid(TouchEvent))) {
 		finalizeListenerTouch(oListenerData, nEventTimeUsec, p0Owner);
 	}
 }
@@ -387,8 +410,8 @@ void GtkPointerDevice::finalizeListenerButton(MasGtkDeviceManager::ListenerData&
 //std::cout << "GtkPointerDevice::finalizeListenerButton" << std::endl;
 	// Note: Gdk (X11?) ensures that when a button is pressed the whole pointer is grabbed for the given window
 	//       until all buttons are released!
-	const int64_t nAddTimeUsec = oListenerData.getAddedTime();
-	if (m_nAnyButtonPressTimeUsec < nAddTimeUsec) {
+	const auto nAddTimeStamp = oListenerData.getAddedTimeStamp();
+	if (m_nAnyButtonPressTimeStamp < nAddTimeStamp) {
 		// The listener was added after the last no-button to a-button pressed transition
 		return;
 	}
@@ -412,8 +435,7 @@ void GtkPointerDevice::finalizeListenerButton(MasGtkDeviceManager::ListenerData&
 		// make sure the last one simulates a XYGrabEvent::XY_UNGRAB_CANCEL
 		// by transitioning from a-button-is-pressed to no-buttons-are-pressed
 		const bool bAnyButtonPressed = (nPressedButtonCount < nTotPressedButtons);
-		//TODO RECYCLING! needs subclassing of PointerEvent with public setButton + setPointer
-		shared_ptr<PointerEvent> refEvent;
+		shared_ptr<RePointerEvent> refEvent;
 		sendPointerEventToListener(oListenerData, nEventTimeUsec, m_fLastPointerX, m_fLastPointerY
 								, PointerEvent::BUTTON_RELEASE_CANCEL, nButton, true, bAnyButtonPressed
 								, refSelectedAccessor, p0Owner, refEvent);
@@ -436,7 +458,6 @@ void GtkPointerDevice::finalizeListenerTouch(MasGtkDeviceManager::ListenerData& 
 		const GdkEventSequence* p0Sequence = oPair.first;
 		const SequenceData& oSequenceData = oPair.second;
 		//
-		const int64_t& nTouchStartTimeUsec = oSequenceData.m_nTouchStartTimeUsec;
 		const auto& fLastX = oSequenceData.m_fLastX;
 		const auto& fLastY = oSequenceData.m_fLastY;
 		//
@@ -444,9 +465,8 @@ void GtkPointerDevice::finalizeListenerTouch(MasGtkDeviceManager::ListenerData& 
 			continue; // for ------------
 		}
 		p0ExtraData->setSequenceCanceled(p0Sequence);
-		//TODO RECYCLING!
-		shared_ptr<TouchEvent> refEvent;
-		sendTouchEventToListener(oListenerData, nEventTimeUsec, nTouchStartTimeUsec
+		shared_ptr<ReTouchEvent> refEvent;
+		sendTouchEventToListener(oListenerData, nEventTimeUsec, oSequenceData.m_nTouchStartTimeStamp
 								, fLastX, fLastY, TouchEvent::TOUCH_CANCEL, (int64_t)p0Sequence
 								, refSelectedAccessor, p0Owner, refEvent);
 	}
@@ -471,10 +491,10 @@ void GtkPointerDevice::cancelSelectedAccessorButtonsAndSequences()
 
 	auto refListeners = p0Owner->getListeners();
 	//
-	if (p0Owner->getEventClassEnabled(typeid(PointerEvent))) {
+	if (p0Owner->isEventClassEnabled(typeid(PointerEvent))) {
 		cancelSelectedAccessorButtons(refListeners, nEventTimeUsec, refSelectedAccessor, p0Owner);
 	}
-	if (p0Owner->getEventClassEnabled(typeid(TouchEvent))) {
+	if (p0Owner->isEventClassEnabled(typeid(TouchEvent))) {
 		cancelSelectedAccessorSequences(refListeners, nEventTimeUsec, refSelectedAccessor, p0Owner);
 	}
 }
@@ -485,7 +505,6 @@ void GtkPointerDevice::cancelSelectedAccessorButtons(const shared_ptr< const std
 	// work on copy
 	auto aButtons = m_aButtons;
 	// cancel pressed buttons
-	shared_ptr<PointerEvent> refEvent;
 	bool bNoneCanceled = false;
 	while (!bNoneCanceled) {
 		bNoneCanceled = true;
@@ -506,6 +525,7 @@ void GtkPointerDevice::cancelSelectedAccessorButtons(const shared_ptr< const std
 
 			p0ExtraData->setButtonCanceled(nButton);
 			const bool bAnyButtonPressed = (nTotNotCanceledYet > 1);
+			shared_ptr<RePointerEvent> refEvent;
 			sendPointerEventToListener(*p0ListenerData, nEventTimeUsec, m_fLastPointerX, m_fLastPointerY
 									, PointerEvent::BUTTON_RELEASE_CANCEL, nButton, true, bAnyButtonPressed
 									, refSelectedAccessor, p0Owner, refEvent);
@@ -514,7 +534,7 @@ void GtkPointerDevice::cancelSelectedAccessorButtons(const shared_ptr< const std
 	}
 	// remove buttons
 	m_aButtons.clear();
-	m_nAnyButtonPressTimeUsec = std::numeric_limits<int64_t>::max();
+	m_nAnyButtonPressTimeStamp = std::numeric_limits<uint64_t>::max();
 }
 void GtkPointerDevice::cancelSelectedAccessorSequences(const shared_ptr< const std::list< MasGtkDeviceManager::ListenerData* > >& refListeners
 														, int64_t nEventTimeUsec, const shared_ptr<GtkAccessor>& refSelectedAccessor
@@ -523,10 +543,10 @@ void GtkPointerDevice::cancelSelectedAccessorSequences(const shared_ptr< const s
 	// Cancel the touch sequences generated with the to be removed accessor.
 	// work on copy
 	auto oSequences = m_oSequences;
-	shared_ptr<TouchEvent> refEvent;
 	for (auto& oPair : oSequences) {
 		const GdkEventSequence* p0Sequence = oPair.first;
 		const SequenceData& oSeqData = oPair.second;
+		shared_ptr<ReTouchEvent> refEvent;
 		for (auto& p0ListenerData : *refListeners) {
 			MasGtkListenerExtraData* p0ExtraData = nullptr;
 			p0ListenerData->getExtraData(p0ExtraData);
@@ -534,7 +554,7 @@ void GtkPointerDevice::cancelSelectedAccessorSequences(const shared_ptr< const s
 				continue; // for p0ListenerData ------------
 			}
 			p0ExtraData->setSequenceCanceled(p0Sequence);
-			sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, oSeqData.m_nTouchStartTimeUsec
+			sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, oSeqData.m_nTouchStartTimeStamp
 									, 0, 0, TouchEvent::TOUCH_CANCEL, (int64_t)p0Sequence
 									, refSelectedAccessor, p0Owner, refEvent);
 		}
@@ -549,51 +569,49 @@ void GtkPointerDevice::sendPointerEventToListener(
 											, bool bWasAnyButtonPressed, bool bAnyButtonPressed
 											, const shared_ptr<GtkAccessor>& refAccessor
 											, MasGtkDeviceManager* p0Owner
-											, shared_ptr<PointerEvent>& refEvent)
+											, shared_ptr<RePointerEvent>& refEvent)
 {
-	const int64_t nAddTimeUsec = oListenerData.getAddedTime();
-	if (m_nAnyButtonPressTimeUsec < nAddTimeUsec) {
+	const auto nAddTimeStamp = oListenerData.getAddedTimeStamp();
+	if (m_nAnyButtonPressTimeStamp < nAddTimeStamp) {
 		// The listener was added after the last no-button to a-button pressed transition
 		return;
 	}
 	if (!refEvent) {
-		refEvent = std::make_shared<PointerEvent>(nEventTimeUsec, refAccessor, p0Owner->m_refPointerDevice, fX, fY
+		refEvent = m_oPointerEventRecycler.create(nEventTimeUsec, refAccessor, p0Owner->m_refPointerDevice, fX, fY
 												, eInputType, nButton, bAnyButtonPressed, bWasAnyButtonPressed);
 	}
 	const bool bSent = oListenerData.handleEventCallIf(p0Owner->m_nClassIdxPointerEvent, refEvent);
 	if (bSent) {
-		if ((!refEvent.unique()) || refEvent->getIsModified()) {
+		if ((refEvent.use_count() > 2) || refEvent->getIsModified()) {
 			// If the event is referenced by another shared_ptr (ex. an event queue), can't reuse, it might change later.
 			// If the event was modified can't reuse it for the next listener.
-			// TODO RECYCLING!? (needs subclassing)
 			refEvent.reset();
 		}
 	}
 }
 void GtkPointerDevice::sendTouchEventToListener(
 											const MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
-											, int64_t nSequenceStartTime, double fX, double fY
+											, uint64_t nSequenceStartTimeStamp, double fX, double fY
 											, TouchEvent::TOUCH_INPUT_TYPE eInputType, int64_t nSequence
 											, const shared_ptr<GtkAccessor>& refAccessor
 											, MasGtkDeviceManager* p0Owner
-											, shared_ptr<TouchEvent>& refEvent)
+											, shared_ptr<ReTouchEvent>& refEvent)
 {
-	const int64_t nAddTimeUsec = oListenerData.getAddedTime();
-	if (nSequenceStartTime < nAddTimeUsec) {
+	const uint64_t nAddTimeStamp = oListenerData.getAddedTimeStamp();
+	if (nSequenceStartTimeStamp < nAddTimeStamp) {
 		// The listener was added after a touch was started, so until the touch is ended or canceled
 		// it's deaf to any of its event
 		return;
 	}
 	if (!refEvent) {
-		refEvent = std::make_shared<TouchEvent>(nEventTimeUsec, refAccessor, p0Owner->m_refPointerDevice
+		refEvent = m_oTouchEventRecycler.create(nEventTimeUsec, refAccessor, p0Owner->m_refPointerDevice
 												, eInputType, fX, fY, nSequence);
 	}
 	const bool bSent = oListenerData.handleEventCallIf(p0Owner->m_nClassIdxTouchEvent, refEvent);
 	if (bSent) {
-		if ((!refEvent.unique()) || refEvent->getIsModified()) {
+		if ((refEvent.use_count() > 2) || refEvent->getIsModified()) {
 			// If the event is referenced by another shared_ptr (ex. an event queue), can't reuse, it might change later.
 			// If the event was modified can't reuse it for the next listener.
-			// TODO RECYCLING!? (needs subclassing)
 			refEvent.reset();
 		}
 	}

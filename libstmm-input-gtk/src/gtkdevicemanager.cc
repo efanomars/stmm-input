@@ -78,7 +78,7 @@ shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Eve
 		return refRes;
 	}
 	try {
-		JsGtkDeviceManager::DeviceFiles oDeviceFiles;
+		JsDeviceFiles oDeviceFiles;
 		oDeviceFiles.addBaseNrFiles("/dev/input/js");
 		auto refJDM = JsGtkDeviceManager::create(bEnableEventClasses, aEnDisableEventClass, oDeviceFiles);
 		aManagers.push_back(refJDM);

@@ -36,7 +36,7 @@ namespace Js
 using std::shared_ptr;
 using std::weak_ptr;
 
-class GtkWindowData final : public std::enable_shared_from_this<GtkWindowData>, public sigc::trackable
+class GtkWindowData : public std::enable_shared_from_this<GtkWindowData>, public sigc::trackable
 {
 public:
 	GtkWindowData()
@@ -49,6 +49,11 @@ public:
 		//std::cout << "Js::GtkWindowData::~GtkWindowData()" << std::endl;
 		disable();
 	}
+	void reInit() {}
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
 	void enable(const shared_ptr<GtkAccessor>& refAccessor, JsGtkDeviceManager* p0Owner)
 	{
 		assert(refAccessor);
@@ -64,15 +69,45 @@ public:
 		m_bIsEnabled = true;
 	}
 	// !!! Doesn't reset accessor!
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
 	void disable()
 	{
 		m_bIsEnabled = false;
 		m_oIsActiveConn.disconnect();
 	}
-	inline bool isEnabled() const { return m_bIsEnabled; }
-	inline const shared_ptr<GtkAccessor>& getAccessor() { return m_refAccessor; }
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	bool isEnabled() const { return m_bIsEnabled; }
 
-private:
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	const shared_ptr<GtkAccessor>& getAccessor() { return m_refAccessor; }
+
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#else
+	inline
+	#endif
+	bool isWindowActive() const
+	{
+		assert(m_refAccessor);
+		auto p0GtkmmWindow = m_refAccessor->getGtkmmWindow();
+		return p0GtkmmWindow->get_realized() && p0GtkmmWindow->get_visible() && p0GtkmmWindow->is_active();
+	}
+
+protected:
+	inline void setOwner(JsGtkDeviceManager* p0Owner)
+	{
+		m_p0Owner = p0Owner;
+	}
 	void onSigIsActiveChanged() { m_p0Owner->onIsActiveChanged(shared_from_this()); }
 private:
 	//
@@ -82,6 +117,21 @@ private:
 	bool m_bIsEnabled;
 	//
 	sigc::connection m_oIsActiveConn;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class GtkWindowDataFactory
+{
+public:
+	#ifdef STMI_TESTING_IFACE
+	virtual
+	#endif
+	std::shared_ptr<GtkWindowData> create()
+	{
+		return m_oRecycler.create();
+	}
+private:
+	Recycler<GtkWindowData> m_oRecycler;
 };
 
 } // namespace Js

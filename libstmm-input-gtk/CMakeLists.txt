@@ -49,10 +49,13 @@ set(STMM_INPUT_EV_VERSION_REQ "${STMM_INPUT_EV_MAJOR_VERSION_REQ}.${STMM_INPUT_E
 
 set(GTKMM_VERSION_REQ "3.14.0")
 set(XI_VERSION_REQ "1.7.4")
+set(X11_VERSION_REQ "1.6.2")
 
 # Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
 pkg_check_modules(GTKMM  REQUIRED  gtkmm-3.0>=${GTKMM_VERSION_REQ})
 pkg_check_modules(XI     REQUIRED  xi>=${XI_VERSION_REQ})
+pkg_check_modules(X11    REQUIRED  x11>=${X11_VERSION_REQ})
+
 pkg_check_modules(STMMINPUTBASE  REQUIRED  stmm-input-base>=${STMM_INPUT_BASE_VERSION_REQ})
 pkg_check_modules(STMMINPUTEV    REQUIRED  stmm-input-ev>=${STMM_INPUT_EV_VERSION_REQ})
 pkg_check_modules(STMMINPUT      REQUIRED  stmm-input>=${STMM_INPUT_VERSION_REQ})
@@ -70,6 +73,7 @@ list(APPEND STMMI_GTK_EXTRA_INCLUDE_DIRS
     ${STMMINPUTEV_INCLUDE_DIRS}
     ${GTKMM_INCLUDE_DIRS}
     ${XI_INCLUDE_DIRS}
+    ${X11_INCLUDE_DIRS}
     )
 list(APPEND STMMI_GTK_EXTRA_LIBS
     ${STMMINPUT_LIBRARIES}
@@ -77,6 +81,7 @@ list(APPEND STMMI_GTK_EXTRA_LIBS
     ${STMMINPUTEV_LIBRARIES}
     ${GTKMM_LIBRARIES}
     ${XI_LIBRARIES}
+    ${X11_LIBRARIES}
     )
 
 string(STRIP "${STMMI_GTK_EXTRA_LIBS}" STMMI_GTK_EXTRA_LIBS)
@@ -95,6 +100,7 @@ set(STMMI_HEADERS_DATA
         ${STMMI_HEADERS_DIR}/gtkaccessor.h
         ${STMMI_HEADERS_DIR}/gdkkeyconverter.h
         ${STMMI_HEADERS_DIR}/gdkkeyconverterevdev.h
+        ${STMMI_HEADERS_DIR}/jsdevicefiles.h
         ${STMMI_HEADERS_DIR}/keyrepeatmode.h
         )
 # "SubProject" STMMI_HEADERS_MAS depends on 
@@ -140,8 +146,11 @@ set(STMMI_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/src")
 set(STMMI_SOURCES_DATA
         ${STMMI_SOURCES_DIR}/gtkaccessor.cc
         ${STMMI_SOURCES_DIR}/gdkkeyconverterevdev.cc
+        ${STMMI_SOURCES_DIR}/recycler.h
         )
 set(STMMI_SOURCES_MAS
+        ${STMMI_SOURCES_DIR}/masgtkbackend.h
+        ${STMMI_SOURCES_DIR}/masgtkbackend.cc
         ${STMMI_SOURCES_DIR}/masgtkdevicemanager.h
         ${STMMI_SOURCES_DIR}/masgtkdevicemanager.cc
         ${STMMI_SOURCES_DIR}/masgtkkeyboarddevice.h
@@ -150,18 +159,24 @@ set(STMMI_SOURCES_MAS
         ${STMMI_SOURCES_DIR}/masgtkpointerdevice.h
         ${STMMI_SOURCES_DIR}/masgtkpointerdevice.cc
         ${STMMI_SOURCES_DIR}/masgtkwindowdata.h
+        ${STMMI_SOURCES_DIR}/masgtkwindowdata.cc
         )
 set(STMMI_SOURCES_FLO
+        ${STMMI_SOURCES_DIR}/flogtkbackend.h
+        ${STMMI_SOURCES_DIR}/flogtkbackend.cc
         ${STMMI_SOURCES_DIR}/floatingsources.h
         ${STMMI_SOURCES_DIR}/floatingsources.cc
         ${STMMI_SOURCES_DIR}/flogtkdevicemanager.h
         ${STMMI_SOURCES_DIR}/flogtkdevicemanager.cc
         ${STMMI_SOURCES_DIR}/flogtklistenerextradata.h
         ${STMMI_SOURCES_DIR}/flogtkwindowdata.h
+        ${STMMI_SOURCES_DIR}/flogtkwindowdata.cc
         ${STMMI_SOURCES_DIR}/flogtkxkeyboarddevice.h
         ${STMMI_SOURCES_DIR}/flogtkxkeyboarddevice.cc
         )
 set(STMMI_SOURCES_JS
+        ${STMMI_SOURCES_DIR}/jsgtkbackend.h
+        ${STMMI_SOURCES_DIR}/jsgtkbackend.cc
         ${STMMI_SOURCES_DIR}/joysticksources.h
         ${STMMI_SOURCES_DIR}/joysticksources.cc
         ${STMMI_SOURCES_DIR}/jsgtkdevicemanager.h

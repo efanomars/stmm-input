@@ -185,7 +185,6 @@ void DeviceFloater::refreshDevices()
 	//
 	std::sort(m_aDevices.begin(), m_aDevices.end());
 }
-//
 bool DeviceFloater::floatDevice(int32_t nDeviceId)
 {
 	XIDetachSlaveInfo oDetach;

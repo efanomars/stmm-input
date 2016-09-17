@@ -48,7 +48,7 @@ public:
 	/** Constructor.
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
-	 * @param refKeyCapability The capability that generated this event.
+	 * @param refKeyCapability The capability that generated this event. Cannot be null.
 	 * @param eType The action type.
 	 * @param eKey The key involved.
 	 */
@@ -78,18 +78,29 @@ public:
 		return s_oKeyClass;
 	}
 protected:
+	/** Sets the type.
+	 * @param eType The action type.
+	 */
 	inline void setType(KEY_INPUT_TYPE eType)
 	{
 		assert((eType >= KEY_PRESS) || (eType <= KEY_RELEASE_CANCEL));
 		m_eType = eType;
 	}
+	/** Sets the key.
+	 * @param eKey The key involved.
+	 */
 	inline void setKey(HARDWARE_KEY eKey)
 	{
+		assert(eKey >= 0);
 		m_eKey = eKey;
 	}
+	/** Sets the capability.
+	 * @param refKeyCapability The capability that generated this event. Cannot be null.
+	 */
 	inline void setKeyCapability(const shared_ptr<KeyCapability>& refKeyCapability)
 	{
 		assert(refKeyCapability);
+		setCapabilityId(refKeyCapability->getId());
 		m_refKeyCapability = refKeyCapability;
 	}
 private:

@@ -76,6 +76,12 @@ public:
 	 * @return The capability or null if the capability was deleted.
 	 */
 	virtual shared_ptr<Capability> getCapability() const = 0;
+	/** Returns the id of the capability that generated this event.
+	 * The unique id isn't changed when the capability is removed and
+	 * getCapability() returns null.
+	 * @return The capability id.
+	 */
+	inline int32_t getCapabilityId() const { return m_nCapabilityId; }
 	/** Returns the accessor that helped generate this event.
 	 * @return The accessor. Can be null.
 	 */
@@ -262,23 +268,29 @@ protected:
 	 * or a superclass of it.
 	 * @param oClass The registered class of the event.
 	 * @param nTimeUsec Time from epoch in microseconds.
+	 * @param nCapabilityId The id of the capability that generated this event. Must be >= 0.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
 	 */
-	Event(const Class& oClass, int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor);
+	Event(const Class& oClass, int64_t nTimeUsec, int32_t nCapabilityId, const shared_ptr<Accessor>& refAccessor);
 	/** Constructor to be called from subclasses (with empty accessor).
 	 * The registered class has to be the actual class of the instance being constructed
 	 * or a superclass of it.
 	 * @param oClass The registered class of the event.
 	 * @param nTimeUsec Time from epoch in microseconds.
+	 * @param nCapabilityId The id of the capability that generated this event. Must be >= 0.
 	 */
-	Event(const Class& oClass, int64_t nTimeUsec)
-	: Event(oClass, nTimeUsec, Accessor::s_refEmptyAccessor)
+	Event(const Class& oClass, int64_t nTimeUsec, int32_t nCapabilityId)
+	: Event(oClass, nTimeUsec, nCapabilityId, Accessor::s_refEmptyAccessor)
 	{
 	}
 	/** Set the event time.
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 */
 	inline void setTimeUsec(int64_t nTimeUsec) { m_nTimeUsec = nTimeUsec; }
+	/** Set the capability id.
+	 * @param nCapabilityId The id of the capability that generated this event. Must be >= 0.
+	 */
+	inline void setCapabilityId(int32_t nCapabilityId) { assert(nCapabilityId >= 0); m_nCapabilityId = nCapabilityId; }
 	/** Set the accessor.
 	 * @param refAccessor Can be null.
 	 */
@@ -374,6 +386,7 @@ private:
 	}
 private:
 	int64_t m_nTimeUsec;
+	int32_t m_nCapabilityId;
 	shared_ptr<Accessor> m_refAccessor;
 	//
 	const Event::Class m_oClass;

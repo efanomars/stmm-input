@@ -53,12 +53,14 @@ std::string Event::getEventTypeClassId(const std::type_info& oType)
 	return p0TypeId;
 }
 
-Event::Event(const Class& oClass, int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor)
+Event::Event(const Class& oClass, int64_t nTimeUsec, int32_t nCapabilityId, const shared_ptr<Accessor>& refAccessor)
 : m_nTimeUsec(nTimeUsec)
+, m_nCapabilityId(nCapabilityId)
 , m_refAccessor(refAccessor)
 , m_oClass(oClass)
 {
 	assert((nTimeUsec >= 0) || (nTimeUsec == -1));
+	assert(nCapabilityId >= 0);
 	assert(oClass); // Class has to be registered
 }
 

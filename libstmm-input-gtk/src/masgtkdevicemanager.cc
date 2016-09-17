@@ -34,30 +34,9 @@
 namespace stmi
 {
 
-namespace Private
-{
-namespace Mas
-{
-void gdkDeviceManagerCallbackAdded(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data)
-{
-	auto p0MasGtkDeviceManager = static_cast<MasGtkDeviceManager*>(p0Data);
-	p0MasGtkDeviceManager->gdkDeviceAdded(p0DeviceManager, p0Device);
-}
-void gdkDeviceManagerCallbackChanged(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data)
-{
-	auto p0MasGtkDeviceManager = static_cast<MasGtkDeviceManager*>(p0Data);
-	p0MasGtkDeviceManager->gdkDeviceChanged(p0DeviceManager, p0Device);
-}
-void gdkDeviceManagerCallbackRemoved(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data)
-{
-	auto p0MasGtkDeviceManager = static_cast<MasGtkDeviceManager*>(p0Data);
-	p0MasGtkDeviceManager->gdkDeviceRemoved(p0DeviceManager, p0Device);
-}
-} // namespace Mas
-} // namespace Private
-
-////////////////////////////////////////////////////////////////////////////////
+using Private::Mas::GtkBackend;
 using Private::Mas::GtkWindowData;
+using Private::Mas::GtkWindowDataFactory;
 using Private::Mas::GtkKeyboardDevice;
 using Private::Mas::GtkPointerDevice;
 using Private::Mas::MasGtkListenerExtraData;
@@ -68,7 +47,9 @@ shared_ptr<MasGtkDeviceManager> MasGtkDeviceManager::create(bool bEnableEventCla
 {
 	shared_ptr<MasGtkDeviceManager> refInstance(new MasGtkDeviceManager(bEnableEventClasses, aEnDisableEventClass
 																		, eKeyRepeatMode, refGdkConverter));
-	refInstance->init(refGdkDeviceManager);
+	auto refBackend = std::make_unique<GtkBackend>(refInstance.operator->(), refGdkDeviceManager);
+	auto refFactory = std::make_unique<GtkWindowDataFactory>();
+	refInstance->init(refFactory, refBackend);
 	return refInstance;
 }
 
@@ -78,9 +59,6 @@ MasGtkDeviceManager::MasGtkDeviceManager(bool bEnableEventClasses, const std::ve
 					, {typeid(DeviceMgmtEvent), typeid(KeyEvent), typeid(PointerEvent), typeid(PointerScrollEvent), typeid(TouchEvent)}
 					, bEnableEventClasses, aEnDisableEventClass)
 , m_nCancelingNestedDepth(0)
-, m_nConnectHandlerDeviceAdded(0)
-, m_nConnectHandlerDeviceChanged(0)
-, m_nConnectHandlerDeviceRemoved(0)
 , m_eKeyRepeatMode(eKeyRepeatMode)
 , m_refGdkConverter(refGdkConverter)
 , m_oConverter(*m_refGdkConverter)
@@ -97,7 +75,6 @@ MasGtkDeviceManager::MasGtkDeviceManager(bool bEnableEventClasses, const std::ve
 }
 MasGtkDeviceManager::~MasGtkDeviceManager()
 {
-	deinitDeviceManager();
 //std::cout << "MasGtkDeviceManager::~MasGtkDeviceManager()" << std::endl;
 }
 shared_ptr<DeviceManager> MasGtkDeviceManager::getDeviceManager() const
@@ -107,33 +84,6 @@ shared_ptr<DeviceManager> MasGtkDeviceManager::getDeviceManager() const
 shared_ptr<DeviceManager> MasGtkDeviceManager::getDeviceManager()
 {
 	return getRoot();
-}
-void MasGtkDeviceManager::initDeviceManager()
-{
-	assert(m_refGdkDeviceManager);
-	assert(m_nConnectHandlerDeviceAdded == 0);
-	GdkDeviceManager* p0GdkDeviceManager = m_refGdkDeviceManager->gobj();
-	m_nConnectHandlerDeviceAdded = g_signal_connect(p0GdkDeviceManager, "device-added", G_CALLBACK(Private::Mas::gdkDeviceManagerCallbackAdded), this);
-	assert(m_nConnectHandlerDeviceAdded > 0);
-	m_nConnectHandlerDeviceChanged = g_signal_connect(p0GdkDeviceManager, "device-changed", G_CALLBACK(Private::Mas::gdkDeviceManagerCallbackChanged), this);
-	assert(m_nConnectHandlerDeviceChanged > 0);
-	m_nConnectHandlerDeviceRemoved = g_signal_connect(p0GdkDeviceManager, "device-removed", G_CALLBACK(Private::Mas::gdkDeviceManagerCallbackRemoved), this);
-	assert(m_nConnectHandlerDeviceRemoved > 0);
-}
-void MasGtkDeviceManager::deinitDeviceManager()
-{
-	if (m_refGdkDeviceManager && (m_nConnectHandlerDeviceAdded > 0)) {
-		GdkDeviceManager* p0GdkDeviceManager = m_refGdkDeviceManager->gobj();
-		if (g_signal_handler_is_connected(p0GdkDeviceManager, m_nConnectHandlerDeviceAdded)) {
-			g_signal_handler_disconnect(p0GdkDeviceManager, m_nConnectHandlerDeviceAdded);
-		}
-		if (g_signal_handler_is_connected(p0GdkDeviceManager, m_nConnectHandlerDeviceChanged)) {
-			g_signal_handler_disconnect(p0GdkDeviceManager, m_nConnectHandlerDeviceChanged);
-		}
-		if (g_signal_handler_is_connected(p0GdkDeviceManager, m_nConnectHandlerDeviceRemoved)) {
-			g_signal_handler_disconnect(p0GdkDeviceManager, m_nConnectHandlerDeviceRemoved);
-		}
-	}
 }
 void MasGtkDeviceManager::enableEventClass(const Event::Class& oEventClass)
 {
@@ -151,27 +101,36 @@ void MasGtkDeviceManager::adjustConnectionsAfterEnablingClass()
 		}
 	}
 }
-bool MasGtkDeviceManager::init(const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager)
+void MasGtkDeviceManager::init(std::unique_ptr<GtkWindowDataFactory>& refFactory, std::unique_ptr<GtkBackend>& refBackend)
 {
-	if (m_refGdkDeviceManager) {
-		// Already initialized
-		return false;
-	}
-	if (!refGdkDeviceManager) {
-		// Take the default one
-		Glib::RefPtr<Gdk::Display> refDefaultDisplay = Gdk::Display::get_default();
-		assert(refDefaultDisplay);
-		m_refGdkDeviceManager = refDefaultDisplay->get_device_manager();
-	} else {
-		m_refGdkDeviceManager = refGdkDeviceManager;
-	}
-	initDeviceManager();
-	addDevices(nullptr);
-	return true;
+	assert(refFactory);
+	assert(refBackend);
+	m_refFactory.swap(refFactory);
+	m_refBackend.swap(refBackend);
+	addDevices();
 }
-void MasGtkDeviceManager::addDevices(GdkDevice* p0NotThisOne)
+void MasGtkDeviceManager::onDeviceChanged(bool bPointer)
 {
-	assert(m_refGdkDeviceManager);
+	if (bPointer) {
+		sendDeviceMgmtToListeners(DeviceMgmtEvent::DEVICE_MGMT_CHANGED, m_refPointerDevice);
+	} else {
+		sendDeviceMgmtToListeners(DeviceMgmtEvent::DEVICE_MGMT_CHANGED, m_refKeyboardDevice);
+	}
+}
+void MasGtkDeviceManager::onDevicePairAdded()
+{
+	addDevices();
+}
+void MasGtkDeviceManager::onDevicePairRemoved()
+{
+	removeDevices();
+}
+void MasGtkDeviceManager::addDevices()
+{
+	if (!m_refBackend) {
+		// init() wasn't called yet
+		return;
+	}
 	assert(!m_refKeyboardDevice);
 	assert(!m_refPointerDevice);
 
@@ -179,42 +138,19 @@ void MasGtkDeviceManager::addDevices(GdkDevice* p0NotThisOne)
 	assert(std::dynamic_pointer_cast<MasGtkDeviceManager>(refChildThis));
 	auto refThis = std::static_pointer_cast<MasGtkDeviceManager>(refChildThis);
 
-	const std::vector< Glib::RefPtr< Gdk::Device > > aDevice = m_refGdkDeviceManager->list_devices(Gdk::DEVICE_TYPE_MASTER);
-	for (auto& refMasterDevice : aDevice) {
-		const Gdk::InputSource eSource = refMasterDevice->get_source();
-		if (eSource == Gdk::SOURCE_KEYBOARD) {
-			// add the master keyboard and its associated master pointer
-			const Glib::RefPtr<Gdk::Device>& refKeyboard = refMasterDevice;
-			const Glib::RefPtr<Gdk::Device> refPointer = refMasterDevice->get_associated_device();
-			if (!((refKeyboard->gobj() == p0NotThisOne) || (refPointer->gobj() == p0NotThisOne))) {
-				// We don't want to read a master device that is about to be removed
-				if (!m_refKeyboardDevice) {
-					m_refKeyboardDevice = std::make_shared<GtkKeyboardDevice>(refKeyboard->get_name(), refKeyboard, refThis);
-					#ifndef NDEBUG
-					const bool bAdded = 
-					#endif //NDEBUG
-					StdDeviceManager::addDevice(m_refKeyboardDevice);	
-					assert(bAdded);
-//std::cout << "MasGtkDeviceManager::addDevices  Master keyboard added " << m_refKeyboardDevice->getName() << std::endl;
-				} else {
-					// m_aKeyboardGdkDevice.push_back(p0Keyboard);
-				}
-				if (!m_refPointerDevice) {
-					m_refPointerDevice = std::make_shared<GtkPointerDevice>(refPointer->get_name(), refPointer, refThis);
-					#ifndef NDEBUG
-					const bool bAdded = 
-					#endif //NDEBUG
-					StdDeviceManager::addDevice(m_refPointerDevice);	
-					assert(bAdded);
-//std::cout << "MasGtkDeviceManager::addDevices  Master pointer added " << m_refPointerDevice->getName() << std::endl;
-				} else {
-					// m_aPointerGdkDevice.push_back(p0Pointer);
-				}
-			}
-		}
-	}
-	assert(m_refKeyboardDevice);
-	assert(m_refPointerDevice);
+	m_refKeyboardDevice = std::make_shared<GtkKeyboardDevice>(m_refBackend->getKeyboardDeviceName(), refThis);
+	#ifndef NDEBUG
+	const bool bKeyboardAdded =
+	#endif //NDEBUG
+	StdDeviceManager::addDevice(m_refKeyboardDevice);
+	assert(bKeyboardAdded);
+	m_refPointerDevice = std::make_shared<GtkPointerDevice>(m_refBackend->getPointerDeviceName(), refThis);
+	#ifndef NDEBUG
+	const bool bPointerAdded =
+	#endif //NDEBUG
+	StdDeviceManager::addDevice(m_refPointerDevice);
+	assert(bPointerAdded);
+	//
 	sendDeviceMgmtToListeners(DeviceMgmtEvent::DEVICE_MGMT_ADDED, m_refKeyboardDevice);
 	sendDeviceMgmtToListeners(DeviceMgmtEvent::DEVICE_MGMT_ADDED, m_refPointerDevice);
 }
@@ -296,7 +232,8 @@ bool MasGtkDeviceManager::hasAccessor(const shared_ptr<Accessor>& refAccessor)
 }
 bool MasGtkDeviceManager::addAccessor(const shared_ptr<Accessor>& refAccessor)
 {
-	assert(m_refGdkDeviceManager);
+//std::cout << "MasGtkDeviceManager::addAccessor 0" << '\n';
+	assert(m_refBackend);
 	std::vector<std::pair<Gtk::Window*, shared_ptr<GtkWindowData> > >::iterator itFind;
 	bool bValid;
 	const bool bHasAccessor = hasAccessor(refAccessor, bValid, itFind);
@@ -316,17 +253,13 @@ bool MasGtkDeviceManager::addAccessor(const shared_ptr<Accessor>& refAccessor)
 		// Accessor is already present
 		return false; //--------------------------------------------------------
 	}
-	Gtk::Window* p0GtkmmWindow = refGtkAccessor->getGtkmmWindow();
-	assert(p0GtkmmWindow != nullptr);
-	Glib::RefPtr<Gdk::Display> refDisplay = p0GtkmmWindow->get_display();
-	assert(refDisplay);
-	Glib::RefPtr<Gdk::DeviceManager> refGdkDeviceManager = refDisplay->get_device_manager();
-	assert(refGdkDeviceManager);
-	if (!(m_refGdkDeviceManager == refGdkDeviceManager)) {
-		// can only have one underlying gdk device manager per instance
+	if (!m_refBackend->isCompatible(refGtkAccessor)) {
+		// wrong display
 		return false; //--------------------------------------------------------
 	}
-	m_aGtkWindowData.emplace_back(p0GtkmmWindow, getGtkWindowData());
+
+	Gtk::Window* p0GtkmmWindow = refGtkAccessor->getGtkmmWindow();
+	m_aGtkWindowData.emplace_back(p0GtkmmWindow, m_refFactory->create());
 	shared_ptr<GtkWindowData> refData = m_aGtkWindowData.back().second;
 	GtkWindowData& oData = *refData;
 
@@ -334,7 +267,7 @@ bool MasGtkDeviceManager::addAccessor(const shared_ptr<Accessor>& refAccessor)
 
 	oData.connect();
 
-	const bool bIsActive = p0GtkmmWindow->get_realized() && p0GtkmmWindow->get_visible() && p0GtkmmWindow->is_active();
+	const bool bIsActive = oData.isWindowActive();
 	if (!m_refSelected) {
 		if (bIsActive) {
 			m_refSelected = refData;
@@ -364,7 +297,7 @@ bool MasGtkDeviceManager::addAccessor(const shared_ptr<Accessor>& refAccessor)
 }
 bool MasGtkDeviceManager::removeAccessor(const shared_ptr<Accessor>& refAccessor)
 {
-	assert(m_refGdkDeviceManager);
+	assert(m_refBackend);
 	std::vector<std::pair<Gtk::Window*, shared_ptr<GtkWindowData> > >::iterator itFind;
 	bool bValid;
 	const bool bHasAccessor = hasAccessor(refAccessor, bValid, itFind);
@@ -378,18 +311,14 @@ bool MasGtkDeviceManager::removeAccessor(const shared_ptr<Accessor>& refAccessor
 void MasGtkDeviceManager::removeAccessor(const std::vector<std::pair<Gtk::Window*, shared_ptr<GtkWindowData> > >::iterator& itGtkData)
 {
 	assert(itGtkData->second);
-	// Keep a reference so that it doesn't get recycled
+	// Note: an additional shared_ptr to the object is created to avoid it
+	//       being recycled during deselectAccessor()
 	auto refData = itGtkData->second;
 
 	const bool bIsSelected = (m_refSelected == refData);
 
 	refData->disable(); // doesn't clear accessor!
 
-	// move from m_oWindows to m_aFreePool
-	m_aFreePool.emplace_back();
-	m_aFreePool.back().swap(itGtkData->second);
-	assert(!itGtkData->second);
-	assert(m_aFreePool.back());
 	//
 	m_aGtkWindowData.erase(itGtkData);
 
@@ -433,14 +362,14 @@ void MasGtkDeviceManager::cancelDevices()
 }
 void MasGtkDeviceManager::onIsActiveChanged(const shared_ptr<GtkWindowData>& refWindowData)
 {
+//std::cout << "MasGtkDeviceManager::onIsActiveChanged 0" << '\n';
 	if (!refWindowData->isEnabled()) {
 		return;
 	}
 	auto& refGtkAccessor = refWindowData->getAccessor();
 	bool bIsActive = false;
 	if (!refGtkAccessor->isDeleted()) {
-		auto p0GtkmmWindow = refGtkAccessor->getGtkmmWindow();
-		bIsActive = p0GtkmmWindow->get_realized() && p0GtkmmWindow->get_visible() && p0GtkmmWindow->is_active();
+		bIsActive = refWindowData->isWindowActive();
 	}
 	if (bIsActive) {
 		if (refWindowData == m_refSelected) {
@@ -459,37 +388,9 @@ void MasGtkDeviceManager::onIsActiveChanged(const shared_ptr<GtkWindowData>& ref
 		}
 	}
 }
-std::shared_ptr<GtkWindowData> MasGtkDeviceManager::getGtkWindowData()
-{
-	const size_t nSize = m_aFreePool.size();
-	size_t nIdx = 0;
-	for (auto itWindowData = m_aFreePool.begin(); itWindowData != m_aFreePool.end(); ++itWindowData) {
-		shared_ptr<GtkWindowData>& refGtkWindowData = *itWindowData;
-		if (refGtkWindowData.unique()) {
-			shared_ptr<GtkWindowData> refReuse = refGtkWindowData;
-			if (nSize > 1) {
-				m_aFreePool[nIdx] = m_aFreePool[nSize - 1];
-			}
-			m_aFreePool.pop_back();
-			return refReuse; //-------------------------------------------------
-		}
-		++nIdx;
-	}
-	return std::make_shared<GtkWindowData>();
-}
-shared_ptr<Device> MasGtkDeviceManager::findGdkMasterDevice(GdkDevice* p0MasterDevice) const
-{
-	shared_ptr<Device> refFoundDevice;
-	if ((m_refKeyboardDevice) && (m_refKeyboardDevice->getGdkDevice()->gobj() == p0MasterDevice)) {
-		refFoundDevice = m_refKeyboardDevice;
-	} else if ((m_refPointerDevice) && (m_refPointerDevice->getGdkDevice()->gobj() == p0MasterDevice)) {
-		refFoundDevice = m_refPointerDevice;
-	}
-	return refFoundDevice;
-}
 void MasGtkDeviceManager::sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice)
 {
-	if (!getEventClassEnabled(typeid(DeviceMgmtEvent))) {
+	if (!isEventClassEnabled(typeid(DeviceMgmtEvent))) {
 		return;
 	}
 	shared_ptr<ChildDeviceManager> refChildThis = shared_from_this();
@@ -505,93 +406,9 @@ void MasGtkDeviceManager::sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVIC
 		p0ListenerData->handleEventCallIf(m_nClassIdxDeviceMgmtEvent, refEvent);
 	}
 }
-void MasGtkDeviceManager::gdkDeviceAdded(
-GdkDeviceManager*
-#ifndef NDEBUG
-p0GdkDeviceManager
-#endif //NDEBUG
-, GdkDevice* p0Device)
-{
-	assert(p0GdkDeviceManager == m_refGdkDeviceManager->gobj());
-	GdkDeviceType eDeviceType = gdk_device_get_device_type(p0Device);
-	if (eDeviceType != GDK_DEVICE_TYPE_SLAVE) {
-		// This manager doesn't care about floating or other master devices
-		return; //--------------------------------------------------------------
-	}
-	// get the master
-	GdkDevice* p0MasterDevice = gdk_device_get_associated_device(p0Device);
-	// find it
-	shared_ptr<Device> refAffectedDevice = findGdkMasterDevice(p0MasterDevice);
-	if (!refAffectedDevice) {
-		// The slave is being added to another master
-		return; //----------------------------------------------------------
-	}
-	sendDeviceMgmtToListeners(DeviceMgmtEvent::DEVICE_MGMT_CHANGED, refAffectedDevice);
-}
-void MasGtkDeviceManager::gdkDeviceChanged(
-GdkDeviceManager*
-#ifndef NDEBUG
-p0GdkDeviceManager
-#endif //NDEBUG
-, GdkDevice* p0Device)
-{
-	assert(p0GdkDeviceManager == m_refGdkDeviceManager->gobj());
-	GdkDeviceType eDeviceType = gdk_device_get_device_type(p0Device);
-	if (eDeviceType != GDK_DEVICE_TYPE_MASTER) {
-		// This manager has only master devices
-		return; //--------------------------------------------------------------
-	}
-	shared_ptr<Device> refAffectedDevice = findGdkMasterDevice(p0Device);
-	if (!refAffectedDevice) {
-		// It's not the "main" (our) master
-		return; //--------------------------------------------------------------
-	}
-	sendDeviceMgmtToListeners(DeviceMgmtEvent::DEVICE_MGMT_CHANGED, refAffectedDevice);
-}
-void MasGtkDeviceManager::gdkDeviceRemoved(
-GdkDeviceManager *
-#ifndef NDEBUG
-p0GdkDeviceManager
-#endif //NDEBUG
-, GdkDevice* p0Device)
-{
-	assert(p0GdkDeviceManager == m_refGdkDeviceManager->gobj());
-	GdkDeviceType eDeviceType = gdk_device_get_device_type(p0Device);
-	if (eDeviceType == GDK_DEVICE_TYPE_FLOATING) {
-		// This manager has only master devices, doesn't care about floating
-		return; //--------------------------------------------------------------
-	}
-	shared_ptr<Device> refAffectedDevice;
-	if (eDeviceType == GDK_DEVICE_TYPE_SLAVE) {
-//std::cout << "MasGtkDeviceManager::gdkDeviceRemoved  SLAVE REMOVED" << std::endl;
-		// get the master
-		GdkDevice* p0MasterDevice = gdk_device_get_associated_device(p0Device);
-		// find it
-		refAffectedDevice = findGdkMasterDevice(p0MasterDevice);
-		if (!refAffectedDevice) {
-			// It isn't a slave of "our" master
-			return; //----------------------------------------------------------
-		}
-		// Removing one of its slaves has changed the master
-		sendDeviceMgmtToListeners(DeviceMgmtEvent::DEVICE_MGMT_CHANGED, refAffectedDevice);
-	} else {
-		// removing a master device
-		assert(eDeviceType == GDK_DEVICE_TYPE_MASTER);
-		refAffectedDevice = findGdkMasterDevice(p0Device);
-		if (!refAffectedDevice) {
-			// It's another master, we don't care
-			return; //----------------------------------------------------------
-		}
-		removeDevices();
-		// One of "our" masters was removed, add the alternative master pair (keyboard+pointer)
-		// there always should be one
-		addDevices(p0Device);
-	}
-}
-
 bool MasGtkDeviceManager::onKeyPress(GdkEventKey* p0KeyEv, const shared_ptr<GtkWindowData>& refWindowData)
 {
-//std::cout << "MasGtkDeviceManager::on_key_press " << p0KeyEv->keyval << std::endl;
+//std::cout << "MasGtkDeviceManager::onKeyPress 0 " << p0KeyEv->keyval << std::endl;
 	if (!m_refKeyboardDevice) {
 		return false;
 	}
@@ -601,7 +418,7 @@ bool MasGtkDeviceManager::onKeyPress(GdkEventKey* p0KeyEv, const shared_ptr<GtkW
 }
 bool MasGtkDeviceManager::onKeyRelease(GdkEventKey* p0KeyEv, const shared_ptr<GtkWindowData>& refWindowData)
 {
-//std::cout << "MasGtkDeviceManager::on_key_release " << p0KeyEv->keyval << std::endl;
+//std::cout << "MasGtkDeviceManager::onKeyRelease 0 " << p0KeyEv->keyval << std::endl;
 	if (!m_refKeyboardDevice) {
 		return false;
 	}
@@ -611,10 +428,11 @@ bool MasGtkDeviceManager::onKeyRelease(GdkEventKey* p0KeyEv, const shared_ptr<Gt
 }
 bool MasGtkDeviceManager::onMotionNotify(GdkEventMotion* p0MotionEv, const shared_ptr<GtkWindowData>& refWindowData)
 {
+//std::cout << "MasGtkDeviceManager::onMotionNotify" << '\n';
 	if (!m_refPointerDevice) {
 		return false;
 	}
-	if (! (m_refPointerDevice->m_refPointer->gobj() == p0MotionEv->device)) {
+	if (! m_refBackend->isPointerDevice(p0MotionEv->device)) {
 		return false;
 	}
 	assert(refWindowData->getAccessor());
@@ -623,11 +441,11 @@ bool MasGtkDeviceManager::onMotionNotify(GdkEventMotion* p0MotionEv, const share
 }
 bool MasGtkDeviceManager::onButtonPress(GdkEventButton* p0ButtonEv, const shared_ptr<GtkWindowData>& refWindowData)
 {
-//std::cout << "MasGtkDeviceManager::on_button_press" << std::endl;
+//std::cout << "MasGtkDeviceManager::onButtonPress" << std::endl;
 	if (!m_refPointerDevice) {
 		return false;
 	}
-	if (! (m_refPointerDevice->m_refPointer->gobj() == p0ButtonEv->device)) {
+	if (! m_refBackend->isPointerDevice(p0ButtonEv->device)) {
 		return false;
 	}
 	assert(refWindowData->getAccessor());
@@ -640,7 +458,7 @@ bool MasGtkDeviceManager::onButtonRelease(GdkEventButton* p0ButtonEv, const shar
 	if (!m_refPointerDevice) {
 		return false;
 	}
-	if (! (m_refPointerDevice->m_refPointer->gobj() == p0ButtonEv->device)) {
+	if (! m_refBackend->isPointerDevice(p0ButtonEv->device)) {
 		return false;
 	}
 	assert(refWindowData->getAccessor());
@@ -653,7 +471,7 @@ bool MasGtkDeviceManager::onScroll(GdkEventScroll* p0ScrollEv, const shared_ptr<
 	if (!m_refPointerDevice) {
 		return false;
 	}
-	if (! (m_refPointerDevice->m_refPointer->gobj() == p0ScrollEv->device)) {
+	if (! m_refBackend->isPointerDevice(p0ScrollEv->device)) {
 		return false;
 	}
 	assert(refWindowData->getAccessor());
@@ -666,7 +484,7 @@ bool MasGtkDeviceManager::onTouch(GdkEventTouch* p0TouchEv, const shared_ptr<Gtk
 	if (!m_refPointerDevice) {
 		return false;
 	}
-	if (! (m_refPointerDevice->m_refPointer->gobj() == p0TouchEv->device)) {
+	if (! m_refBackend->isPointerDevice(p0TouchEv->device)) {
 		return false;
 	}
 	assert(refWindowData->getAccessor());

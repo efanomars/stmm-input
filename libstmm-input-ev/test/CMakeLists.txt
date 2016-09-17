@@ -21,6 +21,6 @@ set(STMMI_TEST_SOURCES
         ${STMMI_TEST_SOURCES_DIR}/testTouchEventClass.cxx
        )
 
-TestFiles(stmm-input-ev TRUE "${STMMI_TEST_SOURCES}")
+TestFiles(stmm-input-ev TRUE "${STMMI_TEST_SOURCES}" "" FALSE)
 
 include(CTest)

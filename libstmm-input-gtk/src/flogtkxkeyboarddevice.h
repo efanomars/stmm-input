@@ -23,6 +23,8 @@
 
 #include "flogtkdevicemanager.h"
 
+#include "recycler.h"
+
 #include <stmm-input-base/stddevice.h>
 
 namespace stmi
@@ -46,6 +48,8 @@ public:
 	}
 	virtual ~GtkXKeyboardDevice();
 	shared_ptr<Capability> getCapability(const Capability::Class& oClass) const override;
+	shared_ptr<Capability> getCapability(int32_t nCapabilityId) const override;
+	std::vector<int32_t> getCapabilities() const override;
 	std::vector<Capability::Class> getCapabilityClasses() const override;
 	//
 	shared_ptr<Device> getDevice() const override;
@@ -58,20 +62,40 @@ private:
 	void removingDevice();
 
 	bool handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, const shared_ptr<Private::Flo::GtkWindowData>& refWindowData);
-
+	class ReKeyEvent;
 	void sendKeyEventToListener(const FloGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
-								, int64_t nTimePressedUsec
+								, uint64_t nPressedTimeStamp
 								, KeyEvent::KEY_INPUT_TYPE eInputType, HARDWARE_KEY eHardwareKey
 								, const shared_ptr<GtkAccessor>& refAccessor
 								, const shared_ptr<KeyCapability>& refCapability
 								, int32_t nClassIdxKeyEvent
-								, shared_ptr<KeyEvent>& refEvent);
+								, shared_ptr<ReKeyEvent>& refEvent);
 private:
 	struct KeyData
 	{
-		int64_t m_nPressedTimeUsec;
+		uint64_t m_nPressedTimeStamp;
 	};
 	std::unordered_map<HARDWARE_KEY, KeyData> m_oPressedKeys;
+	//
+	class ReKeyEvent :public KeyEvent
+	{
+	public:
+		ReKeyEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+					, const shared_ptr<KeyCapability>& refKeyCapability, KEY_INPUT_TYPE eType, HARDWARE_KEY eKey)
+		: KeyEvent(nTimeUsec, refAccessor, refKeyCapability, eType, eKey)
+		{
+		}
+		void reInit(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+				, const shared_ptr<KeyCapability>& refKeyCapability, KEY_INPUT_TYPE eType, HARDWARE_KEY eKey)
+		{
+			setTimeUsec(nTimeUsec);
+			setAccessor(refAccessor);
+			setKeyCapability(refKeyCapability);
+			setType(eType);
+			setKey(eKey);
+		}
+	};
+	Private::Recycler<ReKeyEvent> m_oKeyEventRecycler;
 private:
 	GtkXKeyboardDevice(const GtkXKeyboardDevice& oSource) = delete;
 	GtkXKeyboardDevice& operator=(const GtkXKeyboardDevice& oSource) = delete;

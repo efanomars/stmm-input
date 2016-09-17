@@ -39,7 +39,7 @@ namespace Flo
 using std::shared_ptr;
 using std::weak_ptr;
 
-// XInput2 Source for floating device events
+/* XInput2 Source for floating device events */
 class XIEventSource : public Glib::Source
 {
 public:

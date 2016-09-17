@@ -29,7 +29,7 @@ Event::RegisterClass<KeyEvent> KeyEvent::s_oInstall(s_sClassId);
 
 KeyEvent::KeyEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
 					, const shared_ptr<KeyCapability>& refKeyCapability, KEY_INPUT_TYPE eType, HARDWARE_KEY eKey)
-: Event(s_oInstall.getEventClass(), nTimeUsec, refAccessor)
+: Event(s_oInstall.getEventClass(), nTimeUsec, (refKeyCapability ? refKeyCapability->getId() : -1), refAccessor)
 , m_eType(eType)
 , m_eKey(eKey)
 , m_refKeyCapability(refKeyCapability)

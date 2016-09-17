@@ -24,6 +24,7 @@
 #include "gtkaccessor.h"
 #include "gdkkeyconverter.h"
 #include "keyrepeatmode.h"
+#include "masgtkbackend.h"
 
 #include <stmm-input-base/stddevice.h>
 #include <stmm-input-base/stddevicemanager.h>
@@ -52,13 +53,12 @@ namespace Private
 {
 namespace Mas
 {
+	class GtkBackend;
 	class GtkWindowData;
+	class GtkWindowDataFactory;
 	class GtkKeyboardDevice;
 	class GtkPointerDevice;
 	class MasGtkListenerExtraData;
-	void gdkDeviceManagerCallbackAdded(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	void gdkDeviceManagerCallbackChanged(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	void gdkDeviceManagerCallbackRemoved(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
 }
 }
 
@@ -135,20 +135,17 @@ public:
 	shared_ptr<DeviceManager> getDeviceManager() override;
 protected:
 	void finalizeListener(ListenerData& oListenerData) override;
-private:
+	/** Constructor. */
 	MasGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
 						, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter);
-	// Initializes the device manager by adding the master devices.
-	bool init(const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager);
+	/** Initializes the device manager. */
+	void init(std::unique_ptr<Private::Mas::GtkWindowDataFactory>& refFactory
+			, std::unique_ptr<Private::Mas::GtkBackend>& refBackend);
 
-	void initDeviceManager();
-	void deinitDeviceManager();
-	friend void Private::Mas::gdkDeviceManagerCallbackAdded(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	friend void Private::Mas::gdkDeviceManagerCallbackChanged(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	friend void Private::Mas::gdkDeviceManagerCallbackRemoved(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	void gdkDeviceAdded(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device);
-	void gdkDeviceChanged(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device);
-	void gdkDeviceRemoved(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device);
+private:
+	void onDeviceChanged(bool bPointer);
+	void onDevicePairAdded();
+	void onDevicePairRemoved();
 
 	bool onKeyPress(GdkEventKey* p0KeyEv, const shared_ptr<Private::Mas::GtkWindowData>& refWindowData);
 	bool onKeyRelease(GdkEventKey* p0KeyEv, const shared_ptr<Private::Mas::GtkWindowData>& refWindowData);
@@ -162,9 +159,9 @@ private:
 
 	void adjustConnectionsAfterEnablingClass();
 
-	void addDevices(GdkDevice* p0NotThisOne);
+	void addDevices();
 	void removeDevices();
-	shared_ptr<Device> findGdkMasterDevice(GdkDevice* p0MasterDevice) const;
+
 	void sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice);
 
 	bool findWindow(Gtk::Window* p0GtkmmWindow
@@ -175,8 +172,8 @@ private:
 	void deselectAccessor();
 	void cancelDevices();
 	void onIsActiveChanged(const shared_ptr<Private::Mas::GtkWindowData>& refWindowData);
-	std::shared_ptr<Private::Mas::GtkWindowData> getGtkWindowData();
 
+	friend class Private::Mas::GtkBackend;
 	friend class Private::Mas::GtkWindowData;
 	friend class Private::Mas::GtkKeyboardDevice;
 	friend class Private::Mas::GtkPointerDevice;
@@ -184,13 +181,8 @@ private:
 private:
 	// The GtkAccessor (GtkWindowData::m_refAccessor) will tell 
 	// when the window gets deleted. The accessor can also be removed
-	// explicitely during a listener callback. In both cases the
-	// shared_ptr is removed from m_oWindows and added to m_aFreePool.
+	// explicitely during a listener callback.
 	std::vector<std::pair<Gtk::Window*, shared_ptr<Private::Mas::GtkWindowData> > > m_aGtkWindowData;
-	// The objects in the free pool might still be in use when the
-	// removal of the accessor was done during a callback. This is detected
-	// through the ref count of the shared_ptr.
-	std::vector< std::shared_ptr<Private::Mas::GtkWindowData> > m_aFreePool;
 	// The currently active accessor (window), can be null.
 	std::shared_ptr<Private::Mas::GtkWindowData> m_refSelected;
 	// Invariants:
@@ -200,10 +192,8 @@ private:
 
 	int32_t m_nCancelingNestedDepth;
 
-	Glib::RefPtr<Gdk::DeviceManager> m_refGdkDeviceManager;
-	gulong m_nConnectHandlerDeviceAdded;
-	gulong m_nConnectHandlerDeviceChanged;
-	gulong m_nConnectHandlerDeviceRemoved;
+	std::unique_ptr<Private::Mas::GtkWindowDataFactory> m_refFactory;
+	std::unique_ptr<Private::Mas::GtkBackend> m_refBackend;
 	// Main master keyboard + pointer
 	shared_ptr<Private::Mas::GtkKeyboardDevice> m_refKeyboardDevice;
 	shared_ptr<Private::Mas::GtkPointerDevice> m_refPointerDevice;

@@ -55,10 +55,10 @@ public:
 	 */
 	shared_ptr<DeviceManager> getRoot();
 protected:
-	friend class ParentDeviceManager;
 	ChildDeviceManager();
 
 private:
+	friend class ParentDeviceManager;
 	// Sets the parent of the child device manager (called by ParentDeviceManager::init())
 	void setParent(const shared_ptr<ParentDeviceManager>& refParent);
 

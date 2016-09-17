@@ -23,7 +23,6 @@
 
 #include <stmm-input/capability.h>
 
-//#include <cassert>
 #include <algorithm>
 
 namespace stmi

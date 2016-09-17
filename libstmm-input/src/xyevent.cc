@@ -23,21 +23,22 @@
 namespace stmi
 {
 
-XYEvent::XYEvent(const Class& oClass, int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+XYEvent::XYEvent(const Class& oClass, int64_t nTimeUsec, int32_t nCapabilityId
+				, const shared_ptr<Accessor>& refAccessor
 				, double fX, double fY, XY_GRAB_INPUT_TYPE eXYGrabType, int64_t nGrabId)
-: Event(oClass, nTimeUsec, refAccessor)
+: Event(oClass, nTimeUsec, nCapabilityId, refAccessor)
 , m_fX(fX)
 , m_fY(fY)
 , m_bIsModified(false)
 , m_eXYGrabType(eXYGrabType)
 , m_nGrabId(nGrabId)
 {
-//std::cout << "XYEvent::XYEvent eXYGrabType=" << eXYGrabType << "  nGrabId=" << nGrabId << std::endl;
 	assert((eXYGrabType >= XY_HOVER) && (eXYGrabType <= XY_UNGRAB_CANCEL));
 }
 
-XYEvent::XYEvent(const Class& oClass, int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor, double fX, double fY)
-: XYEvent(oClass, nTimeUsec, refAccessor, fX, fY, XY_HOVER, -1)
+XYEvent::XYEvent(const Class& oClass, int64_t nTimeUsec, int32_t nCapabilityId
+				, const shared_ptr<Accessor>& refAccessor, double fX, double fY)
+: XYEvent(oClass, nTimeUsec, nCapabilityId, refAccessor, fX, fY, XY_HOVER, -1)
 {
 }
 

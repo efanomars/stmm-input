@@ -29,10 +29,10 @@
 namespace stmi
 {
 
-// ODM = Owner DeviceManager, must be subclass of ChildDeviceManager
 /** Device class template.
  * Helper class that Device classes can subclass. It stores name and
  * owner device manager.
+ * ODM = Owner DeviceManager, must be subclass of ChildDeviceManager.
  */
 template<class ODM>
 class StdDevice : public Device

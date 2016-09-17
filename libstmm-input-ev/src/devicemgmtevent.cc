@@ -28,7 +28,7 @@ Event::RegisterClass<DeviceMgmtEvent> DeviceMgmtEvent::s_oInstall(s_sClassId);
 
 DeviceMgmtEvent::DeviceMgmtEvent(int64_t nTimeUsec, const shared_ptr<DeviceMgmtCapability>& refDeviceMgmtCapability
 								, DEVICE_MGMT_TYPE eDeviceMgmtType, const shared_ptr<Device>& refDevice)
-: Event(s_oInstall.getEventClass(), nTimeUsec)
+: Event(s_oInstall.getEventClass(), nTimeUsec, (refDeviceMgmtCapability ? refDeviceMgmtCapability->getId() : -1))
 , m_refDevice(refDevice)
 , m_eDeviceMgmtType(eDeviceMgmtType)
 , m_refDeviceMgmtCapability(refDeviceMgmtCapability)

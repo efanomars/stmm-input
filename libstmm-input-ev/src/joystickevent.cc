@@ -29,7 +29,7 @@ Event::RegisterClass<JoystickHatEvent> JoystickHatEvent::s_oInstall(s_sClassId);
 JoystickHatEvent::JoystickHatEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
 									, const shared_ptr<JoystickCapability>& refJoystickCapability, int32_t nHat
 									, JoystickCapability::HAT_VALUE eValue, JoystickCapability::HAT_VALUE ePreviousValue)
-: Event(s_oInstall.getEventClass(), nTimeUsec, refAccessor)
+: Event(s_oInstall.getEventClass(), nTimeUsec, (refJoystickCapability ? refJoystickCapability->getId() : -1), refAccessor)
 , m_nHat(nHat)
 , m_eValue(eValue)
 , m_ePreviousValue(ePreviousValue)
@@ -122,7 +122,7 @@ Event::RegisterClass<JoystickButtonEvent> JoystickButtonEvent::s_oInstall(s_sCla
 JoystickButtonEvent::JoystickButtonEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
 										, const shared_ptr<JoystickCapability>& refJoystickCapability
 										, BUTTON_INPUT_TYPE eType, JoystickCapability::BUTTON eButton)
-: Event(s_oInstall.getEventClass(), nTimeUsec, refAccessor)
+: Event(s_oInstall.getEventClass(), nTimeUsec, (refJoystickCapability ? refJoystickCapability->getId() : -1), refAccessor)
 , m_eButton(eButton)
 , m_eType(eType)
 , m_refJoystickCapability(refJoystickCapability)
@@ -146,7 +146,7 @@ Event::RegisterClass<JoystickAxisEvent> JoystickAxisEvent::s_oInstall(s_sClassId
 JoystickAxisEvent::JoystickAxisEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
 									, const shared_ptr<JoystickCapability>& refJoystickCapability
 									, JoystickCapability::AXIS eAxis, int32_t nValue)
-: Event(s_oInstall.getEventClass(), nTimeUsec, refAccessor)
+: Event(s_oInstall.getEventClass(), nTimeUsec, (refJoystickCapability ? refJoystickCapability->getId() : -1), refAccessor)
 , m_eAxis(eAxis)
 , m_nValue(nValue)
 , m_refJoystickCapability(refJoystickCapability)

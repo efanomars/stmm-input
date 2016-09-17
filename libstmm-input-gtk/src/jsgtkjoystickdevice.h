@@ -23,6 +23,8 @@
 
 #include "jsgtkdevicemanager.h"
 
+#include "recycler.h"
+
 #include <stmm-input-base/stddevice.h>
 
 #include <linux/joystick.h>
@@ -35,10 +37,6 @@ namespace Private
 namespace Js
 {
 
-inline static bool isHatAxis(JoystickCapability::AXIS eAxis)
-{
-	return (eAxis >= ABS_HAT0X) && (eAxis <= ABS_HAT3Y);
-}
 
 using std::shared_ptr;
 using std::weak_ptr;
@@ -48,11 +46,12 @@ class JoystickDevice final : public StdDevice<JsGtkDeviceManager>, public Joysti
 {
 public:
 	JoystickDevice(std::string sName, const shared_ptr<JsGtkDeviceManager>& refDeviceManager
-					, int32_t nFD, int64_t nFileSysDeviceId
 					, const std::vector<int32_t>& aButtonCode, int32_t nTotHats, const std::vector<int32_t>& aAxisCode);
 	virtual ~JoystickDevice();
 	//
 	shared_ptr<Capability> getCapability(const Capability::Class& oClass) const override;
+	shared_ptr<Capability> getCapability(int32_t nCapabilityId) const override;
+	std::vector<int32_t> getCapabilities() const override;
 	std::vector<Capability::Class> getCapabilityClasses() const override;
 	//
 	shared_ptr<Device> getDevice() const override;
@@ -64,7 +63,20 @@ public:
 	bool isButtonPressed(JoystickCapability::BUTTON eButton) const override;
 	HAT_VALUE getHatValue(int32_t nHat) const override;
 	int32_t getAxisValue(JoystickCapability::AXIS eAxis) const override;
+
+	inline int32_t getDeviceId() const { return Device::getId(); }
+
+	constexpr static bool isHatAxis(int32_t nLinuxAxis)
+	{
+		return (nLinuxAxis >= ABS_HAT0X) && (nLinuxAxis <= ABS_HAT3Y);
+	}
+
+	// This is public so that there's no need to friend GtkBackend (or even FakeGtkBackend)
+	bool doInputJoystickEventCallback(const struct js_event* p0JoyEvent);
 private:
+	size_t getButtonNr(JoystickCapability::BUTTON eButton) const;
+	size_t getAxisNr(JoystickCapability::AXIS eAxis) const;
+	//
 	friend class stmi::JsGtkDeviceManager;
 	void cancelSelectedAccessorButtonsAndHats();
 	void cancelSelectedAccessorButtons(const shared_ptr<JoystickCapability>& refCapability
@@ -84,7 +96,6 @@ private:
 								, const shared_ptr<GtkAccessor>& refSelectedAccessor);
 	void removingDevice();
 	//
-	bool doInputJoystickEventCallback(const struct js_event* p0JoyEvent);
 	void handleButton(JsGtkDeviceManager* p0Owner, const shared_ptr<GtkAccessor>& refSelectedAccessor
 					, const shared_ptr<JoystickCapability>& refThis
 					, int32_t nNr, JoystickCapability::BUTTON eButton, int32_t nValue);
@@ -95,44 +106,42 @@ private:
 					, const shared_ptr<JoystickCapability>& refThis
 					, JoystickCapability::AXIS eAxis, int32_t nValue);
 	//
+	class ReJoystickButtonEvent;
 	void sendButtonEventToListener(const JsGtkDeviceManager::ListenerData& oListenerData
 									, int64_t nEventTimeUsec, const shared_ptr<GtkAccessor>& refAccessor
-									, int64_t nTimePressedUsec
+									, uint64_t nPressedTimeStamp
 									, JoystickButtonEvent::BUTTON_INPUT_TYPE eInputType
 									, JoystickCapability::BUTTON eButtonId
 									, const shared_ptr<JoystickCapability>& refCapability
 									, int32_t nClassIdxJoystickButtonEvent
-									, shared_ptr<JoystickButtonEvent>& refEvent);
+									, shared_ptr<ReJoystickButtonEvent>& refEvent);
+	class ReJoystickHatEvent;
 	void sendHatEventToListener(const JsGtkDeviceManager::ListenerData& oListenerData
 								, int64_t nEventTimeUsec, const shared_ptr<GtkAccessor>& refAccessor
-								, int64_t nTimeAnyPressedUsec, int32_t nHat
+								, uint64_t nPressedTimeStamp, int32_t nHat
 								, JoystickCapability::HAT_VALUE eValue
 								, JoystickCapability::HAT_VALUE ePreviousValue
 								, const shared_ptr<JoystickCapability>& refCapability
 								, int32_t nClassIdxJoystickHatEvent
-								, shared_ptr<JoystickHatEvent>& refEvent);
-	size_t getButtonNr(JoystickCapability::BUTTON eButton) const;
-	size_t getAxisNr(JoystickCapability::AXIS eAxis) const;
+								, shared_ptr<ReJoystickHatEvent>& refEvent);
 
 	inline JoystickCapability::HAT_VALUE calcHatValue(int32_t nAxisX, int32_t nAxisY) const
 	{
 		return static_cast<JoystickCapability::HAT_VALUE>(nAxisY * 4 + nAxisX);
 	}
 private:
-	const int32_t m_nFD; // The file descriptor is open until destructor is called
-	const int64_t m_nFileSysDeviceId; // The stat rdev field (should be unique)
 	struct ButtonData
 	{
 		bool m_bPressed;
-		int64_t m_nTimePressed;
+		uint64_t m_nPressedTimeStamp;
 	};
 	const std::vector<int32_t> m_aButtonCode; // Size: tot buttons provided by ioctl, Value: the enum JoystickCapability::BUTTON
 	std::vector< ButtonData > m_aButtonPressed; // Size: m_aButtonCode.size()
 	struct HatData
 	{
-		int64_t m_nTimePressed; // last transition from HAT_CENTER to anything else
-		int32_t m_nAxisX; // Current position  0: center, 1: left, 2: right
-		int32_t m_nAxisY; // Current position  0: center, 1: up, 2: down
+		uint64_t m_nPressedTimeStamp; // last transition from JoystickCapability::HAT_CENTER (0,0) to anything else
+		int32_t m_nAxisX; // Current position  0: center, 1: left, 2: right (see calcHatValue)
+		int32_t m_nAxisY; // Current position  0: center, 1: up, 2: down  (see calcHatValue)
 	};
 	constexpr static int32_t s_nMaxHats = 4;
 	const int32_t m_nTotHats;
@@ -141,8 +150,71 @@ private:
 	const std::vector<int32_t> m_aAxisCode; // Size: tot axes provided by ioctl, Value: the enum JoystickCapability::AXIS
 	std::vector< int32_t > m_aAxisValue; // Size: m_aAxisCode.size(), Value: current axis value [-32767, 32767]
 	//
-	friend class JsGtkDeviceManager;
-	Glib::RefPtr<Private::Js::JoystickInputSource> m_refSource;
+	class ReJoystickHatEvent :public JoystickHatEvent
+	{
+	public:
+		ReJoystickHatEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+							, const shared_ptr<JoystickCapability>& refJoystickCapability, int32_t nHat
+							, JoystickCapability::HAT_VALUE eValue, JoystickCapability::HAT_VALUE ePreviousValue)
+		: JoystickHatEvent(nTimeUsec, refAccessor, refJoystickCapability, nHat, eValue, ePreviousValue)
+		{
+		}
+		void reInit(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+					, const shared_ptr<JoystickCapability>& refJoystickCapability, int32_t nHat
+					, JoystickCapability::HAT_VALUE eValue, JoystickCapability::HAT_VALUE ePreviousValue)
+		{
+			setTimeUsec(nTimeUsec);
+			setAccessor(refAccessor);
+			setHat(nHat);
+			setValue(eValue, ePreviousValue);
+			setJoystickCapability(refJoystickCapability);
+		}
+	};
+	Private::Recycler<ReJoystickHatEvent> m_oJoystickHatEventRecycler;
+	//
+	class ReJoystickButtonEvent :public JoystickButtonEvent
+	{
+	public:
+		ReJoystickButtonEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+								, const shared_ptr<JoystickCapability>& refJoystickCapability
+								, BUTTON_INPUT_TYPE eType, JoystickCapability::BUTTON eButton)
+		: JoystickButtonEvent(nTimeUsec, refAccessor, refJoystickCapability, eType, eButton)
+		{
+		}
+		void reInit(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+					, const shared_ptr<JoystickCapability>& refJoystickCapability
+					, BUTTON_INPUT_TYPE eType, JoystickCapability::BUTTON eButton)
+		{
+			setTimeUsec(nTimeUsec);
+			setAccessor(refAccessor);
+			setType(eType);
+			setButton(eButton);
+			setJoystickCapability(refJoystickCapability);
+		}
+	};
+	Private::Recycler<ReJoystickButtonEvent> m_oJoystickButtonEventRecycler;
+	//
+	class ReJoystickAxisEvent :public JoystickAxisEvent
+	{
+	public:
+		ReJoystickAxisEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+								, const shared_ptr<JoystickCapability>& refJoystickCapability
+								, JoystickCapability::AXIS eAxis, int32_t nValue)
+		: JoystickAxisEvent(nTimeUsec, refAccessor, refJoystickCapability, eAxis, nValue)
+		{
+		}
+		void reInit(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+					, const shared_ptr<JoystickCapability>& refJoystickCapability
+					, JoystickCapability::AXIS eAxis, int32_t nValue)
+		{
+			setTimeUsec(nTimeUsec);
+			setAccessor(refAccessor);
+			setAxis(eAxis);
+			setValue(nValue);
+			setJoystickCapability(refJoystickCapability);
+		}
+	};
+	Private::Recycler<ReJoystickAxisEvent> m_oJoystickAxisEventRecycler;
 private:
 	JoystickDevice(const JoystickDevice& oSource) = delete;
 	JoystickDevice& operator=(const JoystickDevice& oSource) = delete;

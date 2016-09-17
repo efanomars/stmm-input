@@ -26,6 +26,7 @@
 #include <typeinfo>
 #include <string>
 #include <memory>
+#include <atomic>
 #include <iostream>
 #include <cassert>
 
@@ -44,6 +45,11 @@ class Capability
 {
 public:
 	virtual ~Capability() = default;
+
+	/** The capability id.
+	 * @return The unique id of the capability.
+	 */
+	int32_t getId() const { return m_nCapabilityId; }
 
 	/** Returns the device owning this capability, if any.
 	 * If it's a device manager capability this might return null.
@@ -272,7 +278,12 @@ private:
 		return s_oNamedTypes;
 	}
 private:
+	static int32_t getNewCapabilityId();
+private:
 	const Capability::Class m_oClass;
+private:
+	int32_t m_nCapabilityId;
+	static std::atomic<int32_t> s_nNewIdCounter;
 private:
 	Capability() = delete;
 };

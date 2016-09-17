@@ -54,7 +54,7 @@ public:
 	 * is XY_HOVER then XYEvent::getXYGrabId() returns `-1`, `1` otherwise.
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
-	 * @param refPointerCapability The capability that generated this event.
+	 * @param refPointerCapability The capability that generated this event. Cannot be null.
 	 * @param fX The X position of the pointer.
 	 * @param fY The Y position of the pointer.
 	 * @param eType The type of pointer event.
@@ -108,11 +108,21 @@ public:
 		return s_oPointerClass;
 	}
 protected:
-	// This method also sets grab type.
+	/** Sets pointer and grab fields.
+	 * This method also calls XYEvent::setXYGrab().
+	 * @param eType The type of pointer event.
+	 * @param nButton The button (`>= 1`) or `-1`.
+	 * @param bAnyButtonPressed Whether any button is pressed.
+	 * @param bWasAnyButtonPressed Whether any button was pressed before this event.
+	 */
 	void setPointer(POINTER_INPUT_TYPE eType, int32_t nButton, bool bAnyButtonPressed, bool bWasAnyButtonPressed);
+	/** Sets the capability.
+	 * @param refPointerCapability The capability that generated this event. Cannot be null.
+	 */
 	inline void setPointerCapability(const shared_ptr<PointerCapability>& refPointerCapability)
 	{
 		assert(refPointerCapability);
+		setCapabilityId(refPointerCapability->getId());
 		m_refPointerCapability = refPointerCapability;
 	}
 private:
@@ -144,7 +154,7 @@ public:
 	 * Parameter bAnyButtonPressed is used to determine the current grab status.
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
-	 * @param refPointerCapability The capability that generated this event.
+	 * @param refPointerCapability The capability that generated this event. Cannot be null.
 	 * @param eScrollDir The direction of the scroll.
 	 * @param fX The X position of the pointer.
 	 * @param fY The Y position of the pointer.
@@ -189,11 +199,19 @@ public:
 		return s_oPonterScrollClass;
 	}
 protected:
-	// This method also sets grab type.
-	void setPointerScroll(POINTER_SCROLL_DIR eType, bool bAnyButtonPressed);
+	/** Sets scroll and grab fields.
+	 * This method also calls XYEvent::setXYGrab().
+	 * @param eScrollDir The direction of the scroll.
+	 * @param bAnyButtonPressed Whether any button is pressed.
+	 */
+	void setPointerScroll(POINTER_SCROLL_DIR eScrollDir, bool bAnyButtonPressed);
+	/** Sets the capability.
+	 * @param refPointerCapability The capability that generated this event. Cannot be null.
+	 */
 	inline void setPointerCapability(const shared_ptr<PointerCapability>& refPointerCapability)
 	{
 		assert(refPointerCapability);
+		setCapabilityId(refPointerCapability->getId());
 		m_refPointerCapability = refPointerCapability;
 	}
 private:

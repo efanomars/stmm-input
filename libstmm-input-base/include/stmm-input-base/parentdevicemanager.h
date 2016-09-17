@@ -55,7 +55,7 @@ public:
 	std::vector<int32_t> getDevices() const override;
 
 	/** Tells whether an event class is enabled in at least one of the children. */
-	bool getEventClassEnabled(const Event::Class& oEventClass) const override;
+	bool isEventClassEnabled(const Event::Class& oEventClass) const override;
 	/** Calls the function for all the  children. */
 	void enableEventClass(const Event::Class& oEventClass) override;
 
@@ -80,7 +80,7 @@ protected:
 	ParentDeviceManager();
 	/** Initialization.
 	 * Cannot be called twice.
-	 * @param aChildDeviceManager The child device managers. Cannot be empty. Cannot be null.
+	 * @param aChildDeviceManager The child device managers. Cannot be empty.
 	 */
 	void init(const std::vector< shared_ptr<ChildDeviceManager> >& aChildDeviceManager);
 

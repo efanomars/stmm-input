@@ -49,7 +49,7 @@ public:
 	 *
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
-	 * @param refJoystickCapability The capability that generated this event.
+	 * @param refJoystickCapability The capability that generated this event. Cannot be null.
 	 * @param nHat The hat that changed its status. Must be >= 0.
 	 * @param eValue The new value for the hat. Can't be JoystickCapability::HAT_VALUE_NOT_SET.
 	 * @param ePreviousValue The previous value for the hat. Can be JoystickCapability::HAT_VALUE_NOT_SET.
@@ -128,15 +128,26 @@ public:
 		return s_oJoyHatClass;
 	}
 protected:
+	/** Sets the hat.
+	 * @param nHat The hat that changed its status. Must be >= 0.
+	 */
 	inline void setHat(int32_t nHat)
 	{
 		assert(nHat >= 0);
 		m_nHat = nHat;
 	}
+	/** Sets the value of the hat.
+	 * @param eValue The new value for the hat. Can't be JoystickCapability::HAT_VALUE_NOT_SET.
+	 */
 	inline void setValue(JoystickCapability::HAT_VALUE eValue)
 	{
 		setValue(eValue, JoystickCapability::HAT_VALUE_NOT_SET);
 	}
+	/** Sets the value of the hat for key simulation.
+	 * @param eValue The new value for the hat. Can't be JoystickCapability::HAT_VALUE_NOT_SET.
+	 * @param ePreviousValue The previous value for the hat. Can be JoystickCapability::HAT_VALUE_NOT_SET.
+	 *        Can't be HAT_CENTER_CANCEL.
+	 */
 	inline void setValue(JoystickCapability::HAT_VALUE eValue, JoystickCapability::HAT_VALUE ePreviousValue)
 	{
 		assert(JoystickCapability::isValidHatValue(eValue));
@@ -146,9 +157,13 @@ protected:
 		m_ePreviousValue = ePreviousValue;
 		m_bCancel = (eValue == JoystickCapability::HAT_CENTER_CANCEL);
 	}
+	/** Sets the capability.
+	 * @param refJoystickCapability The capability that generated this event. Cannot be null.
+	 */
 	inline void setJoystickCapability(const shared_ptr<JoystickCapability>& refJoystickCapability)
 	{
 		assert(refJoystickCapability);
+		setCapabilityId(refJoystickCapability->getId());
 		m_refJoystickCapability = refJoystickCapability;
 	}
 private:
@@ -181,7 +196,7 @@ public:
 	 * @see JoystickCapability::BUTTON for valid buttons.
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
-	 * @param refJoystickCapability The capability that generated this event.
+	 * @param refJoystickCapability The capability that generated this event. Cannot be null.
 	 * @param eType What happened to the button.
 	 * @param eButton The button.
 	 */
@@ -209,24 +224,35 @@ public:
 		return s_oJoyButtonClass;
 	}
 protected:
-	inline bool isValidType(BUTTON_INPUT_TYPE eType) const
-	{
-		return ((eType == BUTTON_PRESS) || (eType == BUTTON_RELEASE) || (eType == BUTTON_RELEASE_CANCEL));
-	}
+	/** Sets the type.
+	 * @param eType What happened to the button.
+	 */
 	inline void setType(BUTTON_INPUT_TYPE eType)
 	{
 		assert(isValidType(eType));
 		m_eType = eType;
 	}
+	/** Sets the button.
+	 * @param eButton The button.
+	 */
 	inline void setButton(JoystickCapability::BUTTON eButton)
 	{
 		assert(JoystickCapability::isValidButton(eButton));
 		m_eButton = eButton;
 	}
+	/** Sets the capability.
+	 * @param refJoystickCapability The capability that generated this event. Cannot be null.
+	 */
 	inline void setJoystickCapability(const shared_ptr<JoystickCapability>& refJoystickCapability)
 	{
 		assert(refJoystickCapability);
+		setCapabilityId(refJoystickCapability->getId());
 		m_refJoystickCapability = refJoystickCapability;
+	}
+private:
+	inline bool isValidType(BUTTON_INPUT_TYPE eType) const
+	{
+		return ((eType == BUTTON_PRESS) || (eType == BUTTON_RELEASE) || (eType == BUTTON_RELEASE_CANCEL));
 	}
 private:
 	JoystickCapability::BUTTON m_eButton;
@@ -247,7 +273,7 @@ public:
 	/** Constructor.
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
-	 * @param refJoystickCapability The capability that generated this event.
+	 * @param refJoystickCapability The capability that generated this event. Cannot be null.
 	 * @param eAxis The axis.
 	 * @param nValue Value normalized to [-32767, 32767].
 	 */
@@ -282,18 +308,29 @@ public:
 		return s_oJoyAxisClass;
 	}
 protected:
+	/** Sets the axis.
+	 * @param eAxis The axis.
+	 */ 
 	inline void setAxis(JoystickCapability::AXIS eAxis)
 	{
 		assert(JoystickCapability::isValidAxis(eAxis));
 		m_eAxis = eAxis;
 	}
+	/** Sets the axis value.
+	 * @param nValue Value normalized to [-32767, 32767].
+	 */
 	inline void setValue(int32_t nValue)
 	{
+		assert((nValue >= -32767) && (nValue <= 32767));
 		m_nValue = nValue;
 	}
+	/** Set the capability.
+	 * @param refJoystickCapability The capability that generated this event. Cannot be null.
+	 */
 	inline void setJoystickCapability(const shared_ptr<JoystickCapability>& refJoystickCapability)
 	{
 		assert(refJoystickCapability);
+		setCapabilityId(refJoystickCapability->getId());
 		m_refJoystickCapability = refJoystickCapability;
 	}
 private:

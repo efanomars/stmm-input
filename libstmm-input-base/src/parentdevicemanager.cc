@@ -22,8 +22,6 @@
 
 #include "util.h"
 
-//#include <algorithm>
-
 namespace stmi
 {
 
@@ -101,10 +99,10 @@ std::vector<int32_t> ParentDeviceManager::getDevices() const
 	}
 	return aSet;
 }
-bool ParentDeviceManager::getEventClassEnabled(const Event::Class& oEventClass) const
+bool ParentDeviceManager::isEventClassEnabled(const Event::Class& oEventClass) const
 {
 	for (auto& refCDM : m_aChildDeviceManager) {
-		const bool bChildEnabled = refCDM->getEventClassEnabled(oEventClass);
+		const bool bChildEnabled = refCDM->isEventClassEnabled(oEventClass);
 		if (bChildEnabled) {
 			return true;
 		}

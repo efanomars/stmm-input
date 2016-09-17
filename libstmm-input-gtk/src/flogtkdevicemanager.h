@@ -24,6 +24,8 @@
 #include "gtkaccessor.h"
 #include "gdkkeyconverter.h"
 #include "keyrepeatmode.h"
+#include "recycler.h"
+#include "flogtkbackend.h"
 
 #include <stmm-input-base/stddevice.h>
 #include <stmm-input-base/stddevicemanager.h>
@@ -34,9 +36,6 @@
 #include <stmm-input-ev/devicemgmtevent.h>
 
 #include <gtkmm.h>
-
-#include <X11/extensions/XI2.h>
-#include <X11/extensions/XInput2.h>
 
 #include <unordered_map>
 #include <vector>
@@ -52,13 +51,12 @@ namespace Private
 {
 namespace Flo
 {
+	class GtkBackend;
 	class GtkWindowData;
+	class GtkWindowDataFactory;
 	class GtkXKeyboardDevice;
 	class XIEventSource;
 	class FloGtkListenerExtraData;
-	void gdkDeviceManagerCallbackAdded(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	void gdkDeviceManagerCallbackChanged(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	void gdkDeviceManagerCallbackRemoved(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
 }
 }
 
@@ -130,28 +128,28 @@ public:
 	shared_ptr<DeviceManager> getDeviceManager() override;
 protected:
 	void finalizeListener(ListenerData& oListenerData) override;
-private:
+	/** Constructor. */
 	FloGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
 						, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter);
-	// throws
-	void init(const Glib::RefPtr<Gdk::Display>& refDisplay);
-
-	void initDeviceManager();
-	void deinitDeviceManager();
-	friend void Private::Flo::gdkDeviceManagerCallbackAdded(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	friend void Private::Flo::gdkDeviceManagerCallbackChanged(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	friend void Private::Flo::gdkDeviceManagerCallbackRemoved(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device, gpointer p0Data);
-	void gdkDeviceAdded(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device);
-	void gdkDeviceChanged(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device);
-	void gdkDeviceRemoved(GdkDeviceManager *p0DeviceManager, GdkDevice* p0Device);
+	/** Initializes the device manager. */
+	void init(std::unique_ptr<Private::Flo::GtkWindowDataFactory>& refFactory
+			, std::unique_ptr<Private::Flo::GtkBackend>& refBackend);
+private:
+	void onDeviceChanged(int32_t nXDeviceId);
+	void onDeviceAdded(int32_t nXDeviceId);
+	void onDeviceRemoved(int32_t nXDeviceId);
+	bool onXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent);
 
 	void adjustConnectionsAfterEnablingClass();
 
 	void addDevices();
 	shared_ptr<Private::Flo::GtkXKeyboardDevice> addFloatingDevice(GdkDevice* p0GdkDevice);
 	//
-	shared_ptr<Private::Flo::GtkXKeyboardDevice> createGtkXKeyboardDevice(int nXDeviceId, const Glib::ustring& sDeviceName);
+	shared_ptr<Private::Flo::GtkXKeyboardDevice> addGtkXKeyboardDevice(int nXDeviceId, const Glib::ustring& sDeviceName);
+	void removeGtkXKeyboardDevice(int32_t nIdx);
 
+	bool findDevice(int32_t nXDeviceId
+				, std::vector< std::pair<int32_t, shared_ptr<Private::Flo::GtkXKeyboardDevice> > >::iterator& itFind);
 	bool findWindow(Gtk::Window* p0GtkmmWindow
 				, std::vector< std::pair<Gtk::Window*, shared_ptr<Private::Flo::GtkWindowData> > >::iterator& itFind);
 	bool hasAccessor(const shared_ptr<Accessor>& refAccessor, bool& bValid
@@ -160,36 +158,28 @@ private:
 	void onIsActiveChanged(const shared_ptr<Private::Flo::GtkWindowData>& refWindowData);
 	std::shared_ptr<Private::Flo::GtkWindowData> getGtkWindowData();
 
-	bool initXI(std::string& sError);
 	void connectDeviceToAllWindows(int32_t nXDeviceId);
 
 	void selectAccessor(const shared_ptr<Private::Flo::GtkWindowData>& refData);
 	void cancelDeviceKeys(const shared_ptr<Private::Flo::GtkXKeyboardDevice>& refGtkXKeyboard);
 	void deselectAccessor();
 	void focusSelectedWindow();
-	void focusDevicesToXWindow(::Window nXWinId);
-	void focusDeviceToXWindow(int32_t nXDeviceId, ::Window nXWinId);
-
-	bool doXIDeviceEventCallback(XIDeviceEvent* p0XIDeviceEvent);
 
 	void sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice);
 
+	friend class Private::Flo::GtkBackend;
 	friend class Private::Flo::GtkWindowData;
 	friend class Private::Flo::GtkXKeyboardDevice;
 	friend class Private::Flo::XIEventSource;
 	friend class Private::Flo::FloGtkListenerExtraData;
 private:
+	std::unique_ptr<Private::Flo::GtkWindowDataFactory> m_refFactory;
+	std::unique_ptr<Private::Flo::GtkBackend> m_refBackend;
+
 	// The GtkAccessor (GtkWindowData::m_refAccessor) will tell 
 	// when the window gets deleted. The accessor can also be removed
-	// explicitely during a listener callback. In both cases the
-	// shared_ptr is removed from m_aGtkWindowData and m_aXWindowData and 
-	// added to m_aFreePool.
+	// explicitely during a listener callback.
 	std::vector<std::pair<Gtk::Window*, shared_ptr<Private::Flo::GtkWindowData> > > m_aGtkWindowData;
-	std::vector<std::pair<::Window, shared_ptr<Private::Flo::GtkWindowData> > > m_aXWindowData;
-	// The objects in the free pool might still be in use when the
-	// removal of the accessor was done during a callback. This is detected
-	// through the ref count of the shared_ptr.
-	std::vector< std::shared_ptr<Private::Flo::GtkWindowData> > m_aFreePool;
 	// The currently active accessor (window), can be null.
 	std::shared_ptr<Private::Flo::GtkWindowData> m_refSelected;
 	// Invariants:
@@ -199,17 +189,29 @@ private:
 
 	int32_t m_nCancelingNestedDepth;
 
-	Glib::RefPtr<Gdk::Display> m_refGdkDisplay;
-	Display* m_p0XDisplay; // shortcut from m_refGdkDisplay
-	//
-	gulong m_nConnectHandlerDeviceAdded;
-	gulong m_nConnectHandlerDeviceChanged;
-	gulong m_nConnectHandlerDeviceRemoved;
-
-	std::unordered_map<int32_t, shared_ptr<Private::Flo::GtkXKeyboardDevice> > m_oKeyboardDevices; // Key: X device id
-	Glib::RefPtr<Private::Flo::XIEventSource> m_refXIEventSource;
+	std::vector< std::pair<int32_t, shared_ptr<Private::Flo::GtkXKeyboardDevice> > > m_aKeyboardDevices; // Value: (X device id, device)
 
 	KEY_REPEAT_MODE m_eKeyRepeatMode;
+	////
+	//class ReDeviceMgmtEvent :public DeviceMgmtEvent
+	//{
+	//public:
+	//	ReDeviceMgmtEvent(int64_t nTimeUsec, const shared_ptr<DeviceMgmtCapability>& refDeviceMgmtCapability
+	//					, DEVICE_MGMT_TYPE eDeviceMgmtType, const shared_ptr<Device>& refDevice)
+	//	: DeviceMgmtEvent(nTimeUsec, refDeviceMgmtCapability, eDeviceMgmtType, refDevice)
+	//	{
+	//	}
+	//	void reInit(int64_t nTimeUsec, const shared_ptr<DeviceMgmtCapability>& refDeviceMgmtCapability
+	//				, DEVICE_MGMT_TYPE eDeviceMgmtType, const shared_ptr<Device>& refDevice)
+	//	{
+	//		setTimeUsec(nTimeUsec);
+	//		setAccessor({});
+	//		setDeviceMgmtCapability(refDeviceMgmtCapability);
+	//		setDeviceMgmtType(eDeviceMgmtType);
+	//		setDevice(refDevice);
+	//	}
+	//};
+	//Private::Recycler<ReDeviceMgmtEvent> m_oDeviceMgmtRecycler;
 
 	const shared_ptr<GdkKeyConverter> m_refGdkConverter;
 	// Fast access reference to converter

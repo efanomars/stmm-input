@@ -28,7 +28,7 @@ for projdir in libstmm-input  libstmm-input-base  libstmm-input-ev  \
                libstmm-input-gtk/examples/showevs  \
                device-floater
 do
-  for exclfile in "build*" "configure" "nbproject*" ".project" ".cproject"
+  for exclfile in "build*" "configure" "nbproject*" ".project" ".cproject" ".settings"
   do
     exclstr="$exclstr --exclude=$projdir/$exclfile"
   done

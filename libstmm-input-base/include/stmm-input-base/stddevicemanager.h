@@ -44,7 +44,7 @@ public:
 	std::vector<Capability::Class> getCapabilityClasses() const override;
 	std::vector<Event::Class> getEventClasses() const override;
 
-	bool getEventClassEnabled(const Event::Class& oEventClass) const override;
+	bool isEventClassEnabled(const Event::Class& oEventClass) const override;
 
 	void enableEventClass(const Event::Class& oEventClass) override;
 
@@ -145,7 +145,7 @@ protected:
 		: m_p1Owner(nullptr)
 		, m_bListenerWasRemoved(false)
 		, m_bListenerRemoving(false)
-		, m_nAddedTimeUsec(-1)
+		, m_nAddedTimeStamp(std::numeric_limits<decltype(m_nAddedTimeStamp)>::max())
 		, m_p0EventListener(nullptr)
 		{
 		}
@@ -161,10 +161,10 @@ protected:
 		 * @return Whether the event was sent.
 		 */
 		bool handleEventCallIf(int32_t nClassTypeIdx, const shared_ptr<Event>& refEvent) const;
-		/** The time the listener was added to the device manager.
+		/** The time stamp the listener was added to the device manager.
 		 * @return In nanoseconds from epoch.
 		 */
-		inline int64_t getAddedTime() const { return m_nAddedTimeUsec; }
+		inline uint64_t getAddedTimeStamp() const { return m_nAddedTimeStamp; }
 		/** The callif associated with the listener.
 		 * @return If null means always send event to listener (@see class CallIfTrue).
 		 */
@@ -208,7 +208,7 @@ protected:
 		bool m_bListenerWasRemoved;
 		bool m_bListenerRemoving; // Invariant: if m_bListenerRemoving == true then m_bListenerWasRemoved = true
 		std::unique_ptr<ListenerExtraData> m_refExtraData; // StdDeviceManager subclass defined data
-		int64_t m_nAddedTimeUsec;
+		uint64_t m_nAddedTimeStamp;
 		shared_ptr<CallIf> m_refCallIf; // The callif without simplification
 		// One callif for each registered event class type supported by this device manager
 		std::vector< shared_ptr<CallIf> > m_aCallIfEventClass; // Size: m_p1Owner->m_aEventClass.size(), Value: refSimplifiedCallIf
@@ -219,7 +219,17 @@ protected:
 		ListenerData& operator=(const ListenerData& oSource) = delete;
 		ListenerData(const ListenerData& oSource) = delete;
 	};
-
+	/** Returns a unique time stamp.
+	 * Allows to order events without relying on microseconds which isn't precise
+	 * enough. The returned stamp increases after each call.
+	 * @return The unique timestamp (> 0).
+	 */
+	static uint64_t getUniqueTimeStamp()
+	{
+		const auto nTimeStamp = ++s_nUniqueTimeStamp;
+		assert(nTimeStamp > 0);
+		return nTimeStamp;
+	}
 private:
 	void maybeRemoveDataOfRemovedListeners();
 
@@ -247,12 +257,12 @@ private:
 	//   can have (m_bListenerWasRemoved == false)
 
 	// Incremented while finalize is called:
-	// is not really needed except for debugging StdDeviceManager subclasses which shouldn't
-	// call themselves removeListener() while not having a m_refListeners reference
+	// is not really needed except for debugging StdDeviceManager subclasses.
 	int32_t m_nListenerListRecursing;
 	// Tells whether one or more ListenerData were marked as removed
 	bool m_bListenerListDirty; 
 
+	static uint64_t s_nUniqueTimeStamp;
 private:
 	StdDeviceManager(const StdDeviceManager& oSource) = delete;
 	StdDeviceManager& operator=(const StdDeviceManager& oSource) = delete;

@@ -23,6 +23,8 @@
 
 #include "masgtkdevicemanager.h"
 
+#include "recycler.h"
+
 #include <stmm-input-base/stddevice.h>
 
 namespace stmi
@@ -40,12 +42,11 @@ class GtkPointerDevice final : public StdDevice<MasGtkDeviceManager>, public Tou
 								, public std::enable_shared_from_this<GtkPointerDevice>
 {
 public:
-	GtkPointerDevice(std::string sName, const Glib::RefPtr<Gdk::Device>& refPointer, const shared_ptr<MasGtkDeviceManager>& refMasGtkDeviceManager)
+	GtkPointerDevice(std::string sName, const shared_ptr<MasGtkDeviceManager>& refMasGtkDeviceManager)
 	: StdDevice<MasGtkDeviceManager>(sName, refMasGtkDeviceManager)
-	, m_refPointer(refPointer)
 	// Make sure listeners added time is smaller than the pressed time
 	// so that the callback is called.
-	, m_nAnyButtonPressTimeUsec(std::numeric_limits<int64_t>::max())
+	, m_nAnyButtonPressTimeStamp(std::numeric_limits<uint64_t>::max())
 	, m_fLastPointerX(-1)
 	, m_fLastPointerY(-1)
 	{
@@ -53,13 +54,15 @@ public:
 	virtual ~GtkPointerDevice();
 	//
 	shared_ptr<Capability> getCapability(const Capability::Class& oClass) const override;
+	shared_ptr<Capability> getCapability(int32_t nCapabilityId) const override;
+	std::vector<int32_t> getCapabilities() const override;
 	std::vector<Capability::Class> getCapabilityClasses() const override;
 	// from capability
 	shared_ptr<Device> getDevice() const override;
 	shared_ptr<Device> getDevice() override;
 
 private:
-	const Glib::RefPtr<Gdk::Device>& getGdkDevice() const { return m_refPointer; }
+	friend class  stmi::MasGtkDeviceManager;
 
 	bool handleGdkEventMotion(GdkEventMotion* p0MotionEv, const shared_ptr<GtkWindowData>& refWindowData);
 	bool handleGdkEventButton(GdkEventButton* p0ButtonEv, const shared_ptr<GtkWindowData>& refWindowData);
@@ -80,20 +83,21 @@ private:
 									, MasGtkDeviceManager* p0Owner);
 
 	void removingDevice();
-
+	class RePointerEvent;
 	void sendPointerEventToListener(const MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
 									, double fX, double fY
 									, PointerEvent::POINTER_INPUT_TYPE eInputType, int32_t nButton
 									, bool bWasAnyButtonPressed, bool bAnyButtonPressed
 									, const shared_ptr<GtkAccessor>& refAccessor
 									, MasGtkDeviceManager* p0Owner
-									, shared_ptr<PointerEvent>& refEvent);
+									, shared_ptr<RePointerEvent>& refEvent);
+	class ReTouchEvent;
 	void sendTouchEventToListener(const MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
-									, int64_t nSequenceStartTime, double fX, double fY
+									, uint64_t nSequenceStartTimeStamp, double fX, double fY
 									, TouchEvent::TOUCH_INPUT_TYPE eInputType, int64_t nSequence
 									, const shared_ptr<GtkAccessor>& refAccessor
 									, MasGtkDeviceManager* p0Owner
-									, shared_ptr<TouchEvent>& refEvent);
+									, shared_ptr<ReTouchEvent>& refEvent);
 	inline int32_t translateGdkButtonToPointerEvent(int32_t nGdkButton)
 	{
 		int32_t nButton;
@@ -113,26 +117,95 @@ private:
 		return nButton;
 	}
 private:
-	const Glib::RefPtr<Gdk::Device> m_refPointer;
 	// This class will make some assumptions: Gtk will grab the mouse
 	// for the window as long as any button is pressed
-	//TODO implement with bool m_aButton[5]; int32_t m_nTotButtons; or vector "set"
 	std::vector<int32_t> m_aButtons; // Value: gdk button (1..5)
 	// A listener only starts getting button and motion events after
 	// all buttons are in a not-pressed state! In that case
 	// this is set to std::numeric_limits<int64_t>::max().
-	int64_t m_nAnyButtonPressTimeUsec;
+	uint64_t m_nAnyButtonPressTimeStamp;
 	double m_fLastPointerX;
 	double m_fLastPointerY;
 	//
 	struct SequenceData
 	{
-		int64_t m_nTouchStartTimeUsec;
+		uint64_t m_nTouchStartTimeStamp;
 		double m_fLastX;
 		double m_fLastY;
 	};
 	std::unordered_map<GdkEventSequence*, SequenceData> m_oSequences; // Key: gdk touch sequence
-	friend class  stmi::MasGtkDeviceManager;
+	//
+	class RePointerEvent :public PointerEvent
+	{
+	public:
+		RePointerEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+						, const shared_ptr<PointerCapability>& refPointerCapability, double fX, double fY
+						, POINTER_INPUT_TYPE eType, int32_t nButton, bool bAnyButtonPressed, bool bWasAnyButtonPressed)
+		: PointerEvent(nTimeUsec, refAccessor, refPointerCapability, fX, fY, eType, nButton, bAnyButtonPressed, bWasAnyButtonPressed)
+		{
+		}
+		void reInit(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+					, const shared_ptr<PointerCapability>& refPointerCapability, double fX, double fY
+					, POINTER_INPUT_TYPE eType, int32_t nButton, bool bAnyButtonPressed, bool bWasAnyButtonPressed)
+		{
+			setTimeUsec(nTimeUsec);
+			setAccessor(refAccessor);
+			setPointer(eType, nButton, bAnyButtonPressed, bWasAnyButtonPressed);
+			setPointerCapability(refPointerCapability);
+			setX(fX);
+			setY(fY);
+			setIsModified(false);
+		}
+	};
+	Private::Recycler<RePointerEvent> m_oPointerEventRecycler;
+	//
+	class RePointerScrollEvent :public PointerScrollEvent
+	{
+	public:
+		RePointerScrollEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+							, const shared_ptr<PointerCapability>& refPointerCapability
+							, POINTER_SCROLL_DIR eScrollDir, double fX, double fY, bool bAnyButtonPressed)
+		: PointerScrollEvent(nTimeUsec, refAccessor, refPointerCapability, eScrollDir, fX, fY, bAnyButtonPressed)
+		{
+		}
+		void reInit(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+					, const shared_ptr<PointerCapability>& refPointerCapability
+					, POINTER_SCROLL_DIR eScrollDir, double fX, double fY, bool bAnyButtonPressed)
+		{
+			setTimeUsec(nTimeUsec);
+			setAccessor(refAccessor);
+			setPointerScroll(eScrollDir, bAnyButtonPressed);
+			setPointerCapability(refPointerCapability);
+			setX(fX);
+			setY(fY);
+			setIsModified(false);
+		}
+	};
+	Private::Recycler<RePointerScrollEvent> m_oPointerScrollEventRecycler;
+	//
+	class ReTouchEvent :public TouchEvent
+	{
+	public:
+		ReTouchEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+					, const shared_ptr<TouchCapability>& refTouchCapability, TOUCH_INPUT_TYPE eType
+					, double fX, double fY, int64_t nFingerId)
+		: TouchEvent(nTimeUsec, refAccessor, refTouchCapability, eType, fX, fY, nFingerId)
+		{
+		}
+		void reInit(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
+					, const shared_ptr<TouchCapability>& refTouchCapability, TOUCH_INPUT_TYPE eType
+					, double fX, double fY, int64_t nFingerId)
+		{
+			setTimeUsec(nTimeUsec);
+			setAccessor(refAccessor);
+			setTouchCapability(refTouchCapability);
+			setTypeAndFinger(eType, nFingerId);
+			setX(fX);
+			setY(fY);
+			setIsModified(false);
+		}
+	};
+	Private::Recycler<ReTouchEvent> m_oTouchEventRecycler;
 private:
 	GtkPointerDevice(const GtkPointerDevice& oSource);
 	GtkPointerDevice& operator=(const GtkPointerDevice& oSource);

@@ -81,28 +81,29 @@ public:
 		return s_oDeviceMgmtClass;
 	}
 protected:
-	/**
-	 * @see DeviceMgmtEvent()
+	/** Sets the device.
+	 * @param refDevice The involved device. Can't be null.
 	 */
 	inline void setDevice(const shared_ptr<Device>& refDevice)
 	{
 		assert(refDevice);
 		m_refDevice = refDevice;
 	}
-	/**
-	 * @see DeviceMgmtEvent()
+	/** Sets the type.
+	 * @param eDeviceMgmtType The type.
 	 */
 	inline void setDeviceMgmtType(DEVICE_MGMT_TYPE eDeviceMgmtType)
 	{
 		assert((eDeviceMgmtType >= DEVICE_MGMT_ADDED) && (eDeviceMgmtType <= DEVICE_MGMT_CHANGED));
 		m_eDeviceMgmtType = eDeviceMgmtType;
 	}
-	/**
-	 * @see DeviceMgmtEvent()
+	/** Sets the capability.
+	 * @param refDeviceMgmtCapability The device manager's capability. Can't be null.
 	 */
 	inline void setDeviceMgmtCapability(const shared_ptr<DeviceMgmtCapability>& refDeviceMgmtCapability)
 	{
 		assert(refDeviceMgmtCapability);
+		setCapabilityId(refDeviceMgmtCapability->getId());
 		m_refDeviceMgmtCapability = refDeviceMgmtCapability;
 	}
 private:

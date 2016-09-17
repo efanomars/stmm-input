@@ -22,6 +22,7 @@
 #define _STMI_JS_GTK_DEVICE_MANAGER_H_
 
 #include "gtkaccessor.h"
+#include "jsdevicefiles.h"
 
 #include <stmm-input-base/stddevicemanager.h>
 #include <stmm-input-base/stddevice.h>
@@ -44,14 +45,13 @@ namespace Private
 {
 namespace Js
 {
-	class JoystickLifeSource;
-	class DevInitTimeoutSource;
-	class JoystickInputSource;
+	class GtkBackend;
 	class JoystickDevice;
 	class GtkWindowData;
+	class GtkWindowDataFactory;
 	class JsGtkListenerExtraData;
-}
-}
+} // namespace Js
+} // namespace Private
 
 /** Handles joysticks according to the <linux/joystick.h> interface.
  * An event (of type stmi::JoystickButtonEvent, JoystickHatEvent or JoystickAxisEvent)
@@ -64,29 +64,6 @@ namespace Js
 class JsGtkDeviceManager : public StdDeviceManager , public DeviceMgmtCapability, public sigc::trackable
 {
 public:
-	/** Joystick device files initialization class for JsGtkDeviceManager.
-	 */
-	class DeviceFiles
-	{
-	public:
-		/** Adds a single device file.
-		 * Example: "/dev/input/js7" or "/dev/special/joystick"
-		 * @param sPathName Absolute path filename.
-		 */
-		void addFile(const std::string& sPathName);
-		/** Adds numbered device files.
-		 * This includes all the files with the given base filename followed by
-		 * a positive integer number.
-		 *
-		 * Example: "/dev/input/js" adds {"/dev/input/js0", "/dev/input/js1", ..., "/dev/input/js43", ... }
-		 * @param sPathBaseName Absolute path base of filename.
-		 */
-		void addBaseNrFiles(const std::string& sPathBaseName);
-	private:
-		friend class JsGtkDeviceManager;
-		std::vector<std::string> m_aPathName;
-		std::vector<std::string> m_aPathBaseName;
-	};
 	/** Creates an instance this class.
 	 * If no device file is given as parameter the default files are used,
 	 * "/dev/input/js0", "/dev/input/js1", ...
@@ -106,7 +83,7 @@ public:
 	 * @return The created instance.
 	 */
 	static shared_ptr<JsGtkDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-												, const DeviceFiles& oDeviceFiles);
+												, const JsDeviceFiles& oDeviceFiles);
 	virtual ~JsGtkDeviceManager();
 
 	void enableEventClass(const Event::Class& oEventClass) override;
@@ -137,37 +114,22 @@ public:
 	shared_ptr<DeviceManager> getDeviceManager() override;
 protected:
 	void finalizeListener(ListenerData& oListenerData) override;
-private:
 	JsGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass);
-	void init(const DeviceFiles& oDeviceFiles);
-	// returns false if convert error
-	static bool splitPathName(const std::string& sPathName, std::string& sPath, std::string& sName);
-	// Ex. ("/","dev4") -> "/dev4",   ("/dev/input/","js7") -> "/dev/input/js7",   ("/dev/input","js8") -> "/dev/input/js8"
-	// returns false if convert error
-	static bool composePathName(const std::string& sPath, const std::string& sName, std::string& sPathName);
-	// Remove trailing '/' if not root directory.
-	// Ex. "/dev/input/" -> "/dev/input",  "/" -> "/"
-	// Returns false if convert error
-	static bool cleanPath(std::string& sPath);
-
-	shared_ptr<Private::Js::JoystickDevice> addIfJoystick(const std::string& sPathName);
-	bool getButtonMapping(int32_t nFD, int32_t nTotButtons, std::vector<int32_t>& aButtonCode);
-	bool getAxisMapping(int32_t nFD, int32_t nTotAxes, std::vector<int32_t>& aAxisCode);
+	void init(std::unique_ptr<Private::Js::GtkWindowDataFactory>& refFactory
+								, std::unique_ptr<Private::Js::GtkBackend>& refBackend);
+private:
+	friend class Private::Js::GtkBackend;
+	const shared_ptr<Private::Js::JoystickDevice>& onDeviceAdded(const std::string& sName, const std::vector<int32_t>& aButtonCode
+																, int32_t nTotHats, const std::vector<int32_t>& aAxisCode);
+	void onDeviceRemoved(int32_t nJoystickId);
 
 	void sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice);
-
-	// bAdd==true, file added, otherwise file removed
-	bool doINotifyEventCallback(const std::string& sPath, const std::string& sName, bool bAdd);
-	// this gives the device file time to be set up
-	bool doTimeoutSourceCallback(const std::string& sPathName, int32_t nElapsedMillisec);
 
 	bool findWindow(Gtk::Window* p0GtkmmWindow
 					, std::vector< std::pair<Gtk::Window*, shared_ptr<Private::Js::GtkWindowData> > >::iterator& itFind);
 	bool hasAccessor(const shared_ptr<Accessor>& refAccessor, bool& bValid
 					, std::vector< std::pair<Gtk::Window*, shared_ptr<Private::Js::GtkWindowData> > >::iterator& itFind);
 	void removeAccessor(const std::vector< std::pair<Gtk::Window*, shared_ptr<Private::Js::GtkWindowData> > >::iterator& itGtkData);
-	// get an instance (maybe recycled)
-	std::shared_ptr<Private::Js::GtkWindowData> getGtkWindowData();
 	void cancelDeviceButtonsAndHats(const shared_ptr<Private::Js::JoystickDevice>& refJoystickDevice);
 	void selectAccessor(const shared_ptr<Private::Js::GtkWindowData>& refData);
 	void deselectAccessor();
@@ -177,15 +139,12 @@ private:
 	friend class Private::Js::JoystickDevice;
 	friend class Private::Js::JsGtkListenerExtraData;
 private:
+	std::unique_ptr<Private::Js::GtkWindowDataFactory> m_refFactory;
+	std::unique_ptr<Private::Js::GtkBackend> m_refBackend;
 	// The GtkAccessor (GtkWindowData::m_refAccessor) will tell 
 	// when the window gets deleted. The accessor can also be removed
-	// explicitely during a listener callback. In both cases the
-	// shared_ptr is removed from m_oWindows and added to m_aFreePool.
+	// explicitely during a listener callback.
 	std::vector<std::pair<Gtk::Window*, shared_ptr<Private::Js::GtkWindowData> > > m_aGtkWindowData;
-	// The objects in the free pool might still be in use when the
-	// removal of the accessor was done during a callback. This is detected
-	// through the ref count of the shared_ptr.
-	std::vector< std::shared_ptr<Private::Js::GtkWindowData> > m_aFreePool;
 	// The currently active accessor (window), can be null.
 	std::shared_ptr<Private::Js::GtkWindowData> m_refSelected;
 	// Invariants:
@@ -194,24 +153,16 @@ private:
 	//   for the selected window.
 
 	int32_t m_nCancelingNestedDepth;
-
-	// The INotify Sources, one for each distinct path in oDeviceFiles passed to init()
-	std::unordered_map<std::string, shared_ptr<Private::Js::JoystickLifeSource> > m_refPathSources; // Key: sPath
 	//
-	std::unordered_map<int32_t, shared_ptr<Private::Js::JoystickDevice> > m_oJoysticksById; // Key: device id
-	std::unordered_map<std::string, shared_ptr<Private::Js::JoystickDevice> > m_oJoystickByPathName; // Key: full file pathname (ex. "/dev/input/js4")
+	std::vector< shared_ptr<Private::Js::JoystickDevice> > m_aJoysticks;
 	//
-	int64_t m_nHatEventTypeEnabledTimeUsec;
+	uint64_t m_nHatEventTypeEnabledTimeStamp;
 	//
 	const int32_t m_nClassIdxJoystickButtonEvent;
 	const int32_t m_nClassIdxJoystickHatEvent;
 	const int32_t m_nClassIdxJoystickAxisEvent;
 	const int32_t m_nClassIdxDeviceMgmtEvent;
 	//
-	static const char* const s_sDefaultPathBase;
-
-	constexpr static int32_t s_nTimeoutRetryMsec = 1000;
-	constexpr static int32_t s_nTimeoutMaxRetryMsec = 4 * s_nTimeoutRetryMsec;
 private:
 	JsGtkDeviceManager(const JsGtkDeviceManager& oSource) = delete;
 	JsGtkDeviceManager& operator=(const JsGtkDeviceManager& oSource) = delete;

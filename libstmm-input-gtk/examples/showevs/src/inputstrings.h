@@ -21,11 +21,11 @@
 #ifndef _EXAMPLE_SHOW_EVS_INPUT_STRINGS_
 #define _EXAMPLE_SHOW_EVS_INPUT_STRINGS_
 
-#include <string>
-#include <unordered_map>
-
 #include <stmm-input/hardwarekey.h>
 #include <stmm-input-ev/joystickcapability.h>
+
+#include <string>
+#include <unordered_map>
 
 namespace example
 {
