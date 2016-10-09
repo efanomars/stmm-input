@@ -17,6 +17,7 @@
 /*
  * File:   touchevent.h
  */
+/*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
 #ifndef _STMI_TOUCH_EVENT_H_
 #define _STMI_TOUCH_EVENT_H_
@@ -53,7 +54,7 @@ public:
 	 * @param eType The touch event type.
 	 * @param fX The X position of the touch.
 	 * @param fY The Y position of the touch.
-	 * @param nFingerId The finger id performing the touch.
+	 * @param nFingerId The id of the finger performing the touch.
 	 */
 	TouchEvent(int64_t nTimeUsec, const shared_ptr<Accessor>& refAccessor
 				, const shared_ptr<TouchCapability>& refTouchCapability, TOUCH_INPUT_TYPE eType

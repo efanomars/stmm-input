@@ -25,7 +25,7 @@
 
 #include "recycler.h"
 
-#include <stmm-input-base/stddevice.h>
+#include <stmm-input-base/basicdevice.h>
 
 namespace stmi
 {
@@ -38,12 +38,12 @@ namespace Flo
 using std::shared_ptr;
 using std::weak_ptr;
 
-class GtkXKeyboardDevice final : public StdDevice<FloGtkDeviceManager>, public KeyCapability
+class GtkXKeyboardDevice final : public BasicDevice<FloGtkDeviceManager>, public KeyCapability
 								, public std::enable_shared_from_this<GtkXKeyboardDevice>
 {
 public:
 	GtkXKeyboardDevice(std::string sName, const shared_ptr<FloGtkDeviceManager>& refFloGtkDeviceManager)
-	: StdDevice<FloGtkDeviceManager>(sName, refFloGtkDeviceManager)
+	: BasicDevice<FloGtkDeviceManager>(sName, refFloGtkDeviceManager)
 	{
 	}
 	virtual ~GtkXKeyboardDevice();

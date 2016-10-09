@@ -18,9 +18,10 @@
  * File:   testJoystickHatEventClass.cc
  */
 
-#include <gtest/gtest.h>
 #include "fakejoystickdevice.h"
 #include "joystickevent.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {
@@ -36,13 +37,20 @@ class JoystickHatEventClassFixture : public ::testing::Test
 	void SetUp() override
 	{
 		m_refJoystickDevice = std::make_shared<FakeJoystickDevice>();
+		#ifndef NDEBUG
+		const bool bFound = 
+		#endif
+		m_refJoystickDevice->getCapability(m_refJoystickCapability);
+		assert(bFound);
 	}
 	void TearDown() override
 	{
+		m_refJoystickCapability.reset();
 		m_refJoystickDevice.reset();
 	}
 public:
-	shared_ptr<FakeJoystickDevice> m_refJoystickDevice;
+	shared_ptr<Device> m_refJoystickDevice;
+	shared_ptr<JoystickCapability> m_refJoystickCapability;
 };
 
 TEST_F(JoystickHatEventClassFixture, WorkingSetUp)
@@ -56,16 +64,16 @@ TEST_F(JoystickHatEventClassFixture, ConstructEvent)
 	const int32_t nHat = 0;
 	const JoystickCapability::HAT_VALUE eValue = JoystickCapability::HAT_UP;
 	const JoystickCapability::HAT_VALUE ePreviousValue = JoystickCapability::HAT_CENTER;
-	JoystickHatEvent oJoystickHatEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refJoystickDevice, nHat
-										, eValue, ePreviousValue);
+	JoystickHatEvent oJoystickHatEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refJoystickCapability
+										, nHat, eValue, ePreviousValue);
 	EXPECT_TRUE(JoystickHatEvent::getClass() == typeid(JoystickHatEvent));
 	EXPECT_TRUE(oJoystickHatEvent.getEventClass() == typeid(JoystickHatEvent));
 	EXPECT_TRUE(oJoystickHatEvent.getHat() == nHat);
 	EXPECT_TRUE(oJoystickHatEvent.getDeltaXY() == std::make_pair(0,-1));
 	EXPECT_TRUE(oJoystickHatEvent.getTimeUsec() == nTimeUsec);
 	EXPECT_TRUE(oJoystickHatEvent.getAccessor() == Accessor::s_refEmptyAccessor);
-	EXPECT_TRUE(oJoystickHatEvent.getJoystickCapability() == m_refJoystickDevice);
-	EXPECT_TRUE(oJoystickHatEvent.getCapability() == m_refJoystickDevice);
+	EXPECT_TRUE(oJoystickHatEvent.getJoystickCapability() == m_refJoystickCapability);
+	EXPECT_TRUE(oJoystickHatEvent.getCapability() == m_refJoystickCapability);
 	//
 	HARDWARE_KEY eK = HK_T;
 	Event::AS_KEY_INPUT_TYPE eAsType = Event::AS_KEY_RELEASE_CANCEL;
@@ -88,7 +96,7 @@ TEST_F(JoystickHatEventClassFixture, TransitionsDistOne)
 		const JoystickCapability::HAT_VALUE eValue = JoystickCapability::HAT_RIGHTDOWN;
 		const JoystickCapability::HAT_VALUE ePreviousValue = JoystickCapability::HAT_RIGHT;
 		JoystickHatEvent oJoystickHatEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-										, m_refJoystickDevice, nHat, eValue, ePreviousValue);
+										, m_refJoystickCapability, nHat, eValue, ePreviousValue);
 		EXPECT_TRUE(oJoystickHatEvent.getDeltaXY() == std::make_pair(+1,+1));
 		//
 		HARDWARE_KEY eK = HK_T;
@@ -107,7 +115,7 @@ TEST_F(JoystickHatEventClassFixture, TransitionsDistOne)
 		const JoystickCapability::HAT_VALUE eValue = JoystickCapability::HAT_CENTER_CANCEL;
 		const JoystickCapability::HAT_VALUE ePreviousValue = JoystickCapability::HAT_UP;
 		JoystickHatEvent oJoystickHatEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-											, m_refJoystickDevice, nHat, eValue, ePreviousValue);
+											, m_refJoystickCapability, nHat, eValue, ePreviousValue);
 		EXPECT_TRUE(oJoystickHatEvent.getDeltaXY() == std::make_pair(0,0));
 		//
 		HARDWARE_KEY eK = HK_T;
@@ -132,7 +140,7 @@ TEST_F(JoystickHatEventClassFixture, TransitionsDistTwo)
 		const JoystickCapability::HAT_VALUE eValue = JoystickCapability::HAT_RIGHTUP;
 		const JoystickCapability::HAT_VALUE ePreviousValue = JoystickCapability::HAT_CENTER;
 		JoystickHatEvent oJoystickHatEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-											, m_refJoystickDevice, nHat, eValue, ePreviousValue);
+											, m_refJoystickCapability, nHat, eValue, ePreviousValue);
 		EXPECT_TRUE(oJoystickHatEvent.getDeltaXY() == std::make_pair(+1,-1));
 		//
 		HARDWARE_KEY eK = HK_T;
@@ -155,7 +163,7 @@ TEST_F(JoystickHatEventClassFixture, TransitionsDistTwo)
 		const JoystickCapability::HAT_VALUE eValue = JoystickCapability::HAT_RIGHTDOWN;
 		const JoystickCapability::HAT_VALUE ePreviousValue = JoystickCapability::HAT_LEFTDOWN;
 		JoystickHatEvent oJoystickHatEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-											, m_refJoystickDevice, nHat, eValue, ePreviousValue);
+											, m_refJoystickCapability, nHat, eValue, ePreviousValue);
 		EXPECT_TRUE(oJoystickHatEvent.getDeltaXY() == std::make_pair(+1,+1));
 		//
 		HARDWARE_KEY eK = HK_T;
@@ -181,7 +189,7 @@ TEST_F(JoystickHatEventClassFixture, HatKeys)
 		const JoystickCapability::HAT_VALUE eValue = JoystickCapability::HAT_DOWN;
 		const JoystickCapability::HAT_VALUE ePreviousValue = JoystickCapability::HAT_CENTER;
 		JoystickHatEvent oJoystickHatEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-										, m_refJoystickDevice, nHat, eValue, ePreviousValue);
+										, m_refJoystickCapability, nHat, eValue, ePreviousValue);
 		//
 		HARDWARE_KEY eK = HK_T;
 		Event::AS_KEY_INPUT_TYPE eAsType = Event::AS_KEY_RELEASE_CANCEL;

@@ -65,7 +65,7 @@ public:
 	/** Whether the event coordinates were modified.
 	 * Tells whether `translateXY(double, double)` or `scaleXY(double, double)` were
 	 * called and modified the event's coordinates.
-	 * @return The modified status.
+	 * @return The modified state.
 	 */
 	inline bool getIsModified() const { return m_bIsModified; }
 

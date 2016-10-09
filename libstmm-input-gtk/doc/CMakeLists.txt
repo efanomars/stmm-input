@@ -10,5 +10,5 @@ if (DOXYGEN_FOUND)
     endif(NOT DOXYGEN_DOT_FOUND) 
 
     include(CommonDoxy)
-    CreateLibDoxy(stmm-input-gtk  ${STMM_INPUT_GTK_VERSION}  "stmm-input-ev;stmm-input")
+    CreateLibDoxy(stmm-input-gtk  ${STMM_INPUT_GTK_VERSION}  "stmm-input-ev;stmm-input-base;stmm-input")
 endif(DOXYGEN_FOUND)

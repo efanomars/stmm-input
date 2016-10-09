@@ -18,9 +18,10 @@
  * File:   testPointerEventClass.cc
  */
 
-#include <gtest/gtest.h>
 #include "fakepointerdevice.h"
 #include "pointerevent.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {
@@ -36,13 +37,20 @@ class PointerEventClassFixture : public ::testing::Test
 	void SetUp() override
 	{
 		m_refPointerDevice = std::make_shared<FakePointerDevice>();
+		#ifndef NDEBUG
+		const bool bFound = 
+		#endif
+		m_refPointerDevice->getCapability(m_refPointerCapability);
+		assert(bFound);
 	}
 	void TearDown() override
 	{
+		m_refPointerCapability.reset();
 		m_refPointerDevice.reset();
 	}
 public:
-	shared_ptr<FakePointerDevice> m_refPointerDevice;
+	shared_ptr<Device> m_refPointerDevice;
+	shared_ptr<PointerCapability> m_refPointerCapability;
 };
 
 TEST_F(PointerEventClassFixture, WorkingSetUp)
@@ -55,7 +63,7 @@ TEST_F(PointerEventClassFixture, ConstructEvent)
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	const bool bAnyButtonIsPressed = true;
 	const bool bAnyButtonWasPressed = false;
-	PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+	PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 				, PointerEvent::BUTTON_PRESS, 1, bAnyButtonIsPressed, bAnyButtonWasPressed);
 	EXPECT_TRUE(PointerEvent::getClass() == typeid(PointerEvent));
 	EXPECT_TRUE(oPointerEvent.getEventClass() == typeid(PointerEvent));
@@ -65,8 +73,8 @@ TEST_F(PointerEventClassFixture, ConstructEvent)
 	EXPECT_TRUE(oPointerEvent.getY() == -88.8);
 	EXPECT_TRUE(oPointerEvent.getTimeUsec() == nTimeUsec);
 	EXPECT_TRUE(oPointerEvent.getAccessor() == Accessor::s_refEmptyAccessor);
-	EXPECT_TRUE(oPointerEvent.getPointerCapability() == m_refPointerDevice);
-	EXPECT_TRUE(oPointerEvent.getCapability() == m_refPointerDevice);
+	EXPECT_TRUE(oPointerEvent.getPointerCapability() == m_refPointerCapability);
+	EXPECT_TRUE(oPointerEvent.getCapability() == m_refPointerCapability);
 	//
 	EXPECT_FALSE(oPointerEvent.getIsModified());
 	EXPECT_TRUE(oPointerEvent.getXYGrabId() == PointerEvent::s_nPointerGrabbedId);
@@ -93,7 +101,7 @@ TEST_F(PointerEventClassFixture, GrabTransitions)
 	{
 		const bool bAnyButtonIsPressed = true;
 		const bool bAnyButtonWasPressed = true;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_PRESS, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		EXPECT_TRUE(oPointerEvent.getType() == PointerEvent::BUTTON_PRESS);
 		EXPECT_TRUE(oPointerEvent.getXYGrabId() == PointerEvent::s_nPointerGrabbedId);
@@ -102,7 +110,7 @@ TEST_F(PointerEventClassFixture, GrabTransitions)
 	{
 		const bool bAnyButtonIsPressed = true;
 		const bool bAnyButtonWasPressed = true;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::POINTER_MOVE, PointerEvent::s_nNoButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		EXPECT_TRUE(oPointerEvent.getType() == PointerEvent::POINTER_MOVE);
 		EXPECT_TRUE(oPointerEvent.getXYGrabId() == PointerEvent::s_nPointerGrabbedId);
@@ -111,7 +119,7 @@ TEST_F(PointerEventClassFixture, GrabTransitions)
 	{
 		const bool bAnyButtonIsPressed = true;
 		const bool bAnyButtonWasPressed = true;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_RELEASE, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		EXPECT_TRUE(oPointerEvent.getType() == PointerEvent::BUTTON_RELEASE);
 		EXPECT_TRUE(oPointerEvent.getXYGrabId() == PointerEvent::s_nPointerGrabbedId);
@@ -120,7 +128,7 @@ TEST_F(PointerEventClassFixture, GrabTransitions)
 	{
 		const bool bAnyButtonIsPressed = true;
 		const bool bAnyButtonWasPressed = true;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_RELEASE_CANCEL, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		EXPECT_TRUE(oPointerEvent.getType() == PointerEvent::BUTTON_RELEASE_CANCEL);
 		EXPECT_TRUE(oPointerEvent.getXYGrabId() == PointerEvent::s_nPointerGrabbedId);
@@ -129,7 +137,7 @@ TEST_F(PointerEventClassFixture, GrabTransitions)
 	{
 		const bool bAnyButtonIsPressed = false;
 		const bool bAnyButtonWasPressed = true;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_RELEASE, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		EXPECT_TRUE(oPointerEvent.getType() == PointerEvent::BUTTON_RELEASE);
 		EXPECT_TRUE(oPointerEvent.getXYGrabId() == PointerEvent::s_nPointerGrabbedId);
@@ -138,7 +146,7 @@ TEST_F(PointerEventClassFixture, GrabTransitions)
 	{
 		const bool bAnyButtonIsPressed = false;
 		const bool bAnyButtonWasPressed = true;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_RELEASE_CANCEL, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		EXPECT_TRUE(oPointerEvent.getType() == PointerEvent::BUTTON_RELEASE_CANCEL);
 		EXPECT_TRUE(oPointerEvent.getXYGrabId() == PointerEvent::s_nPointerGrabbedId);
@@ -147,7 +155,7 @@ TEST_F(PointerEventClassFixture, GrabTransitions)
 	{
 		const bool bAnyButtonIsPressed = false;
 		const bool bAnyButtonWasPressed = false;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::POINTER_HOVER, PointerEvent::s_nNoButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		EXPECT_TRUE(oPointerEvent.getType() == PointerEvent::POINTER_HOVER);
 		EXPECT_TRUE(oPointerEvent.getXYGrabId() == PointerEvent::s_nPointerNotGrabbedId);
@@ -162,7 +170,7 @@ TEST_F(PointerEventClassFixture, KeySimulation)
 	{
 		const bool bAnyButtonIsPressed = false;
 		const bool bAnyButtonWasPressed = false;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::POINTER_HOVER, PointerEvent::s_nNoButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		auto aAsKeys = oPointerEvent.getAsKeys();
 		EXPECT_TRUE(aAsKeys.size() == 0);
@@ -170,7 +178,7 @@ TEST_F(PointerEventClassFixture, KeySimulation)
 	{
 		const bool bAnyButtonIsPressed = true;
 		const bool bAnyButtonWasPressed = true;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::POINTER_MOVE, PointerEvent::s_nNoButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		auto aAsKeys = oPointerEvent.getAsKeys();
 		EXPECT_TRUE(aAsKeys.size() == 0);
@@ -179,7 +187,7 @@ TEST_F(PointerEventClassFixture, KeySimulation)
 		const bool bAnyButtonIsPressed = true;
 		const bool bAnyButtonWasPressed = true;
 		const int32_t nButton = 1;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_PRESS, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		auto aAsKeys = oPointerEvent.getAsKeys();
 		EXPECT_TRUE(aAsKeys.size() == 1);
@@ -190,7 +198,7 @@ TEST_F(PointerEventClassFixture, KeySimulation)
 		const bool bAnyButtonIsPressed = false;
 		const bool bAnyButtonWasPressed = true;
 		const int32_t nButton = 2;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_RELEASE, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		auto aAsKeys = oPointerEvent.getAsKeys();
 		EXPECT_TRUE(aAsKeys.size() == 1);
@@ -201,7 +209,7 @@ TEST_F(PointerEventClassFixture, KeySimulation)
 		const bool bAnyButtonIsPressed = false;
 		const bool bAnyButtonWasPressed = true;
 		const int32_t nButton = 3;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_RELEASE_CANCEL, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		auto aAsKeys = oPointerEvent.getAsKeys();
 		EXPECT_TRUE(aAsKeys.size() == 1);
@@ -211,7 +219,7 @@ TEST_F(PointerEventClassFixture, KeySimulation)
 	for (int32_t nButton = 4; nButton <= PointerEvent::s_nLastSimulatedButton; ++nButton) {
 		const bool bAnyButtonIsPressed = true;
 		const bool bAnyButtonWasPressed = false;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_PRESS, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		auto aAsKeys = oPointerEvent.getAsKeys();
 		EXPECT_TRUE(aAsKeys.size() == 1);
@@ -227,7 +235,7 @@ TEST_F(PointerEventClassFixture, TranslateXY)
 		const bool bAnyButtonIsPressed = false;
 		const bool bAnyButtonWasPressed = true;
 		const int32_t nButton = 1;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::BUTTON_RELEASE, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		EXPECT_FALSE(oPointerEvent.getIsModified());
 		oPointerEvent.translateXY(10, -10);
@@ -244,7 +252,7 @@ TEST_F(PointerEventClassFixture, ScaleXY)
 		const bool bAnyButtonIsPressed = false;
 		const bool bAnyButtonWasPressed = false;
 		const int32_t nButton = PointerEvent::s_nNoButton;
-		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerDevice, 77.7, -88.8
+		PointerEvent oPointerEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refPointerCapability, 77.7, -88.8
 					, PointerEvent::POINTER_HOVER, nButton, bAnyButtonIsPressed, bAnyButtonWasPressed);
 		EXPECT_FALSE(oPointerEvent.getIsModified());
 		oPointerEvent.scaleXY(1.2, 0.5);

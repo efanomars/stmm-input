@@ -18,9 +18,9 @@
  * File:   testMasGtkPointerDevice.cc
  */
 
-#include <gtest/gtest.h>
-
 #include "fixtureMasDM.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {

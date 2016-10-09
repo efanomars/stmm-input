@@ -30,32 +30,29 @@
 namespace stmi
 {
 
-namespace GtkDeviceManager
+shared_ptr<GtkDeviceManager> GtkDeviceManager::create()
 {
-
-shared_ptr<DeviceManager> create()
-{
-	return create(false, {});
+	return GtkDeviceManager::create(false, {});
 }
-shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass)
+shared_ptr<GtkDeviceManager> GtkDeviceManager::create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass)
 {
-	return create(bEnableEventClasses, aEnDisableEventClass, KEY_REPEAT_MODE_SUPPRESS);
+	return GtkDeviceManager::create(bEnableEventClasses, aEnDisableEventClass, KEY_REPEAT_MODE_SUPPRESS);
 }
-shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
+shared_ptr<GtkDeviceManager> GtkDeviceManager::create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
 								, KEY_REPEAT_MODE eKeyRepeatMode)
 {
-	return create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode, shared_ptr<GdkKeyConverter>{});
+	return GtkDeviceManager::create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode, shared_ptr<GdkKeyConverter>{});
 }
-shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
+shared_ptr<GtkDeviceManager> GtkDeviceManager::create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
 								, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
 {
-	return create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode, refGdkConverter, Glib::RefPtr<Gdk::Display>{});
+	return GtkDeviceManager::create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode, refGdkConverter, Glib::RefPtr<Gdk::Display>{});
 }
-shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
+shared_ptr<GtkDeviceManager> GtkDeviceManager::create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
 								, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
 								, const Glib::RefPtr<Gdk::Display>& refDisplay)
 {
-	shared_ptr<DeviceManager> refRes;
+	shared_ptr<GtkDeviceManager> refRes;
 
 	std::vector< shared_ptr<ChildDeviceManager> > aManagers;
 	aManagers.reserve(3);
@@ -86,10 +83,9 @@ shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Eve
 		std::cerr << "JsGtkDeviceManager initialization error: " << oErr.what() << std::endl;
 		return refRes;
 	}
-	refRes = ParentDeviceManager::create(aManagers);
-	return refRes;
+	shared_ptr<GtkDeviceManager> refInstance(new GtkDeviceManager());
+	refInstance->init(aManagers);
+	return refInstance;
 }
-
-} // namespace GtkDeviceManager
 
 } // namespace stmi

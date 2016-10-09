@@ -53,12 +53,12 @@ public:
 
 	/** The device manager that manages the device.
 	 * As a convention Device instances should hold a weak_ptr to their manager to avoid reference cycles.
-	 * @return The device manager. If null the device manager was deleted.
+	 * @return The device manager or null if the device is no longer attached to its manager.
 	 */
 	virtual shared_ptr<DeviceManager> getDeviceManager() const = 0;
 	/** The device manager that manages the device.
 	 * As a convention Device instances should hold a weak_ptr to their manager to avoid reference cycles.
-	 * @return The device manager. If null the device manager was deleted.
+	 * @return The device manager or null if the device is no longer attached to its manager.
 	 */
 	virtual shared_ptr<DeviceManager> getDeviceManager() = 0;
 
@@ -73,8 +73,9 @@ public:
 						, "TCapa must be subclass of Capability");
 		shared_ptr<Capability> refSubCapa = getCapability(typeid(TCapa));
 		if (!refSubCapa) {
-			return false;
+			return false; //----------------------------------------------------
 		}
+		assert(! refSubCapa->getCapabilityClass().isDeviceManagerCapability());
 		refCapa = std::static_pointer_cast<TCapa>(refSubCapa);
 		return true;
 	}

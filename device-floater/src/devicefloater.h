@@ -72,7 +72,7 @@ public:
 	bool floatDevice(int32_t nDeviceId);
 	/* Emits when what's returned by getDevices() has changed. */
 	sigc::signal<void> m_oDeviceChangedSignal;
-	/* Emits when when a slave has been added. */
+	/* Emits when a slave has been added. */
 	sigc::signal<void, const SlaveDeviceData&> m_oSlaveAddedSignal;
 private:
 	void initXI(const Glib::RefPtr<Gdk::Display>& refDisplay);

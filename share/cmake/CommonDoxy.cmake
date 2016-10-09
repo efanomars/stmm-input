@@ -13,18 +13,22 @@ function(CreateLibDoxy STMMI_TARGET_LIB  STMMI_TARGET_LIB_VERSION  STMMI_INCLUDE
     option(BUILD_DOCS "Build doxygen documentation for ${STMMI_TARGET_LIB}" OFF)
     mark_as_advanced(BUILD_DOCS)
 
-#message(STATUS "STMMI_TARGET_LIB            ${STMMI_TARGET_LIB}")
-#message(STATUS "STMMI_TARGET_LIB_VERSION    ${STMMI_TARGET_LIB_VERSION}")
-#message(STATUS "STMMI_INCLUDE_LIBS          ${STMMI_INCLUDE_LIBS}")
+    option(BUILD_DOCS_WARNINGS_TO_LOG_FILE "Doxygen warnings for ${STMMI_TARGET_LIB} written to log file" OFF)
+    mark_as_advanced(BUILD_DOCS_WARNINGS_TO_LOG_FILE)
+
+#message(STATUS "CreateLibDoxy STMMI_TARGET_LIB            ${STMMI_TARGET_LIB}")
+#message(STATUS "CreateLibDoxy STMMI_TARGET_LIB_VERSION    ${STMMI_TARGET_LIB_VERSION}")
+#message(STATUS "CreateLibDoxy STMMI_INCLUDE_LIBS          ${STMMI_INCLUDE_LIBS}")
 
     set(STMMI_DOC_DIRS_AND_FILES)
 
     list(LENGTH STMMI_INCLUDE_LIBS STMMI_INCLUDE_LIBS_LEN)
-#message(STATUS "STMMI_INCLUDE_LIBS_LEN      ${STMMI_INCLUDE_LIBS_LEN}")
+#message(STATUS "CreateLibDoxy STMMI_INCLUDE_LIBS_LEN      ${STMMI_INCLUDE_LIBS_LEN}")
 
     if (STMMI_INCLUDE_LIBS_LEN GREATER 0)
         set(STMMI_INCLUDE_LIBS_TEMP ${STMMI_INCLUDE_LIBS})
         string(REPLACE ";" ", " STMMI_INCLUDE_LIBS_TEMP "${STMMI_INCLUDE_LIBS_TEMP}")
+        #
         option(BUILD_DOCS_INCLUDE_LIBS "Include the ${STMMI_INCLUDE_LIBS_TEMP} headers into doxygen documentation" ON)
         mark_as_advanced(BUILD_DOCS_INCLUDE_LIBS)
 
@@ -39,7 +43,7 @@ function(CreateLibDoxy STMMI_TARGET_LIB  STMMI_TARGET_LIB_VERSION  STMMI_INCLUDE
                     message(FATAL_ERROR "Couldn't find include directory '${STMMI_INCLUDE_CUR_LIB}'")
                 else ("${STMMITEMPCURLIB}" STREQUAL "STMMITEMPCURLIB-NOTFOUND")
 
-#message(STATUS "STMMITEMPCURLIB      ${STMMITEMPCURLIB}")
+#message(STATUS "CreateLibDoxy STMMITEMPCURLIB      ${STMMITEMPCURLIB}")
                     list(APPEND STMMI_DOC_DIRS_AND_FILES   ${STMMITEMPCURLIB})
 
                 endif ("${STMMITEMPCURLIB}" STREQUAL "STMMITEMPCURLIB-NOTFOUND")
@@ -56,7 +60,13 @@ function(CreateLibDoxy STMMI_TARGET_LIB  STMMI_TARGET_LIB_VERSION  STMMI_INCLUDE
                 )
         string(REPLACE ";" " " STMMI_DOC_DIRS_AND_FILES "${STMMI_DOC_DIRS_AND_FILES}")
 
-#message(STATUS "STMMI_DOC_DIRS_AND_FILES      ${STMMI_DOC_DIRS_AND_FILES}")
+#message(STATUS "CreateLibDoxy STMMI_DOC_DIRS_AND_FILES      ${STMMI_DOC_DIRS_AND_FILES}")
+
+        if (BUILD_DOCS_WARNINGS_TO_LOG_FILE)
+            set(STMMI_DOXY_WARNING_LOG_FILE ${CMAKE_BINARY_DIR}/${STMMI_TARGET_LIB}-${CMAKE_BUILD_TYPE}.log)
+        else (BUILD_DOCS_WARNINGS_TO_LOG_FILE)
+            set(STMMI_DOXY_WARNING_LOG_FILE)
+        endif (BUILD_DOCS_WARNINGS_TO_LOG_FILE)
 
         # Configure the doxygen config file with current settings:
         configure_file(${PROJECT_SOURCE_DIR}/../share/doc/docu-config.doxygen.in  ${CMAKE_BINARY_DIR}/docu-config.doxygen @ONLY)
@@ -64,7 +74,7 @@ function(CreateLibDoxy STMMI_TARGET_LIB  STMMI_TARGET_LIB_VERSION  STMMI_INCLUDE
         add_custom_target(doc
             ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/docu-config.doxygen
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-            COMMENT "Generating API documentation using doxygen" VERBATIM)
+            COMMENT "Doxygen: generating API documentation for ${STMMI_TARGET_LIB}" VERBATIM)
 
         make_directory(${CMAKE_BINARY_DIR}/html) # needed for install
 

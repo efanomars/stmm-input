@@ -18,9 +18,10 @@
  * File:   testJoystickButtonEventClass.cc
  */
 
-#include <gtest/gtest.h>
 #include "fakejoystickdevice.h"
 #include "joystickevent.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {
@@ -36,13 +37,20 @@ class JoystickButtonEventClassFixture : public ::testing::Test
 	void SetUp() override
 	{
 		m_refJoystickDevice = std::make_shared<FakeJoystickDevice>();
+		#ifndef NDEBUG
+		const bool bFound = 
+		#endif
+		m_refJoystickDevice->getCapability(m_refJoystickCapability);
+		assert(bFound);
 	}
 	void TearDown() override
 	{
+		m_refJoystickCapability.reset();
 		m_refJoystickDevice.reset();
 	}
 public:
-	shared_ptr<FakeJoystickDevice> m_refJoystickDevice;
+	shared_ptr<Device> m_refJoystickDevice;
+	shared_ptr<JoystickCapability> m_refJoystickCapability;
 };
 
 TEST_F(JoystickButtonEventClassFixture, WorkingSetUp)
@@ -53,7 +61,7 @@ TEST_F(JoystickButtonEventClassFixture, WorkingSetUp)
 TEST_F(JoystickButtonEventClassFixture, ConstructEvent)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
-	JoystickButtonEvent oJoystickButtonEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refJoystickDevice
+	JoystickButtonEvent oJoystickButtonEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refJoystickCapability
 							, JoystickButtonEvent::BUTTON_PRESS, JoystickCapability::BUTTON_A);
 	EXPECT_TRUE(JoystickButtonEvent::getClass() == typeid(JoystickButtonEvent));
 	EXPECT_TRUE(oJoystickButtonEvent.getEventClass() == typeid(JoystickButtonEvent));
@@ -61,8 +69,8 @@ TEST_F(JoystickButtonEventClassFixture, ConstructEvent)
 	EXPECT_TRUE(oJoystickButtonEvent.getType() == JoystickButtonEvent::BUTTON_PRESS);
 	EXPECT_TRUE(oJoystickButtonEvent.getTimeUsec() == nTimeUsec);
 	EXPECT_TRUE(oJoystickButtonEvent.getAccessor() == Accessor::s_refEmptyAccessor);
-	EXPECT_TRUE(oJoystickButtonEvent.getJoystickCapability() == m_refJoystickDevice);
-	EXPECT_TRUE(oJoystickButtonEvent.getCapability() == m_refJoystickDevice);
+	EXPECT_TRUE(oJoystickButtonEvent.getJoystickCapability() == m_refJoystickCapability);
+	EXPECT_TRUE(oJoystickButtonEvent.getCapability() == m_refJoystickCapability);
 	//
 	HARDWARE_KEY eK = HK_T;
 	Event::AS_KEY_INPUT_TYPE eAsType = Event::AS_KEY_RELEASE_CANCEL;
@@ -81,7 +89,7 @@ TEST_F(JoystickButtonEventClassFixture, ConstructEvent)
 TEST_F(JoystickButtonEventClassFixture, KeySimulation)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
-	JoystickButtonEvent oJoystickButtonEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refJoystickDevice
+	JoystickButtonEvent oJoystickButtonEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refJoystickCapability
 							, JoystickButtonEvent::BUTTON_RELEASE_CANCEL, JoystickCapability::BUTTON_TL);
 	EXPECT_TRUE(oJoystickButtonEvent.getButton() == JoystickCapability::BUTTON_TL);
 	EXPECT_TRUE(oJoystickButtonEvent.getType() == JoystickButtonEvent::BUTTON_RELEASE_CANCEL);

@@ -15,11 +15,11 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
 /*
- * File:   stddevicemanager.h
+ * File:   basicdevicemanager.h
  */
 
-#ifndef _STMI_STD_DEVICE_MANAGER_H_
-#define _STMI_STD_DEVICE_MANAGER_H_
+#ifndef _STMI_BASIC_DEVICE_MANAGER_H_
+#define _STMI_BASIC_DEVICE_MANAGER_H_
 
 #include "childdevicemanager.h"
 
@@ -33,7 +33,7 @@ namespace stmi
 
 /** Helper class for implementing a device manager.
  */
-class StdDeviceManager : public ChildDeviceManager
+class BasicDeviceManager : public ChildDeviceManager
 {
 public:
 	shared_ptr<Device> getDevice(int32_t nDeviceId) const override;
@@ -42,6 +42,7 @@ public:
 	std::vector<int32_t> getDevices() const override;
 
 	std::vector<Capability::Class> getCapabilityClasses() const override;
+	std::vector<Capability::Class> getDeviceCapabilityClasses() const override;
 	std::vector<Event::Class> getEventClasses() const override;
 
 	bool isEventClassEnabled(const Event::Class& oEventClass) const override;
@@ -56,31 +57,50 @@ public:
 	 * @return `false`
 	 */
 	bool removeAccessor(const shared_ptr<Accessor>& /*refAccessor*/) override { return false; }
+	/** Default empty implementation.
+	 * @return `false`
+	 */
+	bool hasAccessor(const shared_ptr<Accessor>& /*refAccessor*/) override { return false; }
 
 	bool addEventListener(const shared_ptr<EventListener>& refEventListener, const shared_ptr<CallIf>& refCallIf) override;
+	bool addEventListener(const shared_ptr<EventListener>& refEventListener) override;
 	bool removeEventListener(const shared_ptr<EventListener>& refEventListener, bool bFinalize) override;
 
 protected:
 	/** Constructor.
 	 * If bEnableEventClasses is `true` then all event classes in aEnDisableEventClass are enabled, all others disabled,
 	 * if `false` then all event classes supported by this instance are enabled except those in aEnDisableEventClass.
-	 * StdDeviceManager doesn't allow disabling event classes once constructed, only enabling.
+	 * BasicDeviceManager doesn't allow disabling event classes once constructed, only enabling.
 	 * Example: To enable all the event classes supported by this instance pass
 	 *
 	 *     bEnableEventClasses = false,  aEnDisableEventClass = {}
 	 *
-	 * @param aCapabitityClass Vector of registered capability classes supported by this manager.
-	 * @param aEventClass Vector of registered event classes supported by this manager.
+	 * @param aCapabitityClasses Vector of registered (device manager) capability classes supported by this manager.
+	 * @param aDeviceCapabitityClasses Vector of registered (device) capability classes supported by this manager.
+	 * @param aEventClasses Vector of registered event classes supported by this manager.
 	 * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventType.
-	 * @param aEnDisableEventClass The event classes to be enabled or disabled according to bEnableEventClasses.
+	 * @param aEnDisableEventClasses The event classes to be enabled or disabled according to bEnableEventClasses.
 	 */
-	StdDeviceManager(const std::vector<Capability::Class>& aCapabitityClass
-					, const std::vector<Event::Class>& aEventClass
-					, bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass);
+	BasicDeviceManager(const std::vector<Capability::Class>& aCapabitityClasses
+					, const std::vector<Capability::Class>& aDeviceCapabitityClasses
+					, const std::vector<Event::Class>& aEventClasses
+					, bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses);
 
-	/** When adding a device, subclasses of StdDeviceManager should call this. */
+	/** Adding a device.
+	 * Subclasses of BasicDeviceManager should call this when adding a device.
+	 * If the device couldn't be added (for example because it already is)
+	 * `false` is returned.
+	 * @param refDevice The device to be added. Cannot be null.
+	 * @return Whether the device could be added.
+	 */
 	bool addDevice(const shared_ptr<Device>& refDevice);
-	/** When removing a device, subclasses of StdDeviceManager should call this */
+	/** Removing a device.
+	 * Subclasses of BasicDeviceManager should call this when removing a device.
+	 * If the device couldn't be removed (for example because it isn't present)
+	 * `false` is returned.
+	 * @param refDevice The device to be removed. Cannot be null.
+	 * @return Whether the device could be removed.
+	 */
 	bool removeDevice(const shared_ptr<Device>& refDevice);
 
 	/** Tells whether the caller is within a listener callback. */
@@ -99,7 +119,7 @@ protected:
 	/** Returns the listeners data pointers.
 	 * The returned value prevents the data pointed to by the elements
 	 * of the list to be deleted while the std::shared_ptr is held.
-	 * This also means that StdDeviceManager subclasses shouldn't store the shared_ptr
+	 * This also means that BasicDeviceManager subclasses shouldn't store the shared_ptr
 	 * because it would prevent deletion of unused ListenerData objects.
 	 * @return The reference counted pointer to the list.
 	 */
@@ -118,7 +138,7 @@ protected:
 	void resetExtraDataOfAllListeners();
 	/** Base class to store extra listener data.
 	 * Subclass this class to attach additional data to the listener.
-	 * The subclass is constructed within StdDeviceManager and must have a
+	 * The subclass is constructed within BasicDeviceManager and must have a
 	 * public constructor with no parameters.
 	 * The lifetime of an instance is the same as the ListenerData object
 	 * it is associated with.
@@ -130,7 +150,7 @@ protected:
 		ListenerExtraData() {}
 		virtual ~ListenerExtraData() = default;
 		/** Resets the extra data.
-		 * Called by StdDeviceManager::resetExtraDataOfAllListeners().
+		 * Called by BasicDeviceManager::resetExtraDataOfAllListeners().
 		 * Override this function to clear the custom data in a subclass of
 		 * ListenerExtraData.
 		 */
@@ -149,11 +169,6 @@ protected:
 		, m_p0EventListener(nullptr)
 		{
 		}
-		/** Send event to the listener without callif evaluation.
-		 * @param refEvent Event to send.
-		 * @return Whether the event was sent.
-		 */
-		bool handleEvent(const shared_ptr<Event>& refEvent) const;
 		/** Send event to the listener with callif evaluation.
 		 * The event is sent only if callif allows it.
 		 * @param nClassTypeIdx The index of the class. If you pass -1 it calls getEventClassIndex(const Event::Class&) const.
@@ -202,16 +217,16 @@ protected:
 	private:
 		bool handleEventCommon(int32_t nClassTypeIdx, const shared_ptr<Event>& refEvent) const;
 	private:
-		friend class StdDeviceManager;
-		StdDeviceManager* m_p1Owner;
+		friend class BasicDeviceManager;
+		BasicDeviceManager* m_p1Owner;
 		//TODO: instead of two bools use an enum ACTIVE, REMOVING, REMOVED
 		bool m_bListenerWasRemoved;
 		bool m_bListenerRemoving; // Invariant: if m_bListenerRemoving == true then m_bListenerWasRemoved = true
-		std::unique_ptr<ListenerExtraData> m_refExtraData; // StdDeviceManager subclass defined data
+		std::unique_ptr<ListenerExtraData> m_refExtraData; // BasicDeviceManager subclass defined data
 		uint64_t m_nAddedTimeStamp;
 		shared_ptr<CallIf> m_refCallIf; // The callif without simplification
 		// One callif for each registered event class type supported by this device manager
-		std::vector< shared_ptr<CallIf> > m_aCallIfEventClass; // Size: m_p1Owner->m_aEventClass.size(), Value: refSimplifiedCallIf
+		std::vector< shared_ptr<CallIf> > m_aCallIfEventClass; // Size: m_p1Owner->m_aEventClass.size(), Value: "refSimplifiedCallIf"
 		weak_ptr<EventListener> m_refEventListener;
 		EventListener* m_p0EventListener; // Useful in case the weak ptr becomes null.
 		std::list< ListenerData* >::iterator m_itListeners; // "pointer" to element within list *m_refListeners
@@ -234,8 +249,9 @@ private:
 	void maybeRemoveDataOfRemovedListeners();
 
 private:
-	const std::vector<Capability::Class> m_aCapabitityClass;
-	const std::vector<Event::Class> m_aEventClass;
+	const std::vector<Capability::Class> m_aCapabitityClasses;
+	const std::vector<Capability::Class> m_aDeviceCapabitityClasses;
+	const std::vector<Event::Class> m_aEventClasses;
 
 	std::vector<bool> m_aEventClassEnabled; // Size: m_aEventClass.size()
 
@@ -257,17 +273,19 @@ private:
 	//   can have (m_bListenerWasRemoved == false)
 
 	// Incremented while finalize is called:
-	// is not really needed except for debugging StdDeviceManager subclasses.
+	// is not really needed except for debugging BasicDeviceManager subclasses.
 	int32_t m_nListenerListRecursing;
 	// Tells whether one or more ListenerData were marked as removed
 	bool m_bListenerListDirty; 
 
+	// Since this class isn't thread safe no need to declare it as atomic
 	static uint64_t s_nUniqueTimeStamp;
 private:
-	StdDeviceManager(const StdDeviceManager& oSource) = delete;
-	StdDeviceManager& operator=(const StdDeviceManager& oSource) = delete;
+	BasicDeviceManager() = delete;
+	BasicDeviceManager(const BasicDeviceManager& oSource) = delete;
+	BasicDeviceManager& operator=(const BasicDeviceManager& oSource) = delete;
 };
 
 } // namespace stmi
 
-#endif	/* _STMI_STD_DEVICE_MANAGER_H_ */
+#endif	/* _STMI_BASIC_DEVICE_MANAGER_H_ */

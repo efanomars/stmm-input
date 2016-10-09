@@ -9,6 +9,7 @@ libgtkmm3.0-dev
 libxi-dev
 libx11-dev
 
+
 Instructions
 ------------
 
@@ -21,7 +22,7 @@ From this directory execute the following commands:
 
 Instead of 'Release' CMAKE_BUILD_TYPE can also be set to
    'Debug', 'MinSizeRel' or 'RelWithDebInfo'.
-To change the installation directory add definition
+To change the default installation directory add definition
    '-D CMAKE_INSTALL_PREFIX=/home/adam/mybin'  to the preceding command.
 
   $ make
@@ -34,6 +35,6 @@ sudo might be omitted if installing to a directory owned by the current user.
 
 Alternatively you can just execute the script
 
-  $ ./install_device-floater.sh  Release  /usr/local
+  $ ./install_device-floater.py  -b Release  --destdir /home/adam/mylib
 
-setting the parameters to your preferred value (like above).
+setting the parameter(s) to your preferred value (like above).

@@ -18,9 +18,10 @@
  * File:   testKeyEventClass.cc
  */
 
-#include <gtest/gtest.h>
 #include "fakekeydevice.h"
 #include "keyevent.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {
@@ -36,13 +37,20 @@ class KeyEventClassFixture : public ::testing::Test
 	void SetUp() override
 	{
 		m_refKeyDevice = std::make_shared<FakeKeyDevice>();
+		#ifndef NDEBUG
+		const bool bFound = 
+		#endif
+		m_refKeyDevice->getCapability(m_refKeyCapability);
+		assert(bFound);
 	}
 	void TearDown() override
 	{
+		m_refKeyCapability.reset();
 		m_refKeyDevice.reset();
 	}
 public:
-	shared_ptr<FakeKeyDevice> m_refKeyDevice;
+	shared_ptr<Device> m_refKeyDevice;
+	shared_ptr<KeyCapability> m_refKeyCapability;
 };
 
 TEST_F(KeyEventClassFixture, WorkingSetUp)
@@ -53,15 +61,15 @@ TEST_F(KeyEventClassFixture, WorkingSetUp)
 TEST_F(KeyEventClassFixture, ConstructEvent)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
-	KeyEvent oKeyEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refKeyDevice, KeyEvent::KEY_PRESS, HK_U);
+	KeyEvent oKeyEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refKeyCapability, KeyEvent::KEY_PRESS, HK_U);
 	EXPECT_TRUE(KeyEvent::getClass() == typeid(KeyEvent));
 	EXPECT_TRUE(oKeyEvent.getEventClass() == typeid(KeyEvent));
 	EXPECT_TRUE(oKeyEvent.getKey() == HK_U);
 	EXPECT_TRUE(oKeyEvent.getType() == KeyEvent::KEY_PRESS);
 	EXPECT_TRUE(oKeyEvent.getTimeUsec() == nTimeUsec);
 	EXPECT_TRUE(oKeyEvent.getAccessor() == Accessor::s_refEmptyAccessor);
-	EXPECT_TRUE(oKeyEvent.getKeyCapability() == m_refKeyDevice);
-	EXPECT_TRUE(oKeyEvent.getCapability() == m_refKeyDevice);
+	EXPECT_TRUE(oKeyEvent.getKeyCapability() == m_refKeyCapability);
+	EXPECT_TRUE(oKeyEvent.getCapability() == m_refKeyCapability);
 	HARDWARE_KEY eK = HK_T;
 	Event::AS_KEY_INPUT_TYPE eAsType = Event::AS_KEY_RELEASE_CANCEL;
 	bool bMoreThanOne = true;
@@ -80,14 +88,14 @@ TEST_F(KeyEventClassFixture, KeySimulation)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	{
-		KeyEvent oKeyEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refKeyDevice, KeyEvent::KEY_RELEASE, HK_U);
+		KeyEvent oKeyEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refKeyCapability, KeyEvent::KEY_RELEASE, HK_U);
 		auto aAsKeys = oKeyEvent.getAsKeys();
 		EXPECT_TRUE(aAsKeys.size() == 1);
 		EXPECT_TRUE(aAsKeys[0].first == HK_U);
 		EXPECT_TRUE(aAsKeys[0].second ==  Event::AS_KEY_RELEASE);
 	}
 	{
-		KeyEvent oKeyEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refKeyDevice, KeyEvent::KEY_RELEASE_CANCEL, HK_ESC);
+		KeyEvent oKeyEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refKeyCapability, KeyEvent::KEY_RELEASE_CANCEL, HK_ESC);
 		auto aAsKeys = oKeyEvent.getAsKeys();
 		EXPECT_TRUE(aAsKeys.size() == 1);
 		EXPECT_TRUE(aAsKeys[0].first == HK_ESC);

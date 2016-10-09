@@ -8,11 +8,13 @@ option(BUILD_TESTING "Build tests" OFF)
 
 # Tests dir
 set(STMMI_TEST_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/test")
-# Test sources need to end with .cxx
-set(STMMI_TEST_SOURCES
+# Test sources end with .cxx
+
+# Test sources that do not need events
+set(STMMI_TEST_SOURCES_NO_EVS
         ${STMMI_TEST_SOURCES_DIR}/testHardwareKeys.cxx
       )
 
-TestFiles("stmm-input" FALSE "${STMMI_TEST_SOURCES}" "" FALSE)
+TestFiles("${STMMI_TEST_SOURCES_NO_EVS}" "" "stmm-input" "stmm-input" FALSE FALSE FALSE)
 
 include(CTest)

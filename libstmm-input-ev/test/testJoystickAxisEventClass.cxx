@@ -18,9 +18,10 @@
  * File:   testJoystickAxisEventClass.cc
  */
 
-#include <gtest/gtest.h>
 #include "fakejoystickdevice.h"
 #include "joystickevent.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {
@@ -36,13 +37,20 @@ class JoystickAxisEventClassFixture : public ::testing::Test
 	void SetUp() override
 	{
 		m_refJoystickDevice = std::make_shared<FakeJoystickDevice>();
+		#ifndef NDEBUG
+		const bool bFound = 
+		#endif
+		m_refJoystickDevice->getCapability(m_refJoystickCapability);
+		assert(bFound);
 	}
 	void TearDown() override
 	{
+		m_refJoystickCapability.reset();
 		m_refJoystickDevice.reset();
 	}
 public:
-	shared_ptr<FakeJoystickDevice> m_refJoystickDevice;
+	shared_ptr<Device> m_refJoystickDevice;
+	shared_ptr<JoystickCapability> m_refJoystickCapability;
 };
 
 TEST_F(JoystickAxisEventClassFixture, WorkingSetUp)
@@ -54,15 +62,15 @@ TEST_F(JoystickAxisEventClassFixture, ConstructEvent)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	JoystickAxisEvent oJoystickAxisEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-									, m_refJoystickDevice, JoystickCapability::AXIS_X, +32111);
+									, m_refJoystickCapability, JoystickCapability::AXIS_X, +32111);
 	EXPECT_TRUE(JoystickAxisEvent::getClass() == typeid(JoystickAxisEvent));
 	EXPECT_TRUE(oJoystickAxisEvent.getEventClass() == typeid(JoystickAxisEvent));
 	EXPECT_TRUE(oJoystickAxisEvent.getAxis() == JoystickCapability::AXIS_X);
 	EXPECT_TRUE(oJoystickAxisEvent.getValue() == 32111);
 	EXPECT_TRUE(oJoystickAxisEvent.getTimeUsec() == nTimeUsec);
 	EXPECT_TRUE(oJoystickAxisEvent.getAccessor() == Accessor::s_refEmptyAccessor);
-	EXPECT_TRUE(oJoystickAxisEvent.getJoystickCapability() == m_refJoystickDevice);
-	EXPECT_TRUE(oJoystickAxisEvent.getCapability() == m_refJoystickDevice);
+	EXPECT_TRUE(oJoystickAxisEvent.getJoystickCapability() == m_refJoystickCapability);
+	EXPECT_TRUE(oJoystickAxisEvent.getCapability() == m_refJoystickCapability);
 	//
 	HARDWARE_KEY eK = HK_T;
 	Event::AS_KEY_INPUT_TYPE eAsType = Event::AS_KEY_RELEASE_CANCEL;
@@ -84,7 +92,7 @@ TEST_F(JoystickAxisEventClassFixture, FromTo)
 	};
 	for (auto& oTuple : aTuple) {
 		JoystickAxisEvent oJoystickAxisEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-									, m_refJoystickDevice, JoystickCapability::AXIS_Z, std::get<0>(oTuple));
+									, m_refJoystickCapability, JoystickCapability::AXIS_Z, std::get<0>(oTuple));
 		EXPECT_TRUE(oJoystickAxisEvent.getAxis() == JoystickCapability::AXIS_Z);
 		EXPECT_TRUE(oJoystickAxisEvent.getValue() == std::get<0>(oTuple));
 		EXPECT_NEAR(oJoystickAxisEvent.getValueM1ToP1(), std::get<1>(oTuple), 0.001);

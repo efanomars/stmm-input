@@ -70,15 +70,47 @@ public:
 	 */
 	virtual shared_ptr<Device> getDevice(int32_t nDeviceId) const = 0;
 
-	/** The registered capability classes of the device manager and all its devices.
-	 * The capability classes include those that managed devices potentially have,
-	 * independently from the currently available devices.
-	 * Example: a device manager that handles mice and touch pads will return
-	 * {DeviceMgmtCapability::getClass(), PointerCapability::getClass(), TouchCapability::getClass()}
-	 * even though no touch device is connected.
-	 * @return The set of registered capability classes.
+	/** The registered capability classes of the device manager.
+	 * Example: the vector {DeviceMgmtCapability::getClass()} is returned.
+	 * @return The set of registered device manager capability classes.
 	 */
 	virtual std::vector<Capability::Class> getCapabilityClasses() const = 0;
+	/** The registered capability classes of the device manager's devices.
+	 * The capability classes include those that managed devices potentially have,
+	 * independently from the currently available devices.
+	 *
+	 * Example: a device manager that handles mice and touch pads will return
+	 * {PointerCapability::getClass(), TouchCapability::getClass()}
+	 * even though no touch device is connected.
+	 * @return The set of registered device capability classes.
+	 */
+	virtual std::vector<Capability::Class> getDeviceCapabilityClasses() const = 0;
+	/** Request a registered device manager capability.
+	 * @param refCapa [out] The registered DeviceCapability subclass or null if not supported by device manager).
+	 * @return Whether the device manager has the requested capability.
+	 */
+	template < typename TCapa >
+	bool getCapability(shared_ptr<TCapa>& refCapa) const
+	{
+		static_assert(std::is_base_of<Capability, TCapa>::value && !std::is_base_of<TCapa, DeviceManagerCapability>::value
+						, "TCapa must be subclass of Capability");
+		shared_ptr<Capability> refSubCapa = getCapability(typeid(TCapa));
+		if (!refSubCapa) {
+			return false; //----------------------------------------------------
+		}
+		assert(refSubCapa->getCapabilityClass().isDeviceManagerCapability());
+		refCapa = std::static_pointer_cast<TCapa>(refSubCapa);
+		return true;
+	}
+	/** Requests the instance of a capability class.
+	 * If the device manager doesn't have the capability null is returned.
+	 * @param oClass The requested registered device manager class.
+	 * @return The capability or null.
+	 */
+	virtual shared_ptr<Capability> getCapability(const Capability::Class& oClass) const = 0;
+	/** Returns the device manager's capability with the given id, or null if not found.
+	 */
+	virtual shared_ptr<Capability> getCapability(int32_t nCapabilityId) const = 0;
 	/** The registered event classes the device manager and all its devices can send.
 	 * The event classes include those that managed devices potentially can send,
 	 * independently from the currently available devices.
@@ -181,11 +213,12 @@ public:
 	 */
 	virtual bool addEventListener(const shared_ptr<EventListener>& refEventListener
 									, const shared_ptr<CallIf>& refCallIf) = 0;
-	/** Shortcut of addEventListener(refEventListener, shared_ptr<CallIf>{}). */
-	inline bool addEventListener(const shared_ptr<EventListener>& refEventListener)
-	{
-		return addEventListener(refEventListener, shared_ptr<CallIf>{});
-	}
+	/**  Adds an event listener to the device manager.
+	 * Shortcut of addEventListener(refEventListener, shared_ptr<CallIf>{}).
+	 * @param refEventListener The listener to be added. Cannot be null.
+	 * @return Whether the listener was added.
+	 */
+	virtual bool addEventListener(const shared_ptr<EventListener>& refEventListener) = 0;
 	/** Removes an event listener from the device manager.
 	 * If the listener wasn't found, `false` is returned, `true` otherwise.
 	 * To be found the event listener must have been added with addEventListener()

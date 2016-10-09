@@ -1,0 +1,15 @@
+# stmm-input-fake pkg-config source file
+
+prefix=@STMMI_FAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: stmm-input-fake
+Description: C++ Device Input Framework - Development testing library
+Version: @STMM_INPUT_FAKE_VERSION@
+URL: https://github.com/efanomars/stmm-input
+Requires: stmm-input-ev >= @STMM_INPUT_EV_VERSION_REQ@
+
+Cflags: -I${includedir}/stmm-input-fake -I${includedir}
+

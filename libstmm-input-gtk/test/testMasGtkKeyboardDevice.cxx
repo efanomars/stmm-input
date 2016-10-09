@@ -18,9 +18,9 @@
  * File:   testMasGtkKeyboardDevice.cc
  */
 
-#include <gtest/gtest.h>
-
 #include "fixtureMasDM.h"
+
+#include <gtest/gtest.h>
 
 #include <gdk/gdkkeysyms.h>
 

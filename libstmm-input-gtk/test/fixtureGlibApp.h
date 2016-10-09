@@ -23,6 +23,8 @@
 
 #include <gtkmm.h>
 
+#include <gtest/gtest.h>
+
 namespace stmi
 {
 
@@ -37,7 +39,7 @@ class GlibAppFixture : public ::testing::Test
 protected:
 	void SetUp() override
 	{
-		m_refApp = Gtk::Application::create("net.testappsnirvana.mas");
+		m_refApp = Gtk::Application::create("net.testlibsnirvana.stmi");
 	}
 	void TearDown() override
 	{

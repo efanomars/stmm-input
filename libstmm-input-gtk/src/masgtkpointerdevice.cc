@@ -116,7 +116,7 @@ bool GtkPointerDevice::handleGdkEventMotion(GdkEventMotion* p0MotionEv, const sh
 	m_fLastPointerY = fY;
 	const int32_t nButton = PointerEvent::s_nNoButton;
 	const bool bWasAnyButtonPressed = !m_aButtons.empty();
-	const bool bAnyButtonPressed = bWasAnyButtonPressed; // GdkEventMotion doesn't change the button status
+	const bool bAnyButtonPressed = bWasAnyButtonPressed; // GdkEventMotion doesn't change the button state
 	const PointerEvent::POINTER_INPUT_TYPE eInputType = (bAnyButtonPressed ? PointerEvent::POINTER_MOVE : PointerEvent::POINTER_HOVER);
 	//
 	auto refSaveAccessor = refWindowData->getAccessor(); // might be removed in callbacks

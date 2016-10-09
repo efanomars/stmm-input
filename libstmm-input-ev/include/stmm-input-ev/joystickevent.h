@@ -17,6 +17,7 @@
 /*
  * File:   joystickevent.h
  */
+/*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
 #ifndef _STMI_JOYSTICK_EVENT_H_
 #define _STMI_JOYSTICK_EVENT_H_
@@ -50,7 +51,7 @@ public:
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
 	 * @param refJoystickCapability The capability that generated this event. Cannot be null.
-	 * @param nHat The hat that changed its status. Must be >= 0.
+	 * @param nHat The hat that changed its state. Must be >= 0.
 	 * @param eValue The new value for the hat. Can't be JoystickCapability::HAT_VALUE_NOT_SET.
 	 * @param ePreviousValue The previous value for the hat. Can be JoystickCapability::HAT_VALUE_NOT_SET.
 	 *        Can't be HAT_CENTER_CANCEL.
@@ -129,7 +130,7 @@ public:
 	}
 protected:
 	/** Sets the hat.
-	 * @param nHat The hat that changed its status. Must be >= 0.
+	 * @param nHat The hat that changed its state. Must be >= 0.
 	 */
 	inline void setHat(int32_t nHat)
 	{

@@ -34,14 +34,7 @@ find_package(PkgConfig REQUIRED)
 set(STMM_INPUT_GTK_MAJOR_VERSION 0)
 set(STMM_INPUT_GTK_MINOR_VERSION 1)
 set(STMM_INPUT_GTK_VERSION "${STMM_INPUT_GTK_MAJOR_VERSION}.${STMM_INPUT_GTK_MINOR_VERSION}.0")
-# required stmm-input version
-set(STMM_INPUT_MAJOR_VERSION_REQ 0)
-set(STMM_INPUT_MINOR_VERSION_REQ 1)
-set(STMM_INPUT_VERSION_REQ "${STMM_INPUT_MAJOR_VERSION_REQ}.${STMM_INPUT_MINOR_VERSION_REQ}")
-# required stmm-input-base version
-set(STMM_INPUT_BASE_MAJOR_VERSION_REQ 0)
-set(STMM_INPUT_BASE_MINOR_VERSION_REQ 1)
-set(STMM_INPUT_BASE_VERSION_REQ "${STMM_INPUT_BASE_MAJOR_VERSION_REQ}.${STMM_INPUT_BASE_MINOR_VERSION_REQ}")
+
 # required stmm-input-ev version
 set(STMM_INPUT_EV_MAJOR_VERSION_REQ 0)
 set(STMM_INPUT_EV_MINOR_VERSION_REQ 1)
@@ -52,13 +45,11 @@ set(XI_VERSION_REQ "1.7.4")
 set(X11_VERSION_REQ "1.6.2")
 
 # Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
+pkg_check_modules(STMMINPUTEV    REQUIRED  stmm-input-ev>=${STMM_INPUT_EV_VERSION_REQ})
+
 pkg_check_modules(GTKMM  REQUIRED  gtkmm-3.0>=${GTKMM_VERSION_REQ})
 pkg_check_modules(XI     REQUIRED  xi>=${XI_VERSION_REQ})
 pkg_check_modules(X11    REQUIRED  x11>=${X11_VERSION_REQ})
-
-pkg_check_modules(STMMINPUTBASE  REQUIRED  stmm-input-base>=${STMM_INPUT_BASE_VERSION_REQ})
-pkg_check_modules(STMMINPUTEV    REQUIRED  stmm-input-ev>=${STMM_INPUT_EV_VERSION_REQ})
-pkg_check_modules(STMMINPUT      REQUIRED  stmm-input>=${STMM_INPUT_VERSION_REQ})
 
 #Debug execute_process(
 #Debug         COMMAND pkg-config --atleast-version 0.2 stmm-input
@@ -68,16 +59,12 @@ pkg_check_modules(STMMINPUT      REQUIRED  stmm-input>=${STMM_INPUT_VERSION_REQ}
 #Debug message(STATUS "${STMMINPUT_VERSION}")
 
 list(APPEND STMMI_GTK_EXTRA_INCLUDE_DIRS
-    ${STMMINPUT_INCLUDE_DIRS}
-    ${STMMINPUTBASE_INCLUDE_DIRS}
     ${STMMINPUTEV_INCLUDE_DIRS}
     ${GTKMM_INCLUDE_DIRS}
     ${XI_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
     )
 list(APPEND STMMI_GTK_EXTRA_LIBS
-    ${STMMINPUT_LIBRARIES}
-    ${STMMINPUTBASE_LIBRARIES}
     ${STMMINPUTEV_LIBRARIES}
     ${GTKMM_LIBRARIES}
     ${XI_LIBRARIES}

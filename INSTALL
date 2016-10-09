@@ -2,10 +2,9 @@ Installation
 ============
 
 Each project is separate and has its own description ('README.md'),
-license, installing instructions, etc. and can be handled in its 
-own subfolder (provided the 'share' folder is present).
-But since the projects partially depend on each other, a script is
-provided to compile and install the binaries in the right order.
+license, installing instructions, etc. and can be built in its 
+own subfolder. But since the projects partially depend on each other, 
+a script is provided to compile and install the binaries in the right order.
 
   install_stmm-input-all.sh  Debug  /usr/local
 
@@ -29,6 +28,10 @@ Dependencies
     + libstmm-input-base
     + libxi-dev
     + libgtkmm-3.0-dev
+
+- libstmm-input-fake  depends on
+    + libstmm-input-ev
+    + libstmm-input-base
 
 - device-floater     depends on
     + libgtkmm-3.0-dev

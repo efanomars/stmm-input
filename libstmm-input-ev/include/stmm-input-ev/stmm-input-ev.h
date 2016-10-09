@@ -28,8 +28,10 @@
 #include "keyevent.h"
 #include "pointerevent.h"
 #include "touchevent.h"
+#include "stddevicemanager.h"
+#include "stdparentdevicemanager.h"
 
-#include <stmm-input/stmm-input.h>
+#include <stmm-input-base/stmm-input-base.h>
 
 #endif	/* _STMI_STMM_INPUT_EV_H_ */
 

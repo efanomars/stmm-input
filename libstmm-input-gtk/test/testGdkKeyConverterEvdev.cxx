@@ -18,8 +18,9 @@
  * File:   testGdkKeyConverterEvdev.cc
  */
 
-#include <gtest/gtest.h>
 #include "gdkkeyconverterevdev.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {

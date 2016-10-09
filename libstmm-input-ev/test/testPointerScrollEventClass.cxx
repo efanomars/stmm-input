@@ -18,9 +18,10 @@
  * File:   testPointerScrollEventClass.cc
  */
 
-#include <gtest/gtest.h>
 #include "fakepointerdevice.h"
 #include "pointerevent.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {
@@ -36,13 +37,20 @@ class PointerScrollEventClassFixture : public ::testing::Test
 	void SetUp() override
 	{
 		m_refPointerDevice = std::make_shared<FakePointerDevice>();
+		#ifndef NDEBUG
+		const bool bFound = 
+		#endif
+		m_refPointerDevice->getCapability(m_refPointerCapability);
+		assert(bFound);
 	}
 	void TearDown() override
 	{
+		m_refPointerCapability.reset();
 		m_refPointerDevice.reset();
 	}
 public:
-	shared_ptr<FakePointerDevice> m_refPointerDevice;
+	shared_ptr<Device> m_refPointerDevice;
+	shared_ptr<PointerCapability> m_refPointerCapability;
 };
 
 TEST_F(PointerScrollEventClassFixture, WorkingSetUp)
@@ -55,7 +63,7 @@ TEST_F(PointerScrollEventClassFixture, ConstructEvent)
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	const bool bAnyButtonIsPressed = false;
 	PointerScrollEvent oPointerScrollEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-								, m_refPointerDevice, PointerScrollEvent::SCROLL_UP
+								, m_refPointerCapability, PointerScrollEvent::SCROLL_UP
 								, 77.7, -88.8, bAnyButtonIsPressed);
 	EXPECT_TRUE(PointerScrollEvent::getClass() == typeid(PointerScrollEvent));
 	EXPECT_TRUE(oPointerScrollEvent.getEventClass() == typeid(PointerScrollEvent));
@@ -64,8 +72,8 @@ TEST_F(PointerScrollEventClassFixture, ConstructEvent)
 	EXPECT_TRUE(oPointerScrollEvent.getY() == -88.8);
 	EXPECT_TRUE(oPointerScrollEvent.getTimeUsec() == nTimeUsec);
 	EXPECT_TRUE(oPointerScrollEvent.getAccessor() == Accessor::s_refEmptyAccessor);
-	EXPECT_TRUE(oPointerScrollEvent.getPointerCapability() == m_refPointerDevice);
-	EXPECT_TRUE(oPointerScrollEvent.getCapability() == m_refPointerDevice);
+	EXPECT_TRUE(oPointerScrollEvent.getPointerCapability() == m_refPointerCapability);
+	EXPECT_TRUE(oPointerScrollEvent.getCapability() == m_refPointerCapability);
 	//
 	EXPECT_FALSE(oPointerScrollEvent.getIsModified());
 	EXPECT_TRUE(oPointerScrollEvent.getXYGrabId() == PointerEvent::s_nPointerNotGrabbedId);
@@ -92,7 +100,7 @@ TEST_F(PointerScrollEventClassFixture, GrabMove)
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	const bool bAnyButtonIsPressed = true;
 	PointerScrollEvent oPointerScrollEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-								, m_refPointerDevice, PointerScrollEvent::SCROLL_DOWN
+								, m_refPointerCapability, PointerScrollEvent::SCROLL_DOWN
 								, 77.7, -88.8, bAnyButtonIsPressed);
 	EXPECT_TRUE(oPointerScrollEvent.getScrollDir() == PointerScrollEvent::SCROLL_DOWN);
 	EXPECT_TRUE(oPointerScrollEvent.getX() == 77.7);
@@ -123,7 +131,7 @@ TEST_F(PointerScrollEventClassFixture, TranslateXY)
 	{
 		const bool bAnyButtonIsPressed = true;
 		PointerScrollEvent oPointerScrollEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-									, m_refPointerDevice, PointerScrollEvent::SCROLL_DOWN
+									, m_refPointerCapability, PointerScrollEvent::SCROLL_DOWN
 									, 77.7, -88.8, bAnyButtonIsPressed);
 		EXPECT_FALSE(oPointerScrollEvent.getIsModified());
 		oPointerScrollEvent.translateXY(10, -10);
@@ -139,7 +147,7 @@ TEST_F(PointerScrollEventClassFixture, ScaleXY)
 	{
 		const bool bAnyButtonIsPressed = false;
 		PointerScrollEvent oPointerScrollEvent(nTimeUsec, Accessor::s_refEmptyAccessor
-									, m_refPointerDevice, PointerScrollEvent::SCROLL_DOWN
+									, m_refPointerCapability, PointerScrollEvent::SCROLL_DOWN
 									, 77.7, -88.8, bAnyButtonIsPressed);
 		EXPECT_FALSE(oPointerScrollEvent.getIsModified());
 		oPointerScrollEvent.scaleXY(1.2, 0.5);

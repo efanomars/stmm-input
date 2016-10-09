@@ -17,6 +17,7 @@
 /*
  * File:   keyevent.h
  */
+/*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
 #ifndef _STMI_KEY_EVENT_H_
 #define _STMI_KEY_EVENT_H_

@@ -15,11 +15,11 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
 /*
- * File:   stddevice.h
+ * File:   basicdevice.h
  */
 
-#ifndef _STMI_STD_DEVICE_H_
-#define _STMI_STD_DEVICE_H_
+#ifndef _STMI_BASIC_DEVICE_H_
+#define _STMI_BASIC_DEVICE_H_
 
 #include "childdevicemanager.h"
 
@@ -35,7 +35,7 @@ namespace stmi
  * ODM = Owner DeviceManager, must be subclass of ChildDeviceManager.
  */
 template<class ODM>
-class StdDevice : public Device
+class BasicDevice : public Device
 {
 public:
 	std::string getName() const override { return m_sName; }
@@ -52,12 +52,12 @@ protected:
 	 * @param sName The name of the device. Cannot be empty.
 	 * @param refOwnerDeviceManager The ChildDeviceManager subclass. Cannot be null.
 	 */
-	StdDevice(std::string sName, const shared_ptr<ODM>& refOwnerDeviceManager)
+	BasicDevice(std::string sName, const shared_ptr<ODM>& refOwnerDeviceManager)
 	: m_sName(sName)
 	, m_refOwner(refOwnerDeviceManager)
 	{
 		static_assert(std::is_base_of<ChildDeviceManager, ODM>::value
-				, "StdDevice<> template parameter has to be subclass of ChildDeviceManager");
+				, "BasicDevice<> template parameter has to be subclass of ChildDeviceManager");
 		assert(refOwnerDeviceManager);
 		assert(!sName.empty());
 	}
@@ -70,11 +70,11 @@ private:
 	std::string m_sName;
 	weak_ptr<ODM> m_refOwner;
 private:
-	StdDevice() = delete;
+	BasicDevice() = delete;
 };
 
 template<class ODM>
-shared_ptr<DeviceManager> StdDevice<ODM>::getDeviceManager() const
+shared_ptr<DeviceManager> BasicDevice<ODM>::getDeviceManager() const
 {
 	auto refOwner = m_refOwner.lock();
 	if (!refOwner) {
@@ -84,7 +84,7 @@ shared_ptr<DeviceManager> StdDevice<ODM>::getDeviceManager() const
 }
 
 template<class ODM>
-shared_ptr<DeviceManager> StdDevice<ODM>::getDeviceManager()
+shared_ptr<DeviceManager> BasicDevice<ODM>::getDeviceManager()
 {
 	auto refOwner = m_refOwner.lock();
 	if (!refOwner) {
@@ -95,4 +95,4 @@ shared_ptr<DeviceManager> StdDevice<ODM>::getDeviceManager()
 
 } // namespace stmi
 
-#endif	/* _STMI_STD_DEVICE_H_ */
+#endif	/* _STMI_BASIC_DEVICE_H_ */

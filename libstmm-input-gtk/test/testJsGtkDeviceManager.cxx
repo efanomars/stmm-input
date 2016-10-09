@@ -18,10 +18,11 @@
  * File:   testJsGtkDeviceManager.cc
  */
 
-#include <gtest/gtest.h>
+#include "fixtureJsDM.h"
+
 #include <stmm-input/callifs.h>
 
-#include "fixtureJsDM.h"
+#include <gtest/gtest.h>
 
 namespace stmi
 {

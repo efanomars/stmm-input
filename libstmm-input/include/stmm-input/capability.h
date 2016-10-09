@@ -169,7 +169,7 @@ public:
 		bool m_bIsDeviceManagerCapability;
 	};
 	/** Get the registered class of the capability instance.
-	 * @return The registered class.
+	 * @return The registered class. Cannot be empty.
 	 */
 	inline const Class& getCapabilityClass() const
 	{
@@ -190,7 +190,7 @@ protected:
 	/** Constructor to be called from subclasses.
 	 * The registered type has to be the actual class of the instance being constructed
 	 * or a superclass of it.
-	 * @param oClass The registered class of the capability.
+	 * @param oClass The registered class of the capability. Cannot be empty.
 	 */
 	Capability(const Class& oClass);
 	/** Template used to register capability classes.

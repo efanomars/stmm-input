@@ -63,7 +63,6 @@ FloGtkDeviceManager::FloGtkDeviceManager(bool bEnableEventClasses, const std::ve
 , m_refGdkConverter(refGdkConverter)
 , m_oConverter(*m_refGdkConverter)
 , m_nClassIdxKeyEvent(getEventClassIndex(typeid(KeyEvent)))
-, m_nClassIdxDeviceMgmtEvent(getEventClassIndex(typeid(DeviceMgmtEvent)))
 {
 	assert(refGdkConverter);
 	assert((eKeyRepeatMode >= KEY_REPEAT_MODE_SUPPRESS) && (eKeyRepeatMode <= KEY_REPEAT_MODE_ADD_RELEASE_CANCEL));
@@ -73,14 +72,6 @@ FloGtkDeviceManager::FloGtkDeviceManager(bool bEnableEventClasses, const std::ve
 FloGtkDeviceManager::~FloGtkDeviceManager()
 {
 //std::cout << "FloGtkDeviceManager::~FloGtkDeviceManager()" << std::endl;
-}
-shared_ptr<DeviceManager> FloGtkDeviceManager::getDeviceManager() const
-{
-	return getRoot();
-}
-shared_ptr<DeviceManager> FloGtkDeviceManager::getDeviceManager()
-{
-	return getRoot();
 }
 void FloGtkDeviceManager::enableEventClass(const Event::Class& oEventClass)
 {
@@ -453,26 +444,6 @@ void FloGtkDeviceManager::connectDeviceToAllWindows(int32_t nXDeviceId)
 			continue; // for --------
 		}
 		refWindowData->connectDevice(nXDeviceId);
-	}
-}
-
-void FloGtkDeviceManager::sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice)
-{
-	if (!isEventClassEnabled(typeid(DeviceMgmtEvent))) {
-		return;
-	}
-	shared_ptr<ChildDeviceManager> refChildThis = shared_from_this();
-	assert(std::dynamic_pointer_cast<FloGtkDeviceManager>(refChildThis));
-	auto refThis = std::static_pointer_cast<FloGtkDeviceManager>(refChildThis);
-	auto refCapa = std::static_pointer_cast<DeviceMgmtCapability>(refThis);
-	//
-	const int64_t nTimeUsec = DeviceManager::getNowTimeMicroseconds();
-	//
-	//shared_ptr<DeviceMgmtEvent> refEvent = m_oDeviceMgmtRecycler.create(nTimeUsec, refCapa, eMgmtType, refDevice);
-	shared_ptr<DeviceMgmtEvent> refEvent = std::make_shared<DeviceMgmtEvent>(nTimeUsec, refCapa, eMgmtType, refDevice);
-	auto refListeners = getListeners();
-	for (auto& p0ListenerData : *refListeners) {
-		p0ListenerData->handleEventCallIf(m_nClassIdxDeviceMgmtEvent, refEvent);
 	}
 }
 

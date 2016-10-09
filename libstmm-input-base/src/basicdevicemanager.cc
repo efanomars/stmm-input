@@ -15,10 +15,10 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
 /*
- * File:   stddevicemanager.cc
+ * File:   basicdevicemanager.cc
  */
 
-#include "stddevicemanager.h"
+#include "basicdevicemanager.h"
 
 #include "callifs.h"
 #include "callifsimplifier.h"
@@ -32,45 +32,55 @@
 namespace stmi
 {
 
-uint64_t StdDeviceManager::s_nUniqueTimeStamp = 0;
+uint64_t BasicDeviceManager::s_nUniqueTimeStamp = 0;
 
-StdDeviceManager::StdDeviceManager(const std::vector<Capability::Class>& aCapabitityClass
-									, const std::vector<Event::Class>& aEventClass
-									, bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass)
+BasicDeviceManager::BasicDeviceManager(const std::vector<Capability::Class>& aCapabitityClasses
+									 , const std::vector<Capability::Class>& aDeviceCapabitityClasses
+									 , const std::vector<Event::Class>& aEventClasses
+									 , bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses)
 : ChildDeviceManager()
-, m_aCapabitityClass(aCapabitityClass)
-, m_aEventClass(aEventClass)
-, m_aEventClassEnabled(aEventClass.size(), !bEnableEventClasses)
+, m_aCapabitityClasses(aCapabitityClasses)
+, m_aDeviceCapabitityClasses(aDeviceCapabitityClasses)
+, m_aEventClasses(aEventClasses)
+, m_aEventClassEnabled(aEventClasses.size(), !bEnableEventClasses)
 , m_refListeners(std::make_shared< std::list< ListenerData* > >())
 , m_nListenerListRecursing(0)
 , m_bListenerListDirty(false)
 {
-	// Make sure no CapabilityType duplicates are passed
-	for (size_t nIdx = 0; nIdx < aCapabitityClass.size(); ++nIdx) {
-		for (size_t nIdx2 = 0; nIdx2 < aCapabitityClass.size(); ++nIdx2) {
+	// Make sure no class duplicates are passed
+	for (size_t nIdx = 0; nIdx < m_aCapabitityClasses.size(); ++nIdx) {
+		for (size_t nIdx2 = 0; nIdx2 < m_aCapabitityClasses.size(); ++nIdx2) {
 			if (nIdx != nIdx2) {
-				assert(aCapabitityClass[nIdx] != aCapabitityClass[nIdx2]);
+				assert(m_aCapabitityClasses[nIdx] != m_aCapabitityClasses[nIdx2]);
 			}
 		}
 	}
-	// Make sure no EventType duplicates are passed
-	for (size_t nIdx = 0; nIdx < aEventClass.size(); ++nIdx) {
-		for (size_t nIdx2 = 0; nIdx2 < aEventClass.size(); ++nIdx2) {
+	// Make sure no class duplicates are passed
+	for (size_t nIdx = 0; nIdx < m_aDeviceCapabitityClasses.size(); ++nIdx) {
+		for (size_t nIdx2 = 0; nIdx2 < m_aDeviceCapabitityClasses.size(); ++nIdx2) {
 			if (nIdx != nIdx2) {
-				assert(aEventClass[nIdx] != aEventClass[nIdx2]);
+				assert(m_aDeviceCapabitityClasses[nIdx] != m_aDeviceCapabitityClasses[nIdx2]);
 			}
 		}
 	}
-	for (auto& oEventClass : aEnDisableEventClass) {
-		for (size_t nIdx = 0; nIdx < aEventClass.size(); ++nIdx) {
-			if (aEventClass[nIdx] == oEventClass) {
+	// Make sure no class duplicates are passed
+	for (size_t nIdx = 0; nIdx < m_aEventClasses.size(); ++nIdx) {
+		for (size_t nIdx2 = 0; nIdx2 < m_aEventClasses.size(); ++nIdx2) {
+			if (nIdx != nIdx2) {
+				assert(m_aEventClasses[nIdx] != m_aEventClasses[nIdx2]);
+			}
+		}
+	}
+	for (auto& oEventClass : aEnDisableEventClasses) {
+		for (size_t nIdx = 0; nIdx < m_aEventClasses.size(); ++nIdx) {
+			if (m_aEventClasses[nIdx] == oEventClass) {
 				m_aEventClassEnabled[nIdx] = bEnableEventClasses;
 				break; // for(nIdx)
 			}
 		}
 	}
 }
-shared_ptr<Device> StdDeviceManager::getDevice(int32_t nDeviceId) const
+shared_ptr<Device> BasicDeviceManager::getDevice(int32_t nDeviceId) const
 {
 	auto itFind = m_oDevices.find(nDeviceId);
 	if (itFind == m_oDevices.end()) {
@@ -78,7 +88,7 @@ shared_ptr<Device> StdDeviceManager::getDevice(int32_t nDeviceId) const
 	}
 	return itFind->second;
 }
-std::vector<int32_t> StdDeviceManager::getDevicesWithCapabilityClass(const Capability::Class& oCapabilityClass) const
+std::vector<int32_t> BasicDeviceManager::getDevicesWithCapabilityClass(const Capability::Class& oCapabilityClass) const
 {
 	std::vector<int32_t> aSet;
 	//
@@ -97,7 +107,7 @@ std::vector<int32_t> StdDeviceManager::getDevicesWithCapabilityClass(const Capab
 	}
 	return aSet;
 }
-std::vector<int32_t> StdDeviceManager::getDevices() const
+std::vector<int32_t> BasicDeviceManager::getDevices() const
 {
 	std::vector<int32_t> aSet;
 	for (auto& oPair : m_oDevices) {
@@ -105,13 +115,13 @@ std::vector<int32_t> StdDeviceManager::getDevices() const
 	}
 	return aSet;
 }
-shared_ptr< const std::list< StdDeviceManager::ListenerData* > > StdDeviceManager::getListeners()
+shared_ptr< const std::list< BasicDeviceManager::ListenerData* > > BasicDeviceManager::getListeners()
 {
 	return m_refListeners;
 }
-bool StdDeviceManager::addEventListener(const shared_ptr<EventListener>& refEventListener, const shared_ptr<CallIf>& refCallIf)
+bool BasicDeviceManager::addEventListener(const shared_ptr<EventListener>& refEventListener, const shared_ptr<CallIf>& refCallIf)
 {
-//std::cout << "StdDeviceManager::addEventListener()" << std::endl;
+//std::cout << "BasicDeviceManager::addEventListener()" << std::endl;
 	assert(refEventListener);
 	auto p0EventListener = refEventListener.get();
 	auto itFind = std::find_if(m_oListenersData.begin(), m_oListenersData.end()
@@ -131,17 +141,17 @@ bool StdDeviceManager::addEventListener(const shared_ptr<EventListener>& refEven
 
 	oListenerData.m_p1Owner = this;
 	oListenerData.m_refEventListener = refEventListener;
-	oListenerData.m_nAddedTimeStamp = StdDeviceManager::getUniqueTimeStamp();
+	oListenerData.m_nAddedTimeStamp = BasicDeviceManager::getUniqueTimeStamp();
 	oListenerData.m_refCallIf = refCallIf;
 	oListenerData.m_p0EventListener = p0EventListener;
 	oListenerData.m_itListeners = itListeners;
-	const int32_t nTotEventClasses = m_aEventClass.size();
+	const int32_t nTotEventClasses = m_aEventClasses.size();
 	assert(oListenerData.m_aCallIfEventClass.empty());
 	oListenerData.m_aCallIfEventClass.resize(nTotEventClasses);
 	if (refCallIf) {
 		for (int32_t nClassIdx = 0; nClassIdx < nTotEventClasses; ++nClassIdx) {
 			auto& refClassCallIf = oListenerData.m_aCallIfEventClass[nClassIdx];
-			refClassCallIf = CallIfSimplifier::simplify(refCallIf, m_aEventClass[nClassIdx]);
+			refClassCallIf = CallIfSimplifier::simplify(refCallIf, m_aEventClasses[nClassIdx]);
 			const std::type_info& oCallIfType = typeid(*refClassCallIf);
 			if (oCallIfType == typeid(CallIfTrue)) {
 				// True is the same as no callif
@@ -152,9 +162,13 @@ bool StdDeviceManager::addEventListener(const shared_ptr<EventListener>& refEven
 	}
 	return true;
 }
-bool StdDeviceManager::removeEventListener(const shared_ptr<EventListener>& refEventListener, bool bFinalize)
+bool BasicDeviceManager::addEventListener(const shared_ptr<EventListener>& refEventListener)
 {
-//std::cout << "StdDeviceManager::removeEventListener()" << std::endl;
+	return addEventListener(refEventListener, shared_ptr<CallIf>{});
+}
+bool BasicDeviceManager::removeEventListener(const shared_ptr<EventListener>& refEventListener, bool bFinalize)
+{
+//std::cout << "BasicDeviceManager::removeEventListener()" << std::endl;
 	assert(refEventListener);
 	maybeRemoveDataOfRemovedListeners();
 	auto p0EventListener = refEventListener.get();
@@ -184,7 +198,7 @@ bool StdDeviceManager::removeEventListener(const shared_ptr<EventListener>& refE
 	maybeRemoveDataOfRemovedListeners();
 	return true;
 }
-void StdDeviceManager::maybeRemoveDataOfRemovedListeners()
+void BasicDeviceManager::maybeRemoveDataOfRemovedListeners()
 {
 	if ((!m_bListenerListDirty) || (m_nListenerListRecursing > 0)) {
 		// No removed listener to garbage collect
@@ -199,7 +213,7 @@ void StdDeviceManager::maybeRemoveDataOfRemovedListeners()
 	auto itListenerData = m_oListenersData.begin();
 	while (itListenerData != m_oListenersData.end()) {
 		if (itListenerData->m_bListenerWasRemoved) {
-//std::cout << "StdDeviceManager::maybeRemoveDataOfRemovedListeners" << std::endl;
+//std::cout << "BasicDeviceManager::maybeRemoveDataOfRemovedListeners" << std::endl;
 			assert(!itListenerData->m_bListenerRemoving);
 			m_refListeners->erase(itListenerData->m_itListeners);
 			itListenerData = m_oListenersData.erase(itListenerData);
@@ -209,9 +223,9 @@ void StdDeviceManager::maybeRemoveDataOfRemovedListeners()
 	}
 	m_bListenerListDirty = false;
 }
-void StdDeviceManager::resetExtraDataOfAllListeners()
+void BasicDeviceManager::resetExtraDataOfAllListeners()
 {
-//std::cout << "StdDeviceManager::resetExtraDataOfAllListeners" << std::endl;
+//std::cout << "BasicDeviceManager::resetExtraDataOfAllListeners" << std::endl;
 	for (auto& oListenerData : m_oListenersData) {
 		auto& refExtraData = oListenerData.m_refExtraData;
 		if (refExtraData) {
@@ -219,7 +233,7 @@ void StdDeviceManager::resetExtraDataOfAllListeners()
 		}
 	}
 }
-bool StdDeviceManager::ListenerData::handleEventCommon(int32_t nClassTypeIdx, const shared_ptr<Event>& refEvent) const
+bool BasicDeviceManager::ListenerData::handleEventCommon(int32_t nClassTypeIdx, const shared_ptr<Event>& refEvent) const
 {
 	if (m_bListenerWasRemoved && !m_bListenerRemoving) {
 		return false; //--------------------------------------------------------
@@ -227,19 +241,19 @@ bool StdDeviceManager::ListenerData::handleEventCommon(int32_t nClassTypeIdx, co
 	auto refListener = m_refEventListener.lock();
 	if (refListener) {
 		++(m_p1Owner->m_nListenerListRecursing);
-//std::cout << "StdDeviceManager::ListenerData::handleEventCommon   " << m_p1Owner->m_nListenerListRecursing << std::endl;
+//std::cout << "BasicDeviceManager::ListenerData::handleEventCommon   " << m_p1Owner->m_nListenerListRecursing << std::endl;
 		if (nClassTypeIdx >= 0) {
 			auto& refCallIf = m_aCallIfEventClass[nClassTypeIdx];
 			if (refCallIf && !(*refCallIf)(refEvent)) {
 				// CallIf disallows sending of event to listener
-//std::cout << "StdDeviceManager::ListenerData::handleEventCommon exit A  " << m_p1Owner->m_nListenerListRecursing << std::endl;
+//std::cout << "BasicDeviceManager::ListenerData::handleEventCommon exit A  " << m_p1Owner->m_nListenerListRecursing << std::endl;
 				--(m_p1Owner->m_nListenerListRecursing);
 				return false; //------------------------------------------------
 			}
 		}
 		// callback
 		(*refListener)(refEvent);
-//std::cout << "StdDeviceManager::ListenerData::handleEventCommon exit B  " << m_p1Owner->m_nListenerListRecursing << std::endl;
+//std::cout << "BasicDeviceManager::ListenerData::handleEventCommon exit B  " << m_p1Owner->m_nListenerListRecursing << std::endl;
 		--(m_p1Owner->m_nListenerListRecursing);
 	} else {
 		// Can't remove this element right now, because the caller is 
@@ -251,11 +265,7 @@ bool StdDeviceManager::ListenerData::handleEventCommon(int32_t nClassTypeIdx, co
 	}
 	return true;
 }
-bool StdDeviceManager::ListenerData::handleEvent(const shared_ptr<Event>& refEvent) const
-{
-	return handleEventCommon(-1, refEvent);
-}
-bool StdDeviceManager::ListenerData::handleEventCallIf(int32_t nClassTypeIdx, const shared_ptr<Event>& refEvent) const
+bool BasicDeviceManager::ListenerData::handleEventCallIf(int32_t nClassTypeIdx, const shared_ptr<Event>& refEvent) const
 {
 	if (nClassTypeIdx < 0) {
 		nClassTypeIdx = m_p1Owner->getEventClassIndex(refEvent->getEventClass());
@@ -263,33 +273,37 @@ bool StdDeviceManager::ListenerData::handleEventCallIf(int32_t nClassTypeIdx, co
 	assert((nClassTypeIdx >= 0) && (nClassTypeIdx < static_cast<int32_t>(m_aCallIfEventClass.size())));
 	return handleEventCommon(nClassTypeIdx, refEvent);
 }
-std::vector<Capability::Class> StdDeviceManager::getCapabilityClasses() const
+std::vector<Capability::Class> BasicDeviceManager::getCapabilityClasses() const
 {
-	return m_aCapabitityClass;
+	return m_aCapabitityClasses;
 }
-std::vector<Event::Class> StdDeviceManager::getEventClasses() const
+std::vector<Capability::Class> BasicDeviceManager::getDeviceCapabilityClasses() const
 {
-	return m_aEventClass;
+	return m_aDeviceCapabitityClasses;
 }
-int32_t StdDeviceManager::getEventClassIndex(const Event::Class& oEventClass) const
+std::vector<Event::Class> BasicDeviceManager::getEventClasses() const
 {
-	for (size_t nIdx = 0; nIdx < m_aEventClass.size(); ++nIdx) {
-		if (m_aEventClass[nIdx] == oEventClass) {
+	return m_aEventClasses;
+}
+int32_t BasicDeviceManager::getEventClassIndex(const Event::Class& oEventClass) const
+{
+	for (size_t nIdx = 0; nIdx < m_aEventClasses.size(); ++nIdx) {
+		if (m_aEventClasses[nIdx] == oEventClass) {
 			return static_cast<int32_t>(nIdx);
 		}
 	}
 	return -1;
 }
-bool StdDeviceManager::isEventClassEnabled(const Event::Class& oEventClass) const
+bool BasicDeviceManager::isEventClassEnabled(const Event::Class& oEventClass) const
 {
-//std::cout << "isEventClassEnabled=" << oEventClass.name() << " m_aEventClass.size()=" << m_aEventClass.size() << std::endl;
+//std::cout << "isEventClassEnabled=" << oEventClass.name() << " m_aEventClasses.size()=" << m_aEventClasses.size() << std::endl;
 	const int32_t nIdx = getEventClassIndex(oEventClass);
 	if (nIdx < 0) {
 		return false;
 	}
 	return m_aEventClassEnabled[nIdx];
 }
-void StdDeviceManager::enableEventClass(const Event::Class& oEventClass)
+void BasicDeviceManager::enableEventClass(const Event::Class& oEventClass)
 {
 	const int32_t nIdx = getEventClassIndex(oEventClass);
 	if (nIdx < 0) {
@@ -297,7 +311,7 @@ void StdDeviceManager::enableEventClass(const Event::Class& oEventClass)
 	}
 	m_aEventClassEnabled[nIdx] = true;
 }
-bool StdDeviceManager::addDevice(const shared_ptr<Device>& refDevice)
+bool BasicDeviceManager::addDevice(const shared_ptr<Device>& refDevice)
 {
 	assert(refDevice);
 	const int32_t nDeviceId = refDevice->getId();
@@ -309,7 +323,7 @@ bool StdDeviceManager::addDevice(const shared_ptr<Device>& refDevice)
 	m_oDevices.insert(std::make_pair(nDeviceId, refDevice));
 	return true;
 }
-bool StdDeviceManager::removeDevice(const shared_ptr<Device>& refDevice)
+bool BasicDeviceManager::removeDevice(const shared_ptr<Device>& refDevice)
 {
 	assert(refDevice);
 	const int32_t nDeviceId = refDevice->getId();

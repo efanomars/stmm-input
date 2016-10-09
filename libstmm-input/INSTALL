@@ -21,25 +21,26 @@ Instead of 'Release' CMAKE_BUILD_TYPE can also be set to
    'Debug', 'MinSizeRel' or 'RelWithDebInfo'.
 To build the documentation add option (before '..')
    '-D BUILD_DOCS=ON' to the preceding command.
-To execute the tests add option'-D BUILD_TESTING=ON' to the preceding command
-   (read below how to setup google test).
-To change the installation directory add definition
+To build the tests add option'-D BUILD_TESTING=ON' to the preceding command
+   (read below on how to setup google test).
+To change the default installation directory add definition
    '-D CMAKE_INSTALL_PREFIX=/home/adam/mylib' to the preceding command.
 
   $ make
 
   $ sudo make install
 
-sudo might be omitted if installing to a directory owned by the current user.
+sudo might be omitted in the preceding command if installing to a directory 
+owned by the current user.
 
   $ sudo ldconfig
 
 
 Alternatively you can just execute the script
 
-  $ ./install_libstmm-input.sh  Release  /home/adam/mylib
+  $ ./install_libstmm-input.py -b Release  --destdir /home/adam/mylib
 
-setting the parameters to your preferred value (like above).
+setting the parameter(s) to your preferred value (like above).
 
 
 Setting up googletest
@@ -59,4 +60,7 @@ BUILD_TESTING_GOOGLE_TEST_LIBRARY_PATH cache variable to the directory where
 BUILD_TESTING_GOOGLE_TEST_INCLUDE_PATH cache variable to the 'include' 
 directory that contains the 'gtest/' folder in which 'gtest.h' is located.
 
-As described above set BUILD_TESTING=ON to execute the tests.
+As described above set BUILD_TESTING=ON to build the tests. To execute them
+call (within the build directory);
+
+  $ make test

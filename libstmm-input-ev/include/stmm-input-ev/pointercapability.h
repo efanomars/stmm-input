@@ -17,6 +17,7 @@
 /*
  * File:   pointercapability.h
  */
+/*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
 #ifndef _STMI_POINTER_CAPABILITY_H_
 #define _STMI_POINTER_CAPABILITY_H_

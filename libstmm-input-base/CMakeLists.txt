@@ -56,10 +56,11 @@ set(STMMI_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/include")
 set(STMMI_HEADERS_DIR  "${STMMI_INCLUDE_DIR}/stmm-input-base")
 # Header files
 set(STMMI_HEADERS
+        ${STMMI_HEADERS_DIR}/basicdevice.h
+        ${STMMI_HEADERS_DIR}/basicdevicemanager.h
         ${STMMI_HEADERS_DIR}/childdevicemanager.h
         ${STMMI_HEADERS_DIR}/parentdevicemanager.h
-        ${STMMI_HEADERS_DIR}/stddevice.h
-        ${STMMI_HEADERS_DIR}/stddevicemanager.h
+        ${STMMI_HEADERS_DIR}/stmm-input-base.h
       )
 #
 # Sources dir
@@ -70,8 +71,8 @@ set(STMMI_SOURCES
         ${STMMI_SOURCES_DIR}/callifsimplifier.h
         ${STMMI_SOURCES_DIR}/childdevicemanager.cc
         ${STMMI_SOURCES_DIR}/parentdevicemanager.cc
-        ${STMMI_SOURCES_DIR}/stddevice.cc
-        ${STMMI_SOURCES_DIR}/stddevicemanager.cc
+        #${STMMI_SOURCES_DIR}/basicdevice.cc
+        ${STMMI_SOURCES_DIR}/basicdevicemanager.cc
         ${STMMI_SOURCES_DIR}/util.h
       )
 

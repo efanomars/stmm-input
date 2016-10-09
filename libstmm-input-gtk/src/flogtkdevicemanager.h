@@ -27,8 +27,8 @@
 #include "recycler.h"
 #include "flogtkbackend.h"
 
-#include <stmm-input-base/stddevice.h>
-#include <stmm-input-base/stddevicemanager.h>
+#include <stmm-input-base/basicdevice.h>
+#include <stmm-input-ev/stddevicemanager.h>
 
 #include <stmm-input-ev/keycapability.h>
 #include <stmm-input-ev/keyevent.h>
@@ -69,7 +69,7 @@ namespace Flo
  * Events are only sent to the currently active window. When the active window changes
  * cancel events are sent to the old active window for each pressed key.
  */
-class FloGtkDeviceManager : public StdDeviceManager, public DeviceMgmtCapability, public sigc::trackable
+class FloGtkDeviceManager : public StdDeviceManager, public sigc::trackable //, public DeviceMgmtCapability
 {
 public:
 	/** Creates an instance of this class.
@@ -123,9 +123,6 @@ public:
 	 * @return Whether the window is currently tracked by the device manager.
 	 */
 	bool hasAccessor(const shared_ptr<Accessor>& refAccessor) override;
-	// from DeviceMgmtCapability
-	shared_ptr<DeviceManager> getDeviceManager() const override;
-	shared_ptr<DeviceManager> getDeviceManager() override;
 protected:
 	void finalizeListener(ListenerData& oListenerData) override;
 	/** Constructor. */
@@ -165,8 +162,6 @@ private:
 	void deselectAccessor();
 	void focusSelectedWindow();
 
-	void sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice);
-
 	friend class Private::Flo::GtkBackend;
 	friend class Private::Flo::GtkWindowData;
 	friend class Private::Flo::GtkXKeyboardDevice;
@@ -192,33 +187,12 @@ private:
 	std::vector< std::pair<int32_t, shared_ptr<Private::Flo::GtkXKeyboardDevice> > > m_aKeyboardDevices; // Value: (X device id, device)
 
 	KEY_REPEAT_MODE m_eKeyRepeatMode;
-	////
-	//class ReDeviceMgmtEvent :public DeviceMgmtEvent
-	//{
-	//public:
-	//	ReDeviceMgmtEvent(int64_t nTimeUsec, const shared_ptr<DeviceMgmtCapability>& refDeviceMgmtCapability
-	//					, DEVICE_MGMT_TYPE eDeviceMgmtType, const shared_ptr<Device>& refDevice)
-	//	: DeviceMgmtEvent(nTimeUsec, refDeviceMgmtCapability, eDeviceMgmtType, refDevice)
-	//	{
-	//	}
-	//	void reInit(int64_t nTimeUsec, const shared_ptr<DeviceMgmtCapability>& refDeviceMgmtCapability
-	//				, DEVICE_MGMT_TYPE eDeviceMgmtType, const shared_ptr<Device>& refDevice)
-	//	{
-	//		setTimeUsec(nTimeUsec);
-	//		setAccessor({});
-	//		setDeviceMgmtCapability(refDeviceMgmtCapability);
-	//		setDeviceMgmtType(eDeviceMgmtType);
-	//		setDevice(refDevice);
-	//	}
-	//};
-	//Private::Recycler<ReDeviceMgmtEvent> m_oDeviceMgmtRecycler;
 
 	const shared_ptr<GdkKeyConverter> m_refGdkConverter;
 	// Fast access reference to converter
 	const GdkKeyConverter& m_oConverter;
 	//
 	const int32_t m_nClassIdxKeyEvent;
-	const int32_t m_nClassIdxDeviceMgmtEvent;
 private:
 	FloGtkDeviceManager() = delete;
 	FloGtkDeviceManager(const FloGtkDeviceManager& oSource) = delete;

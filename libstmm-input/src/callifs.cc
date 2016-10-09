@@ -58,36 +58,26 @@ CallIfAccessor::CallIfAccessor(const shared_ptr<const Accessor>& refAccessor)
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-CallIfDevice::CallIfDevice()
+////////////////////////////////////////////////////////////////////////////////
+CallIfDeviceId::CallIfDeviceId()
+: m_nDeviceId(-1)
 {
 }
-CallIfDevice::CallIfDevice(const shared_ptr<Device>& refDevice)
-: m_refDevice(refDevice)
+CallIfDeviceId::CallIfDeviceId(int32_t nDeviceId)
+: m_nDeviceId(nDeviceId)
 {
-}
-
-///////////////////////////////////////////////////////////////////////////////
-CallIfCapability::CallIfCapability()
-{
-}
-CallIfCapability::CallIfCapability(const shared_ptr<Capability>& refCapability)
-: m_refCapability(refCapability)
-{
+	assert(nDeviceId >= 0);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-CallIfCapabilityId::CallIfCapabilityId()
-: m_nCapabilityId(-1)
-{
-}
+
+////////////////////////////////////////////////////////////////////////////////
 CallIfCapabilityId::CallIfCapabilityId(int32_t nCapabilityId)
 : m_nCapabilityId(nCapabilityId)
 {
 	assert(nCapabilityId >= 0);
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 CallIfCapabilityClass::CallIfCapabilityClass(const Capability::Class& oClass)
 : m_oClass(oClass)
 {

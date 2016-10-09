@@ -25,20 +25,6 @@
 namespace stmi
 {
 
-shared_ptr<ParentDeviceManager> ParentDeviceManager::create(const std::vector< shared_ptr<ChildDeviceManager> >& aChildDeviceManager)
-{
-	shared_ptr<ParentDeviceManager> refInstance(new ParentDeviceManager());
-	refInstance->init(aChildDeviceManager);
-	return refInstance;
-}
-
-ParentDeviceManager::ParentDeviceManager()
-{
-}
-ParentDeviceManager::~ParentDeviceManager()
-{
-//std::cout << "ParentDeviceManager::~ParentDeviceManager()" << std::endl;
-}
 void ParentDeviceManager::init(const std::vector< shared_ptr<ChildDeviceManager> >& aChildDeviceManager)
 {
 	assert(!aChildDeviceManager.empty());
@@ -72,6 +58,14 @@ std::vector<Capability::Class> ParentDeviceManager::getCapabilityClasses() const
 	std::vector<Capability::Class> aSet;
 	for (auto& refCDM : m_aChildDeviceManager) {
 		addToVectorSet(aSet, refCDM->getCapabilityClasses());
+	}
+	return aSet;
+}
+std::vector<Capability::Class> ParentDeviceManager::getDeviceCapabilityClasses() const
+{
+	std::vector<Capability::Class> aSet;
+	for (auto& refCDM : m_aChildDeviceManager) {
+		addToVectorSet(aSet, refCDM->getDeviceCapabilityClasses());
 	}
 	return aSet;
 }
@@ -148,6 +142,15 @@ bool ParentDeviceManager::addEventListener(const shared_ptr<EventListener>& refE
 	bool bAdded = false;
 	for (auto& refCDM : m_aChildDeviceManager) {
 		const bool bChildAdded = refCDM->addEventListener(refEventListener, refCallIf);
+		bAdded = bAdded || bChildAdded;
+	}
+	return bAdded;
+}
+bool ParentDeviceManager::addEventListener(const shared_ptr<EventListener>& refEventListener)
+{
+	bool bAdded = false;
+	for (auto& refCDM : m_aChildDeviceManager) {
+		const bool bChildAdded = refCDM->addEventListener(refEventListener);
 		bAdded = bAdded || bChildAdded;
 	}
 	return bAdded;

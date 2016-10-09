@@ -34,7 +34,7 @@ namespace Js
 
 JoystickDevice::JoystickDevice(std::string sName, const shared_ptr<JsGtkDeviceManager>& refDeviceManager
 								, const std::vector<int32_t>& aButtonCode, int32_t nTotHats, const std::vector<int32_t>& aAxisCode)
-: StdDevice<JsGtkDeviceManager>(sName, refDeviceManager)
+: BasicDevice<JsGtkDeviceManager>(sName, refDeviceManager)
 , m_aButtonCode(aButtonCode)
 , m_aButtonPressed(aButtonCode.size(), ButtonData{false, std::numeric_limits<int64_t>::max()})
 , m_nTotHats(nTotHats)
@@ -307,7 +307,7 @@ void JoystickDevice::handleHat(JsGtkDeviceManager* p0Owner, const shared_ptr<Gtk
 	oHatData.m_nAxisY = nAxisY;
 	//
 	if (!p0Owner->isEventClassEnabled(typeid(JoystickHatEvent))) {
-		// Unlike handleButton and handleAxis this type keeps track of the status
+		// Unlike handleButton and handleAxis this type keeps track of the state
 		// of the hats despite the JoystickHatEvent type not being enabled.
 		// This is done because otherwise key simulation would be inconsistent.
 		// That's also why JsGtkDeviceManager has to provide m_nHatEventTypeEnabledTimeUsec

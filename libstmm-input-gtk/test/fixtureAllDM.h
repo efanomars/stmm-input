@@ -30,8 +30,7 @@
 #include "fakeflogtkdevicemanager.h"
 #include "fakejsgtkdevicemanager.h"
 
-#include <stmm-input-base/parentdevicemanager.h>
-#include <stmm-input/devicemanager.h>
+#include "stmm-input-gtk.h"
 
 namespace stmi
 {
@@ -62,7 +61,7 @@ protected:
 		m_refMasAllEvDM = FakeMasGtkDeviceManager::create(bEventClassesEnable, aClasses, eKeyRepeatMode
 													, shared_ptr<GdkKeyConverter>{}, Glib::RefPtr<Gdk::DeviceManager>{});
 		m_refJsAllEvDM = FakeJsGtkDeviceManager::create(false, {});
-		m_refAllEvDM = ParentDeviceManager::create({m_refMasAllEvDM, m_refFloAllEvDM, m_refJsAllEvDM});
+		m_refAllEvDM = StdParentDeviceManager::create({m_refMasAllEvDM, m_refFloAllEvDM, m_refJsAllEvDM});
 		assert(m_refAllEvDM.operator bool());
 	}
 	void TearDown() override

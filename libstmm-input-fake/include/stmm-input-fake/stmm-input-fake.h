@@ -14,33 +14,23 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
-/* 
- * File:   faketouchdevice.h
+/*
+ * File:   stmm-input-fake.h
  */
 
-#ifndef _STMI_TESTING_FAKE_TOUCH_DEVICE_H_
-#define _STMI_TESTING_FAKE_TOUCH_DEVICE_H_
+#ifndef _STMI_STMM_INPUT_FAKE_H_
+#define _STMI_STMM_INPUT_FAKE_H_
 
-#include "devicemanager.h"
-#include "touchcapability.h"
+/* This file includes all headers of the stmm-input-fake library. */
+
 #include "fakedevice.h"
+#include "fakedevicemanager.h"
+#include "fakejoystickdevice.h"
+#include "fakekeydevice.h"
+#include "fakepointerdevice.h"
+#include "faketouchdevice.h"
 
-namespace stmi
-{
+#include <stmm-input-ev/stmm-input-ev.h>
 
-using std::shared_ptr;
-using std::weak_ptr;
+#endif	/* _STMI_STMM_INPUT_FAKE_H_ */
 
-namespace testing
-{
-
-class FakeTouchDevice : public FakeDevice<TouchCapability>
-{
-public:
-};
-
-} // namespace testing
-
-} // namespace stmi
-
-#endif	/* _STMI_TESTING_FAKE_TOUCH_DEVICE_H_ */

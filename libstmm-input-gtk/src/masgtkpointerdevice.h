@@ -25,7 +25,7 @@
 
 #include "recycler.h"
 
-#include <stmm-input-base/stddevice.h>
+#include <stmm-input-base/basicdevice.h>
 
 namespace stmi
 {
@@ -38,12 +38,12 @@ namespace Mas
 using std::shared_ptr;
 using std::weak_ptr;
 
-class GtkPointerDevice final : public StdDevice<MasGtkDeviceManager>, public TouchCapability, public PointerCapability
+class GtkPointerDevice final : public BasicDevice<MasGtkDeviceManager>, public TouchCapability, public PointerCapability
 								, public std::enable_shared_from_this<GtkPointerDevice>
 {
 public:
 	GtkPointerDevice(std::string sName, const shared_ptr<MasGtkDeviceManager>& refMasGtkDeviceManager)
-	: StdDevice<MasGtkDeviceManager>(sName, refMasGtkDeviceManager)
+	: BasicDevice<MasGtkDeviceManager>(sName, refMasGtkDeviceManager)
 	// Make sure listeners added time is smaller than the pressed time
 	// so that the callback is called.
 	, m_nAnyButtonPressTimeStamp(std::numeric_limits<uint64_t>::max())

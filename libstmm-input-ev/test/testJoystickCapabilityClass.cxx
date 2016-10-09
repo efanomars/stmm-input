@@ -18,11 +18,11 @@
  * File:   testJoystickCapabilityClass.cc
  */
 
+#include "joystickcapability.h"
+
 #include <gtest/gtest.h>
 
 #include <algorithm>
-
-#include "joystickcapability.h"
 
 namespace stmi
 {

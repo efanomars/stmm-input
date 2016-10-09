@@ -31,10 +31,11 @@ using std::weak_ptr;
 
 /** A generic class that helps a device manager to generate events.
  * Subclass Accessor for system specific access to devices and/or subsets
- * of event sources.
+ * of event sources. The subclass has to make sure no reference cycles are
+ * created which lead to memory leaks.
  *
  * Example: within the GTK environment a device manager supporting pointer devices
- * uses the subclass GtkAccessor, which holds a reference to a Gtk::Window.
+ * uses the subclass GtkAccessor, which holds a (weak) reference to a Gtk::Window.
  * This allows it to listen to pointer events generated in the specified
  * window.
  */

@@ -18,9 +18,10 @@
  * File:   testTouchEventClass.cc
  */
 
-#include <gtest/gtest.h>
 #include "faketouchdevice.h"
 #include "touchevent.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {
@@ -36,13 +37,20 @@ class TouchEventClassFixture : public ::testing::Test
 	void SetUp() override
 	{
 		m_refTouchDevice = std::make_shared<FakeTouchDevice>();
+		#ifndef NDEBUG
+		const bool bFound = 
+		#endif
+		m_refTouchDevice->getCapability(m_refTouchCapability);
+		assert(bFound);
 	}
 	void TearDown() override
 	{
+		m_refTouchCapability.reset();
 		m_refTouchDevice.reset();
 	}
 public:
-	shared_ptr<FakeTouchDevice> m_refTouchDevice;
+	shared_ptr<Device> m_refTouchDevice;
+	shared_ptr<TouchCapability> m_refTouchCapability;
 };
 
 TEST_F(TouchEventClassFixture, WorkingSetUp)
@@ -54,7 +62,7 @@ TEST_F(TouchEventClassFixture, ConstructEvent)
 {
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	const int64_t nFingerId = 678;
-	TouchEvent oTouchEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refTouchDevice
+	TouchEvent oTouchEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refTouchCapability
 							, TouchEvent::TOUCH_BEGIN, 77.7, -88.8, nFingerId);
 	EXPECT_TRUE(TouchEvent::getClass() == typeid(TouchEvent));
 	EXPECT_TRUE(oTouchEvent.getEventClass() == typeid(TouchEvent));
@@ -64,8 +72,8 @@ TEST_F(TouchEventClassFixture, ConstructEvent)
 	EXPECT_TRUE(oTouchEvent.getY() == -88.8);
 	EXPECT_TRUE(oTouchEvent.getTimeUsec() == nTimeUsec);
 	EXPECT_TRUE(oTouchEvent.getAccessor() == Accessor::s_refEmptyAccessor);
-	EXPECT_TRUE(oTouchEvent.getTouchCapability() == m_refTouchDevice);
-	EXPECT_TRUE(oTouchEvent.getCapability() == m_refTouchDevice);
+	EXPECT_TRUE(oTouchEvent.getTouchCapability() == m_refTouchCapability);
+	EXPECT_TRUE(oTouchEvent.getCapability() == m_refTouchCapability);
 	//
 	EXPECT_FALSE(oTouchEvent.getIsModified());
 	EXPECT_TRUE(oTouchEvent.getXYGrabId() == nFingerId);
@@ -84,7 +92,7 @@ TEST_F(TouchEventClassFixture, AllTypes)
 	auto nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	const int64_t nFingerId = 678;
 	{
-		TouchEvent oTouchEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refTouchDevice
+		TouchEvent oTouchEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refTouchCapability
 								, TouchEvent::TOUCH_END, 77.7, -88.8, nFingerId);
 		EXPECT_TRUE(oTouchEvent.getType() == TouchEvent::TOUCH_END);
 		//
@@ -92,7 +100,7 @@ TEST_F(TouchEventClassFixture, AllTypes)
 		EXPECT_TRUE(oTouchEvent.getXYGrabType() == XYEvent::XY_UNGRAB);
 	}
 	{
-		TouchEvent oTouchEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refTouchDevice
+		TouchEvent oTouchEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refTouchCapability
 								, TouchEvent::TOUCH_UPDATE, 77.7, -88.8, nFingerId);
 		EXPECT_TRUE(oTouchEvent.getType() == TouchEvent::TOUCH_UPDATE);
 		//
@@ -100,7 +108,7 @@ TEST_F(TouchEventClassFixture, AllTypes)
 		EXPECT_TRUE(oTouchEvent.getXYGrabType() == XYEvent::XY_MOVE);
 	}
 	{
-		TouchEvent oTouchEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refTouchDevice
+		TouchEvent oTouchEvent(nTimeUsec, Accessor::s_refEmptyAccessor, m_refTouchCapability
 								, TouchEvent::TOUCH_CANCEL, 77.7, -88.8, nFingerId);
 		EXPECT_TRUE(oTouchEvent.getType() == TouchEvent::TOUCH_CANCEL);
 		//

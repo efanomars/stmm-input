@@ -18,12 +18,13 @@
  * File:   testEventClass.cc
  */
 
-#include <gtest/gtest.h>
 #include "devicemgmtevent.h"
 #include "joystickevent.h"
 #include "keyevent.h"
 #include "pointerevent.h"
 #include "touchevent.h"
+
+#include <gtest/gtest.h>
 
 namespace stmi
 {

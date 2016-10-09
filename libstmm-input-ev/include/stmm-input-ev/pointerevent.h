@@ -17,6 +17,7 @@
 /*
  * File:   pointerevent.h
  */
+/*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
 #ifndef _STMI_POINTER_EVENT_H_
 #define _STMI_POINTER_EVENT_H_
@@ -49,8 +50,8 @@ public:
 	/** Constructor.
 	 * When moving or hovering the pointer, the passed button must be `-1`.
 	 *
-	 * The grab status of the pointer is defined using `bAnyButtonPressed` and
-	 * `bWasAnyButtonPressed`, see XYEvent::getXYGrabType(). If the grab status
+	 * The grab state of the pointer is defined using `bAnyButtonPressed` and
+	 * `bWasAnyButtonPressed`, see XYEvent::getXYGrabType(). If the grab state
 	 * is XY_HOVER then XYEvent::getXYGrabId() returns `-1`, `1` otherwise.
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
@@ -151,7 +152,7 @@ public:
 		, SCROLL_RIGHT = 4
 	};
 	/** Constructor.
-	 * Parameter bAnyButtonPressed is used to determine the current grab status.
+	 * Parameter bAnyButtonPressed is used to determine the current grab state.
 	 * @param nTimeUsec Time from epoch in microseconds.
 	 * @param refAccessor The accessor used to generate the event. Can be null.
 	 * @param refPointerCapability The capability that generated this event. Cannot be null.

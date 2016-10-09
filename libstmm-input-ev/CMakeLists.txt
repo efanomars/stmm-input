@@ -35,16 +35,17 @@ find_package(PkgConfig)
 set(STMM_INPUT_EV_MAJOR_VERSION 0)
 set(STMM_INPUT_EV_MINOR_VERSION 1)
 set(STMM_INPUT_EV_VERSION "${STMM_INPUT_EV_MAJOR_VERSION}.${STMM_INPUT_EV_MINOR_VERSION}.0")
-# required stmm-input version
-set(STMM_INPUT_MAJOR_VERSION_REQ 0)
-set(STMM_INPUT_MINOR_VERSION_REQ 1)
-set(STMM_INPUT_VERSION_REQ "${STMM_INPUT_MAJOR_VERSION_REQ}.${STMM_INPUT_MINOR_VERSION_REQ}")
+
+# required stmm-input-base version
+set(STMM_INPUT_BASE_MAJOR_VERSION_REQ 0)
+set(STMM_INPUT_BASE_MINOR_VERSION_REQ 1)
+set(STMM_INPUT_BASE_VERSION_REQ "${STMM_INPUT_BASE_MAJOR_VERSION_REQ}.${STMM_INPUT_BASE_MINOR_VERSION_REQ}")
 
 # Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
-pkg_check_modules(STMMINPUT  REQUIRED  stmm-input>=${STMM_INPUT_VERSION_REQ})
+pkg_check_modules(STMMINPUTBASE  REQUIRED  stmm-input-base>=${STMM_INPUT_BASE_VERSION_REQ})
 
-list(APPEND STMMI_EV_EXTRA_INCLUDE_DIRS  ${STMMINPUT_INCLUDE_DIRS})
-list(APPEND STMMI_EV_EXTRA_LIBS          ${STMMINPUT_LIBRARIES})
+list(APPEND STMMI_EV_EXTRA_INCLUDE_DIRS  ${STMMINPUTBASE_INCLUDE_DIRS})
+list(APPEND STMMI_EV_EXTRA_LIBS          ${STMMINPUTBASE_LIBRARIES})
 
 string(STRIP "${STMMI_EV_EXTRA_LIBS}" STMMI_EV_EXTRA_LIBS)
 string(STRIP "${STMMI_EV_EXTRA_INCLUDE_DIRS}" STMMI_EV_EXTRA_INCLUDE_DIRS)
@@ -64,6 +65,8 @@ set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/keyevent.h
         ${STMMI_HEADERS_DIR}/pointercapability.h
         ${STMMI_HEADERS_DIR}/pointerevent.h
+        ${STMMI_HEADERS_DIR}/stddevicemanager.h
+        ${STMMI_HEADERS_DIR}/stdparentdevicemanager.h
         ${STMMI_HEADERS_DIR}/stmm-input-ev.h
         ${STMMI_HEADERS_DIR}/touchcapability.h
         ${STMMI_HEADERS_DIR}/touchevent.h
@@ -81,6 +84,8 @@ set(STMMI_SOURCES
         ${STMMI_SOURCES_DIR}/keyevent.cc
         ${STMMI_SOURCES_DIR}/pointercapability.cc
         ${STMMI_SOURCES_DIR}/pointerevent.cc
+        ${STMMI_SOURCES_DIR}/stddevicemanager.cc
+        ${STMMI_SOURCES_DIR}/stdparentdevicemanager.cc
         ${STMMI_SOURCES_DIR}/touchcapability.cc
         ${STMMI_SOURCES_DIR}/touchevent.cc
        )

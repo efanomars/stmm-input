@@ -24,7 +24,7 @@
 #include "keyrepeatmode.h"
 #include "gdkkeyconverter.h"
 
-#include <stmm-input/devicemanager.h>
+#include <stmm-input-ev/stdparentdevicemanager.h>
 
 #include <gtkmm.h>
 
@@ -36,8 +36,8 @@ namespace stmi
 using std::shared_ptr;
 using std::weak_ptr;
 
-/** Creates device managers that attach to Gtk's main event loop.
- * The created device managers need stmi::GtkAccessor-wrapped Gtk::Window
+/** Device manager that attaches to Gtk's main event loop.
+ * The created device manager need stmi::GtkAccessor-wrapped Gtk::Window
  * references in order to receive events, which are only sent to the currently
  * active window (provided it was added with DeviceManager::addAccessor()).
  * 
@@ -58,61 +58,59 @@ using std::weak_ptr;
  * Example: for each pressed keys a KeyEvent of type KeyEvent::KEY_RELEASE_CANCEL
  * is sent to the listeners.
  */
-namespace GtkDeviceManager
+class GtkDeviceManager : public StdParentDeviceManager
 {
-
-/** Creates a device manager.
- * Before this call Gtk has to be already initialized (ex. with
- * Gtk::Application::create()).
- *
- * If bEnableEventClasses is `true` then all event classes in aEnDisableEventClass are enabled, all others disabled,
- * if `false` then all event classes supported by this instance are enabled except those in aEnDisableEventClass.
- *
- * Example: To enable just events of type KeyEvent and PointerEvent set parameters
- *
- *     bEnableEventClasses = true,  aEnDisableEventClass = {stmi::KeyEvent::getClass(), stmi::PointerEvent::getClass()}
- *
- * If `refGdkConverter` is null, the stmi::GdkKeyConverterEvDev converter is used.
- *
- * If the gdk display `refDisplay` is null, the system default is used.
- *
- * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventType.
- * @param aEnDisableEventClass The event classes to be enabled or disabled according to bEnableEventClasses.
- * @param eKeyRepeatMode How key repeat is handled.
- * @param refGdkConverter refGdkConverter The gdk key event to hardware key converter. Cannot be null.
- * @param refDisplay The gdk display. Can be null.
- * @return The created device manager or null if creation failed.
- */
-shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-								, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
-								, const Glib::RefPtr<Gdk::Display>& refDisplay);
-/** Creates a device manager.
- * The device manager is created for the default display.
- * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
- */
-shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-								, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter);
-/** Creates a device manager.
- * The device manager is created for the default key converter and default display.
- * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
- */
-shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
-								, KEY_REPEAT_MODE eKeyRepeatMode);
-/** Creates a device manager.
- * The device manager is created for the default display.
- * Repeated key presses without release are suppressed.
- * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
- */
-shared_ptr<DeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass);
-/** Creates a device manager.
- * The device manager is created for the default display.
- * Repeated key presses without release are suppressed.
- * All event classes are enabled.
- * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
- */
-shared_ptr<DeviceManager> create();
-
-} // namespace GtkDeviceManager
+public:
+	/** Creates a device manager.
+	 * Before this call Gtk has to be already initialized (ex. with Gtk::Application::create()).
+	 *
+	 * If bEnableEventClasses is `true` then all event classes in aEnDisableEventClass are enabled, all others disabled,
+	 * if `false` then all event classes supported by this instance are enabled except those in aEnDisableEventClass.
+	 *
+	 * Example: To enable just events of type KeyEvent and PointerEvent set parameters
+	 *
+	 *     bEnableEventClasses = true,  aEnDisableEventClass = {stmi::KeyEvent::getClass(), stmi::PointerEvent::getClass()}
+	 *
+	 * If `refGdkConverter` is null, the stmi::GdkKeyConverterEvDev converter is used.
+	 *
+	 * If the gdk display `refDisplay` is null, the system default is used.
+	 *
+	 * @param bEnableEventClasses Whether to enable or disable all (but) aEnDisableEventType.
+	 * @param aEnDisableEventClass The event classes to be enabled or disabled according to bEnableEventClasses.
+	 * @param eKeyRepeatMode How key repeat is handled.
+	 * @param refGdkConverter refGdkConverter The gdk key event to hardware key converter. Cannot be null.
+	 * @param refDisplay The gdk display. Can be null.
+	 * @return The created device manager or null if creation failed.
+	 */
+	static shared_ptr<GtkDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
+												, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+												, const Glib::RefPtr<Gdk::Display>& refDisplay);
+	/** Creates a device manager.
+	 * The device manager is created for the default display.
+	 * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
+	 */
+	static shared_ptr<GtkDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
+												, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter);
+	/** Creates a device manager.
+	 * The device manager is created for the default key converter and default display.
+	 * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
+	 */
+	static shared_ptr<GtkDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
+											, KEY_REPEAT_MODE eKeyRepeatMode);
+	/** Creates a device manager.
+	 * The device manager is created for the default display.
+	 * Repeated key presses without release are suppressed.
+	 * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
+	 */
+	static shared_ptr<GtkDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass);
+	/** Creates a device manager.
+	 * The device manager is created for the default display.
+	 * Repeated key presses without release are suppressed.
+	 * All event classes are enabled.
+	 * @see create(bool, const std::vector<Event::Class>&, KEY_REPEAT_MODE, const Glib::RefPtr<Gdk::Display>&)
+	 */
+	static shared_ptr<GtkDeviceManager> create();
+};
 
 } // namespace stmi
 

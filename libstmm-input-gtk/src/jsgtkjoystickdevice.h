@@ -25,7 +25,7 @@
 
 #include "recycler.h"
 
-#include <stmm-input-base/stddevice.h>
+#include <stmm-input-base/basicdevice.h>
 
 #include <linux/joystick.h>
 
@@ -41,7 +41,7 @@ namespace Js
 using std::shared_ptr;
 using std::weak_ptr;
 
-class JoystickDevice final : public StdDevice<JsGtkDeviceManager>, public JoystickCapability
+class JoystickDevice final : public BasicDevice<JsGtkDeviceManager>, public JoystickCapability
 						, public std::enable_shared_from_this<JoystickDevice>, public sigc::trackable
 {
 public:

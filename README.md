@@ -24,6 +24,10 @@ This source package contains:
     + floating keyboards (readied with device-floater)
     + joysticks (calibrated with jstest-gtk, jscal, jscal-store)
 
+- libstmm-input-fake:
+    header-only library for developers that need to simulate a device manager
+    to feed their test code with events defined by libstmm-input-ev.
+
 - device-floater:
     simple gui application to safely float keyboard and pointer devices
     managed by X11 (XI2). It provides a subset of the 'xinput float' command.

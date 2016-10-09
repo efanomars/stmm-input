@@ -24,8 +24,8 @@
 #include "gtkaccessor.h"
 #include "jsdevicefiles.h"
 
-#include <stmm-input-base/stddevicemanager.h>
-#include <stmm-input-base/stddevice.h>
+#include <stmm-input-ev/stddevicemanager.h>
+#include <stmm-input-base/basicdevice.h>
 #include <stmm-input-ev/devicemgmtevent.h>
 #include <stmm-input-ev/devicemgmtcapability.h>
 #include <stmm-input-ev/joystickcapability.h>
@@ -61,7 +61,7 @@ namespace Js
  * cancel events are sent to the old active window for each pressed buttons and
  * not centered hat.
  */
-class JsGtkDeviceManager : public StdDeviceManager , public DeviceMgmtCapability, public sigc::trackable
+class JsGtkDeviceManager : public StdDeviceManager , public sigc::trackable //, public DeviceMgmtCapability
 {
 public:
 	/** Creates an instance this class.
@@ -109,9 +109,6 @@ public:
 	 * @return Whether the window is currently tracked by the device manager.
 	 */
 	bool hasAccessor(const shared_ptr<Accessor>& refAccessor) override;
-	// from DeviceMgmtCapability
-	shared_ptr<DeviceManager> getDeviceManager() const override;
-	shared_ptr<DeviceManager> getDeviceManager() override;
 protected:
 	void finalizeListener(ListenerData& oListenerData) override;
 	JsGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass);
@@ -122,8 +119,6 @@ private:
 	const shared_ptr<Private::Js::JoystickDevice>& onDeviceAdded(const std::string& sName, const std::vector<int32_t>& aButtonCode
 																, int32_t nTotHats, const std::vector<int32_t>& aAxisCode);
 	void onDeviceRemoved(int32_t nJoystickId);
-
-	void sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice);
 
 	bool findWindow(Gtk::Window* p0GtkmmWindow
 					, std::vector< std::pair<Gtk::Window*, shared_ptr<Private::Js::GtkWindowData> > >::iterator& itFind);
@@ -161,7 +156,6 @@ private:
 	const int32_t m_nClassIdxJoystickButtonEvent;
 	const int32_t m_nClassIdxJoystickHatEvent;
 	const int32_t m_nClassIdxJoystickAxisEvent;
-	const int32_t m_nClassIdxDeviceMgmtEvent;
 	//
 private:
 	JsGtkDeviceManager(const JsGtkDeviceManager& oSource) = delete;

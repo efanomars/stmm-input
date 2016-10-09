@@ -18,10 +18,12 @@
  * File:   testAllGtkDeviceManager.cc
  */
 
-#include <gtest/gtest.h>
+#include "fixtureAllDM.h"
+
 #include <stmm-input/callifs.h>
 
-#include "fixtureAllDM.h"
+#include <gtest/gtest.h>
+
 
 namespace stmi
 {
@@ -40,7 +42,7 @@ TEST_F(GlibAppFixture, CreateFakeAllGtkDeviceManager)
 	auto refFakeMasDM = FakeMasGtkDeviceManager::create(false, {}, KEY_REPEAT_MODE_SUPPRESS
 												, shared_ptr<GdkKeyConverter>{}, Glib::RefPtr<Gdk::DeviceManager>{});
 	auto refFakeJsDM = FakeJsGtkDeviceManager::create(false, {});
-	auto refAllEvDM = ParentDeviceManager::create({refFakeMasDM, refFakeFloDM, refFakeJsDM});
+	auto refAllEvDM = StdParentDeviceManager::create({refFakeMasDM, refFakeFloDM, refFakeJsDM});
 	EXPECT_TRUE(refAllEvDM.operator bool());
 }
 

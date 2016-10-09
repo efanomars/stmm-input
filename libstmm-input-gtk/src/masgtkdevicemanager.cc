@@ -66,7 +66,6 @@ MasGtkDeviceManager::MasGtkDeviceManager(bool bEnableEventClasses, const std::ve
 , m_nClassIdxPointerEvent(getEventClassIndex(typeid(PointerEvent)))
 , m_nClassIdxPointerScrollEvent(getEventClassIndex(typeid(PointerScrollEvent)))
 , m_nClassIdxTouchEvent(getEventClassIndex(typeid(TouchEvent)))
-, m_nClassIdxDeviceMgmtEvent(getEventClassIndex(typeid(DeviceMgmtEvent)))
 {
 	assert(refGdkConverter);
 	assert((eKeyRepeatMode >= KEY_REPEAT_MODE_SUPPRESS) && (eKeyRepeatMode <= KEY_REPEAT_MODE_ADD_RELEASE_CANCEL));
@@ -76,14 +75,6 @@ MasGtkDeviceManager::MasGtkDeviceManager(bool bEnableEventClasses, const std::ve
 MasGtkDeviceManager::~MasGtkDeviceManager()
 {
 //std::cout << "MasGtkDeviceManager::~MasGtkDeviceManager()" << std::endl;
-}
-shared_ptr<DeviceManager> MasGtkDeviceManager::getDeviceManager() const
-{
-	return getRoot();
-}
-shared_ptr<DeviceManager> MasGtkDeviceManager::getDeviceManager()
-{
-	return getRoot();
 }
 void MasGtkDeviceManager::enableEventClass(const Event::Class& oEventClass)
 {
@@ -386,24 +377,6 @@ void MasGtkDeviceManager::onIsActiveChanged(const shared_ptr<GtkWindowData>& ref
 			deselectAccessor();
 			assert(!m_refSelected);
 		}
-	}
-}
-void MasGtkDeviceManager::sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice)
-{
-	if (!isEventClassEnabled(typeid(DeviceMgmtEvent))) {
-		return;
-	}
-	shared_ptr<ChildDeviceManager> refChildThis = shared_from_this();
-	assert(std::dynamic_pointer_cast<MasGtkDeviceManager>(refChildThis));
-	auto refThis = std::static_pointer_cast<MasGtkDeviceManager>(refChildThis);
-	auto refCapa = std::static_pointer_cast<DeviceMgmtCapability>(refThis);
-	//
-	const int64_t nTimeUsec = DeviceManager::getNowTimeMicroseconds();
-	//
-	shared_ptr<DeviceMgmtEvent> refEvent = std::make_shared<DeviceMgmtEvent>(nTimeUsec, refCapa, eMgmtType, refDevice);
-	auto refListeners = getListeners();
-	for (auto& p0ListenerData : *refListeners) {
-		p0ListenerData->handleEventCallIf(m_nClassIdxDeviceMgmtEvent, refEvent);
 	}
 }
 bool MasGtkDeviceManager::onKeyPress(GdkEventKey* p0KeyEv, const shared_ptr<GtkWindowData>& refWindowData)

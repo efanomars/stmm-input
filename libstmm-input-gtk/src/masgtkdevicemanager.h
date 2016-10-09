@@ -26,8 +26,8 @@
 #include "keyrepeatmode.h"
 #include "masgtkbackend.h"
 
-#include <stmm-input-base/stddevice.h>
-#include <stmm-input-base/stddevicemanager.h>
+#include <stmm-input-base/basicdevice.h>
+#include <stmm-input-ev/stddevicemanager.h>
 
 #include <stmm-input-ev/touchcapability.h>
 #include <stmm-input-ev/keyevent.h>
@@ -73,7 +73,7 @@ namespace Mas
  * cancel events are sent to the old active window for each pressed key, button
  * and open touch.
  */
-class MasGtkDeviceManager : public StdDeviceManager, public DeviceMgmtCapability
+class MasGtkDeviceManager : public StdDeviceManager //, public DeviceMgmtCapability
 {
 public:
 	/** Creates an instance this class.
@@ -130,9 +130,6 @@ public:
 	 * @return Whether the window is currently tracked by the device manager.
 	 */
 	bool hasAccessor(const shared_ptr<Accessor>& refAccessor) override;
-	// from DeviceMgmtCapability
-	shared_ptr<DeviceManager> getDeviceManager() const override;
-	shared_ptr<DeviceManager> getDeviceManager() override;
 protected:
 	void finalizeListener(ListenerData& oListenerData) override;
 	/** Constructor. */
@@ -161,8 +158,6 @@ private:
 
 	void addDevices();
 	void removeDevices();
-
-	void sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice);
 
 	bool findWindow(Gtk::Window* p0GtkmmWindow
 				, std::vector< std::pair<Gtk::Window*, shared_ptr<Private::Mas::GtkWindowData> > >::iterator& itFind);
@@ -207,7 +202,6 @@ private:
 	const int32_t m_nClassIdxPointerEvent;
 	const int32_t m_nClassIdxPointerScrollEvent;
 	const int32_t m_nClassIdxTouchEvent;
-	const int32_t m_nClassIdxDeviceMgmtEvent;
 private:
 	MasGtkDeviceManager(const MasGtkDeviceManager& oSource) = delete;
 	MasGtkDeviceManager& operator=(const MasGtkDeviceManager& oSource) = delete;

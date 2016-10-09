@@ -25,7 +25,7 @@
 
 #include "recycler.h"
 
-#include <stmm-input-base/stddevice.h>
+#include <stmm-input-base/basicdevice.h>
 
 namespace stmi
 {
@@ -38,12 +38,12 @@ namespace Mas
 using std::shared_ptr;
 using std::weak_ptr;
 
-class GtkKeyboardDevice final : public StdDevice<MasGtkDeviceManager>, public KeyCapability
+class GtkKeyboardDevice final : public BasicDevice<MasGtkDeviceManager>, public KeyCapability
 								, public std::enable_shared_from_this<GtkKeyboardDevice>
 {
 public:
 	GtkKeyboardDevice(std::string sName, const shared_ptr<MasGtkDeviceManager>& refMasGtkDeviceManager)
-	: StdDevice<MasGtkDeviceManager>(sName, refMasGtkDeviceManager)
+	: BasicDevice<MasGtkDeviceManager>(sName, refMasGtkDeviceManager)
 	{
 	}
 	virtual ~GtkKeyboardDevice();

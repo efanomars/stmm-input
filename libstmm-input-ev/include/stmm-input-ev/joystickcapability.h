@@ -17,6 +17,7 @@
 /*
  * File:   joystickcapability.h
  */
+/*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
 #ifndef _STMI_JOYSTICK_CAPABILITY_H_
 #define _STMI_JOYSTICK_CAPABILITY_H_
@@ -229,7 +230,7 @@ public:
 	 */
 	virtual int32_t getAxisValue(JoystickCapability::AXIS eAxis) const = 0;
 
-	//TODO Here you could insert force feedback methods??? Or in a separate Capability
+	//TODO Here could insert force feedback methods??? Or in a separate Capability
 	//
 	static const char* const s_sClassId;
 	static const Capability::Class& getClass() { return s_oInstall.getCapabilityClass(); }

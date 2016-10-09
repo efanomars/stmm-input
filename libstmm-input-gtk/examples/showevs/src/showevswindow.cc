@@ -1,4 +1,20 @@
 /*
+ * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>
+ */
+/*
  * File:   showevswindow.cc
  */
 
@@ -21,7 +37,7 @@ class AllKeysDialog : public Gtk::Dialog
 public:
 	virtual ~AllKeysDialog() = default;
 protected:
-	// Too receive most of the keys, like cursor keys, TAB, ENTER, etc. override default handlers
+	// To receive most of the keys, like cursor keys, TAB, ENTER, etc. override default handlers
 	bool on_key_press_event(GdkEventKey* /*p0Event*/) override
 	{
 		return false; // propagate
@@ -459,7 +475,7 @@ void ShowEvsWindow::recreateDeviceList()
 //std::cout << "recreateDeviceList nDevId=" << nDevId << std::endl;
 		auto refDevice = m_refDM->getDevice(nDevId);
 		auto sDevName = refDevice->getName();
-		std::vector<stmi::Capability::Class> aCapaClass = refDevice->getCapabilityClasses();
+		const std::vector<stmi::Capability::Class> aCapaClass = refDevice->getCapabilityClasses();
 		Glib::ustring sCapas;
 		for (auto& oCapaClass : aCapaClass) {
 			if (!sCapas.empty()) {

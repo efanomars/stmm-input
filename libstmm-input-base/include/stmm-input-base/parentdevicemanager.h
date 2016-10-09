@@ -33,22 +33,20 @@ namespace stmi
 class ParentDeviceManager : public ChildDeviceManager
 {
 public:
-	virtual ~ParentDeviceManager();
-	/** Creates an instance of a parent device manager.
-	 * @param aChildDeviceManager An array of non null child device managers.
-	 * @return The created instance.
+	/** Return the device with the given id.
+	 * @param nDeviceId The device id.
+	 * @return The device or null if not found.
 	 */
-	static shared_ptr<ParentDeviceManager> create(const std::vector< shared_ptr<ChildDeviceManager> >& aChildDeviceManager);
-
-	/** @see getDevices() */
 	shared_ptr<Device> getDevice(int32_t nDeviceId) const override;
 
-	/** The union of the capability classes of all the children. */
+	/** The union of the device manager capability classes of all the children. */
 	std::vector<Capability::Class> getCapabilityClasses() const override;
+	/** The union of the device capability classes of all the children's devices. */
+	std::vector<Capability::Class> getDeviceCapabilityClasses() const override;
 	/** The union of the event types of all the children. */
 	std::vector<Event::Class> getEventClasses() const override;
 
-	/** The union of the devices of all the children with a capability class. */
+	/** The union of the devices of all the children with a given capability class. */
 	std::vector<int32_t> getDevicesWithCapabilityClass(const Capability::Class& oCapabilityClass) const override;
 
 	/** The union of the devices of all the children. */
@@ -56,7 +54,7 @@ public:
 
 	/** Tells whether an event class is enabled in at least one of the children. */
 	bool isEventClassEnabled(const Event::Class& oEventClass) const override;
-	/** Calls the function for all the  children. */
+	/** Calls the function for all the children. */
 	void enableEventClass(const Event::Class& oEventClass) override;
 
 	/** Calls addAccessor() of children. 
@@ -73,11 +71,14 @@ public:
 	/** Calls addEventListener of children. 
 	 */
 	bool addEventListener(const shared_ptr<EventListener>& refEventListener, const shared_ptr<CallIf>& refCallIf) override;
+	/** Calls addEventListener of children. 
+	 */
+	bool addEventListener(const shared_ptr<EventListener>& refEventListener) override;
 	/** Calls removeEventListener of children.
 	 */
 	bool removeEventListener(const shared_ptr<EventListener>& refEventListener, bool bFinalize) override;
 protected:
-	ParentDeviceManager();
+	ParentDeviceManager() = default;
 	/** Initialization.
 	 * Cannot be called twice.
 	 * @param aChildDeviceManager The child device managers. Cannot be empty.

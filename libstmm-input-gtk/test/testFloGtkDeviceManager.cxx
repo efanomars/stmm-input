@@ -18,10 +18,11 @@
  * File:   testFloGtkDeviceManager.cc
  */
 
-#include <gtest/gtest.h>
+#include "fixtureFloDM.h"
+
 #include <stmm-input/callifs.h>
 
-#include "fixtureFloDM.h"
+#include <gtest/gtest.h>
 
 namespace stmi
 {

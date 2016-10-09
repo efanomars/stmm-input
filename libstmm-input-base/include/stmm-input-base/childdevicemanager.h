@@ -31,7 +31,7 @@ class ParentDeviceManager;
 /** Defines a child device manager.
  * This allows a device manager to be combined with other device managers in a tree-like
  * structure to form a bigger one.
- * Subclasses can be added to a ParentDeviceManager.
+ * Subclasses of this class can be added to a ParentDeviceManager.
  */
 class ChildDeviceManager : public DeviceManager, public std::enable_shared_from_this<ChildDeviceManager>
 {

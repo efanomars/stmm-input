@@ -8,6 +8,7 @@ includedir=${prefix}/include
 Name: stmm-input
 Description: C++ Device Input Framework
 Version: @STMM_INPUT_VERSION@
+URL: https://github.com/efanomars/stmm-input
 Requires:
 Conflicts:
 Libs: -L${libdir} -lstmm-input

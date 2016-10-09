@@ -17,6 +17,7 @@
 /*
  * File:   keycapability.cc
  */
+/*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
 #include "keycapability.h"
 

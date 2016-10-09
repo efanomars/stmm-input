@@ -62,20 +62,11 @@ JsGtkDeviceManager::JsGtkDeviceManager(bool bEnableEventClasses, const std::vect
 , m_nClassIdxJoystickButtonEvent(getEventClassIndex(typeid(JoystickButtonEvent)))
 , m_nClassIdxJoystickHatEvent(getEventClassIndex(typeid(JoystickHatEvent)))
 , m_nClassIdxJoystickAxisEvent(getEventClassIndex(typeid(JoystickAxisEvent)))
-, m_nClassIdxDeviceMgmtEvent(getEventClassIndex(typeid(DeviceMgmtEvent)))
 {
 }
 JsGtkDeviceManager::~JsGtkDeviceManager()
 {
 //std::cout << "JsGtkDeviceManager::~JsGtkDeviceManager()" << std::endl;
-}
-shared_ptr<DeviceManager> JsGtkDeviceManager::getDeviceManager() const
-{
-	return getRoot();
-}
-shared_ptr<DeviceManager> JsGtkDeviceManager::getDeviceManager()
-{
-	return getRoot();
 }
 void JsGtkDeviceManager::init(std::unique_ptr<Private::Js::GtkWindowDataFactory>& refFactory
 								, std::unique_ptr<Private::Js::GtkBackend>& refBackend)
@@ -95,24 +86,6 @@ void JsGtkDeviceManager::enableEventClass(const Event::Class& oEventClass)
 	StdDeviceManager::enableEventClass(oEventClass);
 	if (bIsHatEventClass && (!bWasHatEventTypeEnabled)) {
 		m_nHatEventTypeEnabledTimeStamp = StdDeviceManager::getUniqueTimeStamp();
-	}
-}
-void JsGtkDeviceManager::sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice)
-{
-	if (!isEventClassEnabled(typeid(DeviceMgmtEvent))) {
-		return;
-	}
-	shared_ptr<ChildDeviceManager> refChildThis = shared_from_this();
-	assert(std::dynamic_pointer_cast<JsGtkDeviceManager>(refChildThis));
-	auto refThis = std::static_pointer_cast<JsGtkDeviceManager>(refChildThis);
-	auto refCapa = std::static_pointer_cast<DeviceMgmtCapability>(refThis);
-	//
-	const int64_t nTimeUsec = DeviceManager::getNowTimeMicroseconds();
-	//
-	shared_ptr<DeviceMgmtEvent> refEvent = std::make_shared<DeviceMgmtEvent>(nTimeUsec, refCapa, eMgmtType, refDevice);
-	auto refListeners = getListeners();
-	for (auto& p0ListenerData : *refListeners) {
-		p0ListenerData->handleEventCallIf(m_nClassIdxDeviceMgmtEvent, refEvent);
 	}
 }
 const shared_ptr<JoystickDevice>& JsGtkDeviceManager::onDeviceAdded(const std::string& sName, const std::vector<int32_t>& aButtonCode

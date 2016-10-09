@@ -17,6 +17,7 @@
 /*
  * File:   fakedevice.h
  */
+/*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
 #ifndef _STMI_TESTING_FAKE_DEVICE_H_
 #define _STMI_TESTING_FAKE_DEVICE_H_
@@ -32,63 +33,66 @@ using std::weak_ptr;
 namespace testing
 {
 
+/** Fake device template that implements one capability class. */
 template <class CAPA>
-class FakeDevice : public Device, public CAPA, public std::enable_shared_from_this<FakeDevice<CAPA>>
+class FakeDevice : public Device, public std::enable_shared_from_this<FakeDevice<CAPA>>
 {
 public:
-	std::string getName() const override
+	/** Constructor.
+	 * If the name is empty one is automatically created.
+	 * Instances should be created with std::make_shared().
+	 * @param refDeviceManager The device manager. Can be null.
+	 * @param sName The name of the device. Can be empty.
+	 * @param refCapability The capability instance of the device. Cannot be null.
+	 */
+	FakeDevice(const shared_ptr<DeviceManager>& refDeviceManager, const std::string& sName, const shared_ptr<CAPA>& refCapability)
+	: Device()
+	, m_sName(sName.empty() ? std::string("TestDevice-").append(typeid(CAPA).name()) : sName)
+	, m_refDeviceManager(refDeviceManager)
+	, m_refCapability(refCapability)
 	{
 		static_assert(std::is_base_of<Capability, CAPA>::value, "");
-		std::string sName ="TestDevice-";
-		sName.append(typeid(CAPA).name());
-		return sName;
+	}
+	std::string getName() const override
+	{
+		return m_sName;
 	}
 	shared_ptr<DeviceManager> getDeviceManager() const override
 	{
-		return shared_ptr<DeviceManager>{};
+		return m_refDeviceManager.lock();
 	}
 	shared_ptr<DeviceManager> getDeviceManager() override
 	{
-		return shared_ptr<DeviceManager>{};
+		return m_refDeviceManager.lock();
 	}
 	shared_ptr<Capability> getCapability(const Capability::Class& oClass) const override
 	{
-		shared_ptr<Capability> refCapa;
-		if (oClass == typeid(CAPA)) {
-			shared_ptr<const FakeDevice<CAPA>> refConstThis = FakeDevice<CAPA>::shared_from_this();
-			shared_ptr<FakeDevice<CAPA>> refThis = std::const_pointer_cast<FakeDevice<CAPA>>(refConstThis);
-			refCapa = refThis;
+		if (oClass != m_refCapability->getCapabilityClass()) {
+			return shared_ptr<Capability>{};
 		}
-		return refCapa;
+		return m_refCapability;
 	}
 	std::vector<Capability::Class> getCapabilityClasses() const override
 	{
 		return {CAPA::getClass()};
 	}
-	shared_ptr<Device> getDevice() const override
-	{
-		shared_ptr<const FakeDevice<CAPA> > refConstThis = FakeDevice<CAPA>::shared_from_this();
-		shared_ptr<FakeDevice<CAPA>> refThis = std::const_pointer_cast<FakeDevice<CAPA>>(refConstThis);
-		return refThis;
-	}
-	shared_ptr<Device> getDevice() override
-	{
-		shared_ptr<FakeDevice<CAPA>> refThis = FakeDevice<CAPA>::shared_from_this();
-		return refThis;
-	}
 	shared_ptr<Capability> getCapability(int32_t nCapabilityId) const override
 	{
-		if (nCapabilityId != Capability::getId()) {
+		if (nCapabilityId != m_refCapability->getId()) {
 			return shared_ptr<Capability>{};
 		}
-		shared_ptr<const FakeDevice<CAPA> > refConstThis = FakeDevice<CAPA>::shared_from_this();
-		shared_ptr<FakeDevice<CAPA>> refThis = std::const_pointer_cast<FakeDevice<CAPA>>(refConstThis);
-		return refThis;
+		return m_refCapability;
 	}
 	std::vector<int32_t> getCapabilities() const override
 	{
-		return {Capability::getId()};
+		return {m_refCapability->getId()};
 	}
+private:
+	std::string m_sName;
+	weak_ptr<DeviceManager> m_refDeviceManager;
+	shared_ptr<CAPA> m_refCapability;
+private:
+	FakeDevice() = delete;
 };
 
 } // namespace testing

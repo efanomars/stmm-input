@@ -18,10 +18,11 @@
  * File:   testMasGtkDeviceManager.cc
  */
 
-#include <gtest/gtest.h>
+#include "fixtureMasDM.h"
+
 #include <stmm-input/callifs.h>
 
-#include "fixtureMasDM.h"
+#include <gtest/gtest.h>
 
 namespace stmi
 {

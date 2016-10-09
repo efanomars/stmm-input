@@ -23,6 +23,8 @@
 
 #include <stmm-input/capability.h>
 
+#include <vector>
+
 namespace stmi
 {
 

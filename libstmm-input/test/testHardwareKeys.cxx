@@ -22,7 +22,7 @@
 
 #include <algorithm>
 
-#include <stmm-input/hardwarekey.h>
+#include "hardwarekey.h"
 
 namespace stmi
 {

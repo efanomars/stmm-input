@@ -14,37 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
-/* 
- * File:   fakekeydevice.h
+/*
+ * File:   stmm-input-base.h
  */
 
-#ifndef _STMI_TESTING_FAKE_KEY_DEVICE_H_
-#define _STMI_TESTING_FAKE_KEY_DEVICE_H_
+#ifndef _STMI_STMM_INPUT_BASE_H_
+#define _STMI_STMM_INPUT_BASE_H_
 
-#include "devicemanager.h"
-#include "keycapability.h"
-#include "fakedevice.h"
+/* This file includes all headers of the stmm-input-base library. */
 
-namespace stmi
-{
+#include "basicdevice.h"
+#include "basicdevicemanager.h"
+#include "childdevicemanager.h"
+#include "parentdevicemanager.h"
 
-using std::shared_ptr;
-using std::weak_ptr;
+#include <stmm-input/stmm-input.h>
 
-namespace testing
-{
+#endif	/* _STMI_STMM_INPUT_BASE_H_ */
 
-class FakeKeyDevice : public FakeDevice<KeyCapability>
-{
-public:
-	bool isKeyboard() const override
-	{
-		return true;
-	}
-};
-
-} // namespace testing
-
-} // namespace stmi
-
-#endif	/* _STMI_TESTING_FAKE_KEY_DEVICE_H_ */
