@@ -85,7 +85,7 @@ private:
 	//		setDevice(refDevice);
 	//	}
 	//};
-	//Private::Recycler<ReDeviceMgmtEvent> m_oDeviceMgmtRecycler;
+	//Private::Recycler<ReDeviceMgmtEvent, Event> m_oDeviceMgmtRecycler;
 	const int32_t m_nClassIdxDeviceMgmtEvent;
 private:
 	StdDeviceManager() = delete;

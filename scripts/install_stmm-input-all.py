@@ -27,18 +27,30 @@ import subprocess
 def main():
 	import argparse
 	oParser = argparse.ArgumentParser()
+	oParser.add_argument("-s", "--staticlib", help="build static library (instead of shared)", choices=['On', 'Off', 'Cache']\
+						, default="Cache", dest="sBuildStaticLib")
 	oParser.add_argument("-b", "--buildtype", help="build type", choices=['Debug', 'Release', 'MinSizeRel', 'RelWithDebInfo']\
 						, default="Release", dest="sBuildType")
 	oParser.add_argument("-t", "--tests", help="build tests", choices=['On', 'Off', 'Cache']\
 						, default="Cache", dest="sBuildTests")
 	oParser.add_argument("-d", "--docs", help="build documentation", choices=['On', 'Off', 'Cache']\
 						, default="Cache", dest="sBuildDocs")
-	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true", dest="bDocsWarningsToLog")
+	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true"\
+						, default=False, dest="bDocsWarningsToLog")
+	oParser.add_argument("--omit-gtk", help="do not compile gtk dependant projects", action="store_true"\
+						, default=False, dest="bOmitGtk")
 	oParser.add_argument("--destdir", help="destination dir", metavar='DESTDIR', default="/usr/local", dest="sDestDir")
 	oArgs = oParser.parse_args()
 
-	#sSourceDir = os.path.dirname(os.path.abspath(__file__))
-	#print("sSourceDir:" + sSourceDir)
+	sScriptDir = os.path.dirname(os.path.abspath(__file__))
+	#print("sScriptDir:" + sScriptDir)
+	
+	os.chdir(sScriptDir)
+	os.chdir("..") # change to source dir
+
+	#
+	sBuildStaticLib = "-s " + oArgs.sBuildStaticLib
+	#print("sBuildStaticLib:" + sBuildStaticLib)
 	#
 	sBuildTests = "-t " + oArgs.sBuildTests
 	#print("sBuildTests:" + sBuildTests)
@@ -59,33 +71,39 @@ def main():
 
 	print("== install libstmm-input ==============================")
 	os.chdir("libstmm-input")
-	subprocess.check_call("./install_libstmm-input.py {} {} {} {} {}".format(sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
+	subprocess.check_call("./install_libstmm-input.py {} {} {} {} {} {}".format(\
+			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
 	os.chdir("..")
 
 	print("== install libstmm-input-base =========================")
 	os.chdir("libstmm-input-base")
-	subprocess.check_call("./install_libstmm-input-base.py {} {} {} {} {}".format(sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
+	subprocess.check_call("./install_libstmm-input-base.py {} {} {} {} {} {}".format(\
+			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
 	os.chdir("..")
 
 	print("== install libstmm-input-ev ===========================")
 	os.chdir("libstmm-input-ev")
-	subprocess.check_call("./install_libstmm-input-ev.py {} {} {} {} {}".format(sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
-	os.chdir("..")
-
-	print("== install libstmm-input-gtk ==========================")
-	os.chdir("libstmm-input-gtk")
-	subprocess.check_call("./install_libstmm-input-gtk.py {} {} {} {} {}".format(sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
+	subprocess.check_call("./install_libstmm-input-ev.py {} {} {} {} {} {}".format(\
+			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
 	os.chdir("..")
 
 	print("== install libstmm-input-fake =========================")
 	os.chdir("libstmm-input-fake")
-	subprocess.check_call("./install_libstmm-input-fake.py {} {} {} {} {}".format(sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
+	subprocess.check_call("./install_libstmm-input-fake.py {} {} {} {} {}".format(\
+			sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
 	os.chdir("..")
 
-	print("== install device-floater =============================")
-	os.chdir("device-floater")
-	subprocess.check_call("./install_device-floater.py {} {}".format(sBuildType, sDestDir).split())
-	os.chdir("..")
+	if not oArgs.bOmitGtk:
+		print("== install libstmm-input-gtk ==========================")
+		os.chdir("libstmm-input-gtk")
+		subprocess.check_call("./install_libstmm-input-gtk.py {} {} {} {} {} {}".format(\
+				sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
+		os.chdir("..")
+
+		print("== install device-floater =============================")
+		os.chdir("device-floater")
+		subprocess.check_call("./install_device-floater.py {} {}".format(sBuildType, sDestDir).split())
+		os.chdir("..")
 
 
 if __name__ == "__main__":

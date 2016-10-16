@@ -106,7 +106,6 @@ private:
 					, const shared_ptr<JoystickCapability>& refThis
 					, JoystickCapability::AXIS eAxis, int32_t nValue);
 	//
-	class ReJoystickButtonEvent;
 	void sendButtonEventToListener(const JsGtkDeviceManager::ListenerData& oListenerData
 									, int64_t nEventTimeUsec, const shared_ptr<GtkAccessor>& refAccessor
 									, uint64_t nPressedTimeStamp
@@ -114,8 +113,7 @@ private:
 									, JoystickCapability::BUTTON eButtonId
 									, const shared_ptr<JoystickCapability>& refCapability
 									, int32_t nClassIdxJoystickButtonEvent
-									, shared_ptr<ReJoystickButtonEvent>& refEvent);
-	class ReJoystickHatEvent;
+									, shared_ptr<Event>& refEvent);
 	void sendHatEventToListener(const JsGtkDeviceManager::ListenerData& oListenerData
 								, int64_t nEventTimeUsec, const shared_ptr<GtkAccessor>& refAccessor
 								, uint64_t nPressedTimeStamp, int32_t nHat
@@ -123,7 +121,7 @@ private:
 								, JoystickCapability::HAT_VALUE ePreviousValue
 								, const shared_ptr<JoystickCapability>& refCapability
 								, int32_t nClassIdxJoystickHatEvent
-								, shared_ptr<ReJoystickHatEvent>& refEvent);
+								, shared_ptr<Event>& refEvent);
 
 	inline JoystickCapability::HAT_VALUE calcHatValue(int32_t nAxisX, int32_t nAxisY) const
 	{
@@ -170,7 +168,7 @@ private:
 			setJoystickCapability(refJoystickCapability);
 		}
 	};
-	Private::Recycler<ReJoystickHatEvent> m_oJoystickHatEventRecycler;
+	Private::Recycler<ReJoystickHatEvent, Event> m_oJoystickHatEventRecycler;
 	//
 	class ReJoystickButtonEvent :public JoystickButtonEvent
 	{
@@ -192,7 +190,7 @@ private:
 			setJoystickCapability(refJoystickCapability);
 		}
 	};
-	Private::Recycler<ReJoystickButtonEvent> m_oJoystickButtonEventRecycler;
+	Private::Recycler<ReJoystickButtonEvent, Event> m_oJoystickButtonEventRecycler;
 	//
 	class ReJoystickAxisEvent :public JoystickAxisEvent
 	{
@@ -214,7 +212,7 @@ private:
 			setJoystickCapability(refJoystickCapability);
 		}
 	};
-	Private::Recycler<ReJoystickAxisEvent> m_oJoystickAxisEventRecycler;
+	Private::Recycler<ReJoystickAxisEvent, Event> m_oJoystickAxisEventRecycler;
 private:
 	JoystickDevice(const JoystickDevice& oSource) = delete;
 	JoystickDevice& operator=(const JoystickDevice& oSource) = delete;

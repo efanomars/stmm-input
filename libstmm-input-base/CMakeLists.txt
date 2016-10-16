@@ -1,32 +1,18 @@
-if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-    message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the stmm-input-base source code and call cmake from there")
-endif()
-
-string(STRIP "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    set(STMM_DEBUG)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    set(STMM_RELEASE)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel")
-    set(STMM_MINSIZEREL)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
-    set(STMM_RELWITHDEBINFO)
-else()
-    message(FATAL_ERROR "Wrong CMAKE_BUILD_TYPE, set to either Debug, Release, MinSizeRel or RelWithDebInfo")
-endif()
+# File: libstmm-input-base/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.0)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../share/cmake) 
-
 
 project(stmm-input-base CXX)
 
 set(LIBRARY_OUTPUT_DIRECTORY "build")
 
-#TODO remove: not used?
-include(FindPkgConfig)
-find_package(PkgConfig)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../share/cmake) 
+
+include(CommonUtil)
+
+CheckBinaryNotSourceTree()
+CheckBuildType()
+DefineSharedLibOption()
 
 # Libtool CURRENT/REVISION/AGE: here
 #   MAJOR is CURRENT interface
@@ -40,8 +26,17 @@ set(STMM_INPUT_MAJOR_VERSION_REQ 0)
 set(STMM_INPUT_MINOR_VERSION_REQ 1)
 set(STMM_INPUT_VERSION_REQ "${STMM_INPUT_MAJOR_VERSION_REQ}.${STMM_INPUT_MINOR_VERSION_REQ}")
 
-# Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
-pkg_check_modules(STMMINPUT  REQUIRED  stmm-input>=${STMM_INPUT_VERSION_REQ})
+include(FindPkgConfig)
+
+if (PKG_CONFIG_FOUND)
+    # Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
+    pkg_check_modules(STMMINPUT  REQUIRED  stmm-input>=${STMM_INPUT_VERSION_REQ})
+else (PKG_CONFIG_FOUND)
+    list(APPEND STMMINPUT_INCLUDE_DIRS
+            "${PROJECT_SOURCE_DIR}/../libstmm-input/include")
+    list(APPEND STMMINPUT_LIBRARIES
+            "${PROJECT_SOURCE_DIR}/../libstmm-input/build/libstmm-input.a")
+endif()
 
 list(APPEND STMMI_BASE_EXTRA_INCLUDE_DIRS  ${STMMINPUT_INCLUDE_DIRS})
 list(APPEND STMMI_BASE_EXTRA_LIBS          ${STMMINPUT_LIBRARIES})
@@ -76,26 +71,19 @@ set(STMMI_SOURCES
         ${STMMI_SOURCES_DIR}/util.h
       )
 
-# Set compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb")
-
-if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
-    set(STMMI_COMPILE_WARNINGS "-Wall -Wextra -Werror") # "-Wpedantic"
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(STMMI_COMPILE_WARNINGS "/W4 /WX /EHsc")
-endif()
-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${STMMI_COMPILE_WARNINGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STMMI_COMPILE_WARNINGS}")
+DefineCallerCompileOptions()
 
 # Set install dir for pkg-config file
 set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-# Create pkg-config file for shared library
-configure_file("${PROJECT_SOURCE_DIR}/stmm-input-base.pc.in"
-               "${PROJECT_BINARY_DIR}/stmm-input-base.pc" @ONLY)
+
+if (PKG_CONFIG_FOUND)
+    # Create pkg-config file for shared library
+    configure_file("${PROJECT_SOURCE_DIR}/stmm-input-base.pc.in"
+                   "${PROJECT_BINARY_DIR}/stmm-input-base.pc" @ONLY)
+endif()
 
 # Define library
-add_library(stmm-input-base SHARED ${STMMI_SOURCES})
+add_library(stmm-input-base ${STMMI_SOURCES})
 
 message(STATUS "")
 message(STATUS "stmm-input-base was configured with the following options:")
@@ -136,11 +124,11 @@ target_include_directories(stmm-input-base   BEFORE PUBLIC
 
 target_link_libraries(stmm-input-base ${STMMI_BASE_EXTRA_LIBS}) # ${STMMI_BASE_EXTRA_LDFLAGS}
 
-install(TARGETS stmm-input-base LIBRARY DESTINATION "lib")
+install(TARGETS stmm-input-base LIBRARY DESTINATION "lib"  ARCHIVE DESTINATION "lib")
 
 install(FILES ${STMMI_HEADERS} DESTINATION "include/stmm-input-base")
 
-install(FILES  ${PROJECT_BINARY_DIR}/libstmm-input-base.so   DESTINATION "lib")
-
-install(FILES  ${PROJECT_BINARY_DIR}/stmm-input-base.pc   DESTINATION "lib/pkgconfig")
+if (PKG_CONFIG_FOUND)
+    install(FILES  ${PROJECT_BINARY_DIR}/stmm-input-base.pc   DESTINATION "lib/pkgconfig")
+endif()
 

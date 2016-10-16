@@ -21,7 +21,7 @@
 #ifndef _STMI_CALLIF_SIMPLIFIER_H_
 #define _STMI_CALLIF_SIMPLIFIER_H_
 
-#include "callifs.h"
+#include <stmm-input/callifs.h>
 
 namespace stmi
 {

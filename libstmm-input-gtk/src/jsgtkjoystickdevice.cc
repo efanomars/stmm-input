@@ -240,7 +240,7 @@ void JoystickDevice::handleButton(JsGtkDeviceManager* p0Owner, const shared_ptr<
 		if (bButtonWasPressed) {
 			// Send a cancel
 			oButtonStatus.m_bPressed = false;
-			shared_ptr<ReJoystickButtonEvent> refEvent;
+			shared_ptr<Event> refEvent;
 			const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
 			for (auto& p0ListenerData : *refListeners) {
 				sendButtonEventToListener(*p0ListenerData, nEventTimeUsec, refSelectedAccessor, nWasPressedTimeStamp, JoystickButtonEvent::BUTTON_RELEASE_CANCEL
@@ -261,7 +261,7 @@ void JoystickDevice::handleButton(JsGtkDeviceManager* p0Owner, const shared_ptr<
 		eInputType = JoystickButtonEvent::BUTTON_RELEASE;
 	}
 	//
-	shared_ptr<ReJoystickButtonEvent> refEvent;
+	shared_ptr<Event> refEvent;
 	const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	for (auto& p0ListenerData : *refListeners) {
 		sendButtonEventToListener(*p0ListenerData, nEventTimeUsec, refSelectedAccessor, nPressedTimeStamp, eInputType, eButton
@@ -320,7 +320,7 @@ void JoystickDevice::handleHat(JsGtkDeviceManager* p0Owner, const shared_ptr<Gtk
 	}
 	//
 	auto refListeners = p0Owner->getListeners();
-	shared_ptr<ReJoystickHatEvent> refEvent;
+	shared_ptr<Event> refEvent;
 	for (auto& p0ListenerData : *refListeners) {
 		sendHatEventToListener(*p0ListenerData, nEventTimeUsec, refSelectedAccessor, oHatData.m_nPressedTimeStamp
 									, nHat, eValue, eOldValue
@@ -339,10 +339,10 @@ void JoystickDevice::handleAxis(JsGtkDeviceManager* p0Owner, const shared_ptr<Gt
 	}
 	auto refListeners = p0Owner->getListeners();
 	const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
-	shared_ptr<ReJoystickAxisEvent> refEvent;
+	shared_ptr<Event> refEvent;
 	for (auto& p0ListenerData : *refListeners) {
 		if (!refEvent) {
-			refEvent = m_oJoystickAxisEventRecycler.create(nEventTimeUsec, refSelectedAccessor, refThis, eAxis, nValue);
+			m_oJoystickAxisEventRecycler.create(refEvent, nEventTimeUsec, refSelectedAccessor, refThis, eAxis, nValue);
 		}
 		p0ListenerData->handleEventCallIf(p0Owner->m_nClassIdxJoystickAxisEvent, refEvent);
 			// no need to reset because JoystickAxisEvent cannot be modified.
@@ -395,7 +395,7 @@ void JoystickDevice::finalizeListenerButton(JsGtkDeviceManager::ListenerData& oL
 		const int32_t nLinuxButton = m_aButtonCode[nButtonIdx];
 		const JoystickCapability::BUTTON eButton = static_cast<JoystickCapability::BUTTON>(nLinuxButton);
 //std::cout << "   finalizing  nButton=" << eButton << std::endl;
-		shared_ptr<ReJoystickButtonEvent> refEvent;
+		shared_ptr<Event> refEvent;
 		sendButtonEventToListener(oListenerData, nEventTimeUsec, refSelectedAccessor, nButtonPressedTimeStamp
 									, JoystickButtonEvent::BUTTON_RELEASE_CANCEL, eButton, refCapability
 									, nClassIdxJoystickButtonEvent, refEvent);
@@ -429,7 +429,7 @@ void JoystickDevice::finalizeListenerHat(JsGtkDeviceManager::ListenerData& oList
 		p0ExtraData->setHatCanceled(nHat);
 //std::cout << "   finalizing  nHat=" << nHat << std::endl;
 		const auto nAnyPressedTimeStamp = oHatData.m_nPressedTimeStamp;
-		shared_ptr<ReJoystickHatEvent> refEvent;
+		shared_ptr<Event> refEvent;
 		sendHatEventToListener(oListenerData, nEventTimeUsec, refSelectedAccessor
 											, nAnyPressedTimeStamp, nHat
 											, JoystickCapability::HAT_CENTER_CANCEL, eOldValue
@@ -485,7 +485,7 @@ void JoystickDevice::cancelSelectedAccessorButtons(const shared_ptr<JoystickCapa
 		const int32_t nLinuxButton = m_aButtonCode[nButtonIdx];
 		const JoystickCapability::BUTTON eButton = static_cast<JoystickCapability::BUTTON>(nLinuxButton);
 //std::cout << "   finalizing  nButton=" << eButton << std::endl;
-		shared_ptr<ReJoystickButtonEvent> refEvent;
+		shared_ptr<Event> refEvent;
 		for (auto& p0ListenerData : *refListeners) {
 			JsGtkListenerExtraData* p0ExtraData = nullptr;
 			p0ListenerData->getExtraData(p0ExtraData);
@@ -520,7 +520,7 @@ void JoystickDevice::cancelSelectedAccessorHats(const shared_ptr<JoystickCapabil
 			continue; // for ------------
 		}
 		const auto nAnyPressedTimeStamp = oHatData.m_nPressedTimeStamp;
-		shared_ptr<ReJoystickHatEvent> refEvent;
+		shared_ptr<Event> refEvent;
 		for (auto& p0ListenerData : *refListeners) {
 			JsGtkListenerExtraData* p0ExtraData = nullptr;
 			p0ListenerData->getExtraData(p0ExtraData);
@@ -545,7 +545,7 @@ void JoystickDevice::sendButtonEventToListener(const JsGtkDeviceManager::Listene
 												, JoystickCapability::BUTTON eButtonId
 												, const shared_ptr<JoystickCapability>& refCapability
 												, int32_t nClassIdxJoystickButtonEvent
-												, shared_ptr<ReJoystickButtonEvent>& refEvent)
+												, shared_ptr<Event>& refEvent)
 {
 	const auto nAddTimeStamp = oListenerData.getAddedTimeStamp();
 	if (nPressedTimeStamp < nAddTimeStamp) {
@@ -554,7 +554,7 @@ void JoystickDevice::sendButtonEventToListener(const JsGtkDeviceManager::Listene
 		return;
 	}
 	if (!refEvent) {
-		refEvent = m_oJoystickButtonEventRecycler.create(nEventTimeUsec, refAccessor, refCapability, eInputType, eButtonId);
+		m_oJoystickButtonEventRecycler.create(refEvent, nEventTimeUsec, refAccessor, refCapability, eInputType, eButtonId);
 	}
 	oListenerData.handleEventCallIf(nClassIdxJoystickButtonEvent, refEvent);
 		// no need to reset because JoystickButtonEvent cannot be modified.
@@ -566,7 +566,7 @@ void JoystickDevice::sendHatEventToListener(const JsGtkDeviceManager::ListenerDa
 											, JoystickCapability::HAT_VALUE ePreviousValue
 											, const shared_ptr<JoystickCapability>& refCapability
 											, int32_t nClassIdxJoystickHatEvent
-											, shared_ptr<ReJoystickHatEvent>& refEvent)
+											, shared_ptr<Event>& refEvent)
 {
 	const auto nAddTimeStamp = oListenerData.getAddedTimeStamp();
 	if (nPressedTimeStamp < nAddTimeStamp) {
@@ -575,7 +575,7 @@ void JoystickDevice::sendHatEventToListener(const JsGtkDeviceManager::ListenerDa
 		return;
 	}
 	if (!refEvent) {
-		refEvent = m_oJoystickHatEventRecycler.create(nEventTimeUsec, refAccessor, refCapability, nHat, eValue, ePreviousValue);
+		m_oJoystickHatEventRecycler.create(refEvent, nEventTimeUsec, refAccessor, refCapability, nHat, eValue, ePreviousValue);
 	}
 	oListenerData.handleEventCallIf(nClassIdxJoystickHatEvent, refEvent);
 		// no need to reset because JoystickButtonEvent cannot be modified.

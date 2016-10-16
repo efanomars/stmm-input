@@ -26,16 +26,28 @@ import subprocess
 def main():
 	import argparse
 	oParser = argparse.ArgumentParser()
+	oParser.add_argument("-s", "--staticlib", help="build static library (instead of shared)", choices=['On', 'Off', 'Cache']\
+						, default="Cache", dest="sBuildStaticLib")
 	oParser.add_argument("-b", "--buildtype", help="build type", choices=['Debug', 'Release', 'MinSizeRel', 'RelWithDebInfo']\
 						, default="Release", dest="sBuildType")
 	oParser.add_argument("-t", "--tests", help="build tests", choices=['On', 'Off', 'Cache']\
 						, default="Cache", dest="sBuildTests")
 	oParser.add_argument("-d", "--docs", help="build documentation", choices=['On', 'Off', 'Cache']\
 						, default="Cache", dest="sBuildDocs")
-	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true", dest="bDocsWarningsToLog")
+	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true"\
+						, default=False, dest="bDocsWarningsToLog")
 	oParser.add_argument("--destdir", help="destination dir", metavar='DESTDIR', default="/usr/local", dest="sDestDir")
 	oArgs = oParser.parse_args()
 
+	#
+	sBuildStaticLib = " -D BUILD_SHARED_LIBS="
+	if oArgs.sBuildStaticLib == "On":
+		sBuildStaticLib += "OFF "
+	elif oArgs.sBuildStaticLib == "Off":
+		sBuildStaticLib += "ON "
+	else:
+		sBuildStaticLib = ""
+	#print("sBuildStaticLib:" + sBuildStaticLib)
 	#
 	sBuildTests = " -D BUILD_TESTING="
 	if oArgs.sBuildTests == "On":
@@ -73,7 +85,8 @@ def main():
 
 	os.chdir("build")
 
-	subprocess.check_call("cmake {} {} {} {} {} ..".format(sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
+	subprocess.check_call("cmake {} {} {} {} {} {} ..".format(\
+			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
 	subprocess.check_call("make".split())
 	subprocess.check_call("sudo make install".split())
 	subprocess.check_call("sudo ldconfig".split())

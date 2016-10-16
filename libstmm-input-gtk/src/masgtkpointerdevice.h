@@ -83,21 +83,19 @@ private:
 									, MasGtkDeviceManager* p0Owner);
 
 	void removingDevice();
-	class RePointerEvent;
 	void sendPointerEventToListener(const MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
 									, double fX, double fY
 									, PointerEvent::POINTER_INPUT_TYPE eInputType, int32_t nButton
 									, bool bWasAnyButtonPressed, bool bAnyButtonPressed
 									, const shared_ptr<GtkAccessor>& refAccessor
 									, MasGtkDeviceManager* p0Owner
-									, shared_ptr<RePointerEvent>& refEvent);
-	class ReTouchEvent;
+									, shared_ptr<Event>& refEvent);
 	void sendTouchEventToListener(const MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
 									, uint64_t nSequenceStartTimeStamp, double fX, double fY
 									, TouchEvent::TOUCH_INPUT_TYPE eInputType, int64_t nSequence
 									, const shared_ptr<GtkAccessor>& refAccessor
 									, MasGtkDeviceManager* p0Owner
-									, shared_ptr<ReTouchEvent>& refEvent);
+									, shared_ptr<Event>& refEvent);
 	inline int32_t translateGdkButtonToPointerEvent(int32_t nGdkButton)
 	{
 		int32_t nButton;
@@ -157,7 +155,7 @@ private:
 			setIsModified(false);
 		}
 	};
-	Private::Recycler<RePointerEvent> m_oPointerEventRecycler;
+	Private::Recycler<RePointerEvent, Event> m_oPointerEventRecycler;
 	//
 	class RePointerScrollEvent :public PointerScrollEvent
 	{
@@ -181,7 +179,7 @@ private:
 			setIsModified(false);
 		}
 	};
-	Private::Recycler<RePointerScrollEvent> m_oPointerScrollEventRecycler;
+	Private::Recycler<RePointerScrollEvent, Event> m_oPointerScrollEventRecycler;
 	//
 	class ReTouchEvent :public TouchEvent
 	{
@@ -205,7 +203,7 @@ private:
 			setIsModified(false);
 		}
 	};
-	Private::Recycler<ReTouchEvent> m_oTouchEventRecycler;
+	Private::Recycler<ReTouchEvent, Event> m_oTouchEventRecycler;
 private:
 	GtkPointerDevice(const GtkPointerDevice& oSource);
 	GtkPointerDevice& operator=(const GtkPointerDevice& oSource);

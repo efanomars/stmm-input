@@ -20,9 +20,10 @@
 
 #include "basicdevicemanager.h"
 
-#include "callifs.h"
 #include "callifsimplifier.h"
 #include "util.h"
+
+#include <stmm-input/callifs.h>
 
 #ifndef NDEBUG
 #include <iostream>

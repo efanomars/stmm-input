@@ -40,7 +40,13 @@ def main():
 		for sExclPattern in aExclPatterns:
 			sExcludes += " --exclude=" + os.path.join(sProjDir, sExclPattern)
 
-	sSourceDir = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
+	sScriptDir = os.path.dirname(os.path.abspath(__file__))
+
+	os.chdir(sScriptDir)
+	os.chdir("..")
+
+	sSourceDir = os.path.basename(os.getcwd())
+
 
 	oToday = date.today()
 	sToday = ("000" + str(oToday.year))[-4:] + ("0" + str(oToday.month))[-2:] + ("0" + str(oToday.day))[-2:]

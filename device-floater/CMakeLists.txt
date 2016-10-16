@@ -1,22 +1,4 @@
-if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-    message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the device-floater source code and call cmake from there")
-endif()
-
-option(bMakeRawDebianPackage "Define raw debian binary package. Only if not Debug. Use `make package` to create it."  OFF)
-
-string(STRIP "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
-
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    set(STMM_DEBUG)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    set(STMM_RELEASE)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel")
-    set(STMM_MINSIZEREL)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
-    set(STMM_RELWITHDEBINFO)
-else()
-    message(FATAL_ERROR "Wrong CMAKE_BUILD_TYPE, set to either Debug, Release, MinSizeRel or RelWithDebInfo")
-endif()
+# File: device-floater/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.0)
 
@@ -24,8 +6,17 @@ project(device-floater CXX)
 
 set(RUNTIME_OUTPUT_DIRECTORY "build")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../share/cmake) 
+
+include(CommonUtil)
+
+CheckBinaryNotSourceTree()
+CheckBuildType()
+
 include(FindPkgConfig)
-find_package(PkgConfig)
+if (NOT PKG_CONFIG_FOUND)
+     message(FATAL_ERROR "Mandatory 'pkg-config' not found!")
+endif()
 
 #
 set(DEVICE_FLOATER_MAJOR_VERSION 0)
@@ -61,14 +52,8 @@ set(STMMI_DEVFLO_DATA_FILES
         ${PROJECT_SOURCE_DIR}/data/keyboard_1420.png
         ${PROJECT_SOURCE_DIR}/data/mouse_347.png
         )
-# Set compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb")
 
-set(STMM_COMPILE_WARNINGS "-Wall -Wextra -Werror") # "-Wpedantic"
-
-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${STMM_COMPILE_WARNINGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STMM_COMPILE_WARNINGS}")
+DefineCallerCompileOptions()
 
 include(GNUInstallDirs)
 set(STMMI_DEVFLO_PKG_DATA_DIR "${CMAKE_INSTALL_FULL_DATADIR}/device-floater")
@@ -93,10 +78,6 @@ message(STATUS " STMMI_DEVFLO_EXTRA_LIBS:         ${STMMI_DEVFLO_EXTRA_LIBS}")
 message(STATUS " STMMI_DEVFLO_SOURCES:            ${STMMI_DEVFLO_SOURCES}")
 message(STATUS " STMMI_DEVFLO_DATA_FILES          ${STMMI_DEVFLO_DATA_FILES}")
 message(STATUS " install prefix:                  ${CMAKE_INSTALL_PREFIX}")
-
-#notestsyet  # Testing
-#notestsyet  enable_testing()
-#notestsyet  add_subdirectory(test)
 
 target_link_libraries(device-floater ${STMMI_DEVFLO_EXTRA_LIBS}) # ${STMMI_DEVFLO_EXTRA_LDFLAGS}
 

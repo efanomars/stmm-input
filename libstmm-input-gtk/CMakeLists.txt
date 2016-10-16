@@ -1,31 +1,23 @@
-if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-    message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the stmm-input-gtk source code and call cmake from there")
-endif()
-
-string(STRIP "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    set(STMM_DEBUG)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    set(STMM_RELEASE)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel")
-    set(STMM_MINSIZEREL)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
-    set(STMM_RELWITHDEBINFO)
-else()
-    message(FATAL_ERROR "Wrong CMAKE_BUILD_TYPE, set to either Debug, Release, MinSizeRel or RelWithDebInfo")
-endif()
+# File: libstmm-input-gtk/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.0)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../share/cmake) 
-
 
 project(stmm-input-gtk CXX)
 
 set(LIBRARY_OUTPUT_DIRECTORY "build")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../share/cmake) 
+
+include(CommonUtil)
+
+CheckBinaryNotSourceTree()
+CheckBuildType()
+DefineSharedLibOption()
+
 include(FindPkgConfig)
-find_package(PkgConfig REQUIRED)
+if (NOT PKG_CONFIG_FOUND)
+     message(FATAL_ERROR "Mandatory 'pkg-config' not found!")
+endif()
 
 # Libtool CURRENT/REVISION/AGE: here
 #   MAJOR is CURRENT interface
@@ -50,13 +42,6 @@ pkg_check_modules(STMMINPUTEV    REQUIRED  stmm-input-ev>=${STMM_INPUT_EV_VERSIO
 pkg_check_modules(GTKMM  REQUIRED  gtkmm-3.0>=${GTKMM_VERSION_REQ})
 pkg_check_modules(XI     REQUIRED  xi>=${XI_VERSION_REQ})
 pkg_check_modules(X11    REQUIRED  x11>=${X11_VERSION_REQ})
-
-#Debug execute_process(
-#Debug         COMMAND pkg-config --atleast-version 0.2 stmm-input
-#Debug         RESULT_VARIABLE TEST_O_TEST)
-#Debug message(STATUS "${TEST_O_TEST}")
-#Debug message(STATUS "${STMMINPUT_FOUND}")
-#Debug message(STATUS "${STMMINPUT_VERSION}")
 
 list(APPEND STMMI_GTK_EXTRA_INCLUDE_DIRS
     ${STMMINPUTEV_INCLUDE_DIRS}
@@ -100,6 +85,7 @@ set(STMMI_HEADERS_MAS
 #   STMMI_HEADERS_DATA 
 #   libstmm-input-base
 #   libxi-dev
+#   libx11-dev
 set(STMMI_HEADERS_FLO
 # Moved to sources        ${STMMI_HEADERS_DIR}/flogtkdevicemanager.h
         )
@@ -185,14 +171,7 @@ list(APPEND  STMMI_SOURCES
         ${STMMI_SOURCES_ALL}
         )
 
-# Set compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb")
-
-set(STMMI_COMPILE_WARNINGS "-Wall -Wextra -Werror") # "-Wpedantic"
-
-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${STMMI_COMPILE_WARNINGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STMMI_COMPILE_WARNINGS}")
+DefineCallerCompileOptions()
 
 # Set install dir for pkg-config file
 set(STMMI_GTK_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
@@ -201,7 +180,7 @@ configure_file("${PROJECT_SOURCE_DIR}/stmm-input-gtk.pc.in"
                "${PROJECT_BINARY_DIR}/stmm-input-gtk.pc" @ONLY)
 
 # Define library
-add_library(stmm-input-gtk SHARED ${STMMI_SOURCES})
+add_library(stmm-input-gtk ${STMMI_SOURCES})
 
 message(STATUS "")
 message(STATUS "stmm-input-gtk was configured with the following options:")
@@ -242,10 +221,8 @@ target_include_directories(stmm-input-gtk    BEFORE PUBLIC
 
 target_link_libraries(stmm-input-gtk ${STMMI_GTK_EXTRA_LIBS}) # ${STMMI_GTK_EXTRA_LDFLAGS}
 
-install(TARGETS stmm-input-gtk LIBRARY DESTINATION "lib")
+install(TARGETS stmm-input-gtk LIBRARY DESTINATION "lib"  ARCHIVE DESTINATION "lib")
 
 install(FILES ${STMMI_HEADERS}   DESTINATION "include/stmm-input-gtk")
-
-install(FILES  ${PROJECT_BINARY_DIR}/libstmm-input-gtk.so   DESTINATION "lib")
 
 install(FILES  ${PROJECT_BINARY_DIR}/stmm-input-gtk.pc   DESTINATION "lib/pkgconfig")

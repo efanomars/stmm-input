@@ -17,7 +17,7 @@
 
 # File:   install_libstmm-input-fake.py
 
-# Compiles and installs the libstmm-input-fake library.
+# Compiles and installs the libstmm-input-fake header-only library.
 
 import sys
 import os
@@ -32,7 +32,8 @@ def main():
 						, default="Cache", dest="sBuildTests")
 	oParser.add_argument("-d", "--docs", help="build documentation", choices=['On', 'Off', 'Cache']\
 						, default="Cache", dest="sBuildDocs")
-	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true", dest="bDocsWarningsToLog")
+	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true"\
+						, default=False, dest="bDocsWarningsToLog")
 	oParser.add_argument("--destdir", help="destination dir", metavar='DESTDIR', default="/usr/local", dest="sDestDir")
 	oArgs = oParser.parse_args()
 

@@ -50,16 +50,16 @@ class XYEvent;
  *       const stmi::Event::Class& oC = refEvent->getEventClass();
  *       auto& oT = oC.getTypeInfo();
  *       if (oT == typeid(stmi::KeyEvent)) {
- *         handleKeyEvent(std::static_pointer_cast<stmi::KeyEvent>(refEvent));
+ *         handleKeyEvent(static_cast<stmi::KeyEvent*>(refEvent.get()));
  *       } else if (oT == typeid(stmi::PointerEvent)) {
- *         handlePointerEvent(std::static_pointer_cast<stmi::PointerEvent>(refEvent));
+ *         handlePointerEvent(static_cast<stmi::PointerEvent*>(refEvent.get()));
  *       } // and so on
  *     }
  *
  * with specific registered class implementations:
  *
- *     void handleKeyEvent(const shared_ptr<stmi::KeyEvent>& refEvent) { ... }
- *     void handlePointerEvent(const shared_ptr<stmi::PointerEvent>& refEvent) { ... }
+ *     void handleKeyEvent(stmi::KeyEvent* pEvent) { ... }
+ *     void handlePointerEvent(stmi::PointerEvent* pEvent) { ... }
  *     // and so on
  */
 class Event

@@ -24,8 +24,6 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
-#include <list>
-#include <unordered_map>
 #include <memory>
 
 
@@ -38,37 +36,44 @@ namespace Private
 ////////////////////////////////////////////////////////////////////////////////
 /** Recycling factory for shared_ptr wrapped classes.
  */
-template <class T>
+template <class T, class B = T>
 class Recycler final
 {
 public:
 	Recycler() = default;
-	//~Recycler() = default;
 
-	/** Construct or recycle the shared_ptr wrapped instance.
+	/** Construct or recycle the shared_ptr wrapped instance of T.
+	 * T must be same or subclass of B.
 	 * T must have a constructor T(const P& ... oParam)
 	 * and public member function reInit(const P& ... oParam) with the same params.
 	 */
 	template <typename ...P>
-	std::shared_ptr<T> create(const P& ... oParam)
+	void create(std::shared_ptr<B>& refOutB, const P& ... oParam)
 	{
-		for (auto& refT : m_oAll) {
-			if (refT.unique()) {
+		static_assert(std::is_base_of<B,T>::value, "Wrong type.");
+		for (auto& refB : m_oAll) {
+			if (refB.unique()) {
 //#ifndef NDEBUG
 //static int32_t nCount = 0;
 //std::cout << "recycled " << nCount << '\n';
 //++nCount;
 //#endif //NDEBUG
-				refT->reInit(oParam...);
-				return refT;
+				T* p0T = static_cast<T*>(refB.get());
+				p0T->reInit(oParam...);
+				refOutB = refB;
+				return; //------------------------------------------------------
 			}
 		}
 		// not found: create new instance
-		m_oAll.emplace_back(std::make_shared<T>(oParam...));
-		return m_oAll.back();
+		if (std::is_same<B,T>::value) {
+			m_oAll.emplace_back(std::make_shared<T>(oParam...));
+		} else {
+			m_oAll.emplace_back(std::shared_ptr<B>(new T(oParam...)));
+		}
+		refOutB = m_oAll.back();
 	}
 private:
-	std::vector< std::shared_ptr<T> > m_oAll;
+	std::vector< std::shared_ptr<B> > m_oAll;
 private:
 	Recycler(const Recycler& oSource) = delete;
 	Recycler& operator=(const Recycler& oSource) = delete;

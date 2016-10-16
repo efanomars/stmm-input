@@ -64,13 +64,12 @@ private:
 	void cancelSelectedAccessorKeys();
 	void finalizeListener(MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec);
 	void removingDevice();
-	class ReKeyEvent;
 	void sendKeyEventToListener(const MasGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
 								, uint64_t nTimePressedStamp
 								, KeyEvent::KEY_INPUT_TYPE eInputType, HARDWARE_KEY eHardwareKey
 								, const shared_ptr<GtkAccessor>& refAccessor
 								, MasGtkDeviceManager* p0Owner
-								, shared_ptr<ReKeyEvent>& refEvent);
+								, shared_ptr<Event>& refEvent);
 private:
 	struct KeyData
 	{
@@ -96,7 +95,7 @@ private:
 			setKey(eKey);
 		}
 	};
-	Private::Recycler<ReKeyEvent> m_oKeyEventRecycler;
+	Private::Recycler<ReKeyEvent, Event> m_oKeyEventRecycler;
 private:
 	GtkKeyboardDevice(const GtkKeyboardDevice& oSource);
 	GtkKeyboardDevice& operator=(const GtkKeyboardDevice& oSource);

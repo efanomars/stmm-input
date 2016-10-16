@@ -44,10 +44,10 @@ namespace stmi
  *         ...
  *         const stmi::Event::Class& oC = refEvent->getEventClass();
  *         if (oC.isXYEvent()) {
- *             auto refXYEvent = std::static_pointer_cast<stmi::XYEvent>(refEvent);
- *             if (refXYEvent->getX() >= 100) {
- *                 refXYEvent->translateXY(-100, 0);
- *                 refXYEvent->scaleXY(0.5, 0.5);
+ *             auto pXYEvent = static_cast<stmi::XYEvent*>(refEvent);
+ *             if (pXYEvent->getX() >= 100) {
+ *                 pXYEvent->translateXY(-100, 0);
+ *                 pXYEvent->scaleXY(0.5, 0.5);
  *         ...
  *     }
  */

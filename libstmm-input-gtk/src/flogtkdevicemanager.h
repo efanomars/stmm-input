@@ -24,7 +24,6 @@
 #include "gtkaccessor.h"
 #include "gdkkeyconverter.h"
 #include "keyrepeatmode.h"
-#include "recycler.h"
 #include "flogtkbackend.h"
 
 #include <stmm-input-base/basicdevice.h>

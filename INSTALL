@@ -6,32 +6,35 @@ license, installing instructions, etc. and can be built in its
 own subfolder. But since the projects partially depend on each other, 
 a script is provided to compile and install the binaries in the right order.
 
-  install_stmm-input-all.sh  Debug  /usr/local
+  ./scripts/install_stmm-input-all.py  -b Debug  --destdir /usr/local
 
 Compiles (debug mode) and installs all libraries and the executable
 to the directory (prefix) '/usr/local'.
 The first parameter can also be 'Release', 'MinSizeRel' or 'RelWithDebInfo'
 (see cmake documentation).
 The second parameter can be omitted (usually '/usr/local' is the default).
+Pass --help for a description of all available options.
 
 Dependencies
 ============
+
+- libstmm-input depends on
+    + c++14 compiler
 
 - libstmm-input-base depends on
     + libstmm-input
 
 - libstmm-input-ev   depends on
-    + libstmm-input
-
-- libstmm-input-gtk  depends on
-    + libstmm-input-ev
     + libstmm-input-base
-    + libxi-dev
-    + libgtkmm-3.0-dev
 
 - libstmm-input-fake  depends on
     + libstmm-input-ev
-    + libstmm-input-base
+
+- libstmm-input-gtk  depends on
+    + libstmm-input-ev
+    + libxi-dev
+    + libx11-dev
+    + libgtkmm-3.0-dev
 
 - device-floater     depends on
     + libgtkmm-3.0-dev

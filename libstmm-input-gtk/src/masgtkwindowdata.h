@@ -22,6 +22,7 @@
 #define _STMI_MAS_GTK_WINDOW_DATA_H_
 
 #include "masgtkdevicemanager.h"
+
 #include "recycler.h"
 
 #include <gtkmm.h>
@@ -147,9 +148,11 @@ public:
 	#ifdef STMI_TESTING_IFACE
 	virtual
 	#endif
-	std::shared_ptr<GtkWindowData> create()
+	shared_ptr<GtkWindowData> create()
 	{
-		return m_oRecycler.create();
+		shared_ptr<GtkWindowData> ref;
+		m_oRecycler.create(ref);
+		return ref;
 	}
 private:
 	Recycler<GtkWindowData> m_oRecycler;

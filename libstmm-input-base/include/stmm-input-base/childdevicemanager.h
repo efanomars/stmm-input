@@ -21,7 +21,7 @@
 #ifndef _STMI_CHILD_DEVICE_MANAGER_H_
 #define _STMI_CHILD_DEVICE_MANAGER_H_
 
-#include "devicemanager.h"
+#include <stmm-input/devicemanager.h>
 
 namespace stmi
 {

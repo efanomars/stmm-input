@@ -23,6 +23,8 @@
 
 #include "flogtkdevicemanager.h"
 
+#include "recycler.h"
+
 #include <gtkmm.h>
 
 #include <gdk/gdk.h>
@@ -181,9 +183,11 @@ public:
 	#ifdef STMI_TESTING_IFACE
 	virtual
 	#endif
-	std::shared_ptr<GtkWindowData> create()
+	shared_ptr<GtkWindowData> create()
 	{
-		return m_oRecycler.create();
+		shared_ptr<GtkWindowData> ref;
+		m_oRecycler.create(ref);
+		return ref;
 	}
 private:
 	Recycler<GtkWindowData> m_oRecycler;

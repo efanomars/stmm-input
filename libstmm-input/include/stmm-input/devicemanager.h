@@ -199,7 +199,7 @@ public:
 	 *             {
 	 *                 // Because of the callif condition below we know that refEvent
 	 *                 // is a stmi::KeyEvent
-	 *                 auto refKeyEvent = std::static_pointer_cast<stmi::KeyEvent>(refEvent);
+	 *                 auto pKeyEvent = static_cast<stmi::KeyEvent*>(refEvent.get());
 	 *                 ...
 	 *             });
 	 *         m_refDeviceManager->addEventListener(m_refKeyEventListener

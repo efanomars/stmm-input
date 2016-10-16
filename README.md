@@ -9,12 +9,12 @@ This source package contains:
     library that defines the platform-independent core interfaces for
     events, devices, capabilities, device managers and event listeners.
 
-- libstmm-input-ev:
-    library that defines a set of event types suitable for games.
-
 - libstmm-input-base:
     library of helper classes to ease the implementation and composition of
     device managers.
+
+- libstmm-input-ev:
+    library that defines a set of event types suitable for games.
 
 - libstmm-input-gtk:
     library that implements a device manager that integrates into Gtk's
