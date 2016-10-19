@@ -29,17 +29,19 @@ def main():
 	oParser = argparse.ArgumentParser()
 	oParser.add_argument("-s", "--staticlib", help="build static library (instead of shared)", choices=['On', 'Off', 'Cache']\
 						, default="Cache", dest="sBuildStaticLib")
-	oParser.add_argument("-b", "--buildtype", help="build type", choices=['Debug', 'Release', 'MinSizeRel', 'RelWithDebInfo']\
+	oParser.add_argument("-b", "--buildtype", help="build type (default=Release)"\
+						, choices=['Debug', 'Release', 'MinSizeRel', 'RelWithDebInfo']\
 						, default="Release", dest="sBuildType")
-	oParser.add_argument("-t", "--tests", help="build tests", choices=['On', 'Off', 'Cache']\
+	oParser.add_argument("-t", "--tests", help="build tests (default=Cache)", choices=['On', 'Off', 'Cache']\
 						, default="Cache", dest="sBuildTests")
-	oParser.add_argument("-d", "--docs", help="build documentation", choices=['On', 'Off', 'Cache']\
+	oParser.add_argument("-d", "--docs", help="build documentation (default=Cache)", choices=['On', 'Off', 'Cache']\
 						, default="Cache", dest="sBuildDocs")
 	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true"\
 						, default=False, dest="bDocsWarningsToLog")
 	oParser.add_argument("--omit-gtk", help="do not compile gtk dependant projects", action="store_true"\
 						, default=False, dest="bOmitGtk")
-	oParser.add_argument("--destdir", help="destination dir", metavar='DESTDIR', default="/usr/local", dest="sDestDir")
+	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
+						, default="/usr/local", dest="sDestDir")
 	oArgs = oParser.parse_args()
 
 	sScriptDir = os.path.dirname(os.path.abspath(__file__))
@@ -54,6 +56,11 @@ def main():
 	#
 	sBuildTests = "-t " + oArgs.sBuildTests
 	#print("sBuildTests:" + sBuildTests)
+	if not oArgs.bOmitGtk:
+		sBuildFakeTests = sBuildTests
+	else:
+		sBuildFakeTests = "-t Off"
+	#print("sBuildFakeTests:" + sBuildFakeTests)
 	#
 	sBuildDocs = "-d " + oArgs.sBuildDocs
 	#print("sBuildDocs:" + sBuildDocs)
@@ -90,7 +97,7 @@ def main():
 	print("== install libstmm-input-fake =========================")
 	os.chdir("libstmm-input-fake")
 	subprocess.check_call("./install_libstmm-input-fake.py {} {} {} {} {}".format(\
-			sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
+			sBuildFakeTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
 	os.chdir("..")
 
 	if not oArgs.bOmitGtk:
