@@ -68,7 +68,7 @@ namespace Flo
  * Events are only sent to the currently active window. When the active window changes
  * cancel events are sent to the old active window for each pressed key.
  */
-class FloGtkDeviceManager : public StdDeviceManager, public sigc::trackable //, public DeviceMgmtCapability
+class FloGtkDeviceManager : public StdDeviceManager, public sigc::trackable
 {
 public:
 	/** Creates an instance of this class.

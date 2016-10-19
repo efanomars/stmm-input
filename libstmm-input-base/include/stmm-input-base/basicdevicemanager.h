@@ -75,8 +75,8 @@ protected:
 	 *
 	 *     bEnableEventClasses = false,  aEnDisableEventClass = {}
 	 *
-	 * @param aCapabitityClasses Vector of registered (device manager) capability classes supported by this manager.
-	 * @param aDeviceCapabitityClasses Vector of registered (device) capability classes supported by this manager.
+	 * @param aCapabitityClasses Vector of registered device manager capability classes supported by this manager.
+	 * @param aDeviceCapabitityClasses Vector of registered device capability classes supported by this manager.
 	 * @param aEventClasses Vector of registered event classes supported by this manager.
 	 * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventType.
 	 * @param aEnDisableEventClasses The event classes to be enabled or disabled according to bEnableEventClasses.

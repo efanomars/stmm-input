@@ -55,7 +55,7 @@ namespace testing
  *
  * This class is supposed to be instantiated with std::make_shared().
  */
-class FakeDeviceManager : public StdDeviceManager //, public DeviceMgmtCapability
+class FakeDeviceManager : public StdDeviceManager
 {
 public:
 	/** Constructor.
@@ -64,7 +64,7 @@ public:
 	 * @param aEnDisableEventClass
 	 */
 	FakeDeviceManager(bool bEnableEventClasses, const std::vector< Event::Class > &aEnDisableEventClass)
-	: StdDeviceManager({DeviceMgmtCapability::getClass(), KeyCapability::getClass(), PointerCapability::getClass()
+	: StdDeviceManager({KeyCapability::getClass(), PointerCapability::getClass()
 							, TouchCapability::getClass(), JoystickCapability::getClass()}
 						, {DeviceMgmtEvent::getClass(), KeyEvent::getClass(), PointerEvent::getClass(), PointerScrollEvent::getClass()
 							, TouchEvent::getClass(), JoystickButtonEvent::getClass(), JoystickHatEvent::getClass(), JoystickAxisEvent::getClass()}

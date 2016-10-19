@@ -55,7 +55,7 @@ shared_ptr<FloGtkDeviceManager> FloGtkDeviceManager::create(bool bEnableEventCla
 
 FloGtkDeviceManager::FloGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
 										, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
-: StdDeviceManager({typeid(DeviceMgmtCapability), typeid(KeyCapability)}
+: StdDeviceManager({typeid(KeyCapability)}
 					, {typeid(DeviceMgmtEvent), typeid(KeyEvent)}
 					, bEnableEventClasses, aEnDisableEventClass)
 , m_nCancelingNestedDepth(0)

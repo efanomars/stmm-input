@@ -61,7 +61,7 @@ namespace Js
  * cancel events are sent to the old active window for each pressed buttons and
  * not centered hat.
  */
-class JsGtkDeviceManager : public StdDeviceManager , public sigc::trackable //, public DeviceMgmtCapability
+class JsGtkDeviceManager : public StdDeviceManager , public sigc::trackable
 {
 public:
 	/** Creates an instance this class.

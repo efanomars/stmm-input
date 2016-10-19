@@ -73,7 +73,7 @@ namespace Mas
  * cancel events are sent to the old active window for each pressed key, button
  * and open touch.
  */
-class MasGtkDeviceManager : public StdDeviceManager //, public DeviceMgmtCapability
+class MasGtkDeviceManager : public StdDeviceManager
 {
 public:
 	/** Creates an instance this class.

@@ -41,7 +41,10 @@ TEST(testFakeDeviceManager, Constructor)
 	auto refFakeDM = std::make_shared<FakeDeviceManager>();
 	EXPECT_TRUE(refFakeDM->getDevices().empty());
 
-	Capability* p0Capa = refFakeDM.get();
+	std::vector<Capability::Class> aDMCapaClasses = refFakeDM->getCapabilityClasses();
+	EXPECT_TRUE(aDMCapaClasses.size() == 1);
+	auto refMgmtCapa = refFakeDM->getCapability(aDMCapaClasses[0]);
+	auto p0Capa = refMgmtCapa.get();
 	EXPECT_TRUE(p0Capa != nullptr);
 	EXPECT_TRUE(p0Capa->getCapabilityClass().isDeviceManagerCapability());
 }

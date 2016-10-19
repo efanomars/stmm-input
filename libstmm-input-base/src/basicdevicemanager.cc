@@ -80,6 +80,14 @@ BasicDeviceManager::BasicDeviceManager(const std::vector<Capability::Class>& aCa
 			}
 		}
 	}
+	#ifndef NDEBUG
+	for (const auto& oDMCapaClass : m_aCapabitityClasses) {
+		assert(oDMCapaClass.isDeviceManagerCapability());
+	}
+	for (const auto& oDevCapaClass : aDeviceCapabitityClasses) {
+		assert(! oDevCapaClass.isDeviceManagerCapability());
+	}
+	#endif //NDEBUG
 }
 shared_ptr<Device> BasicDeviceManager::getDevice(int32_t nDeviceId) const
 {

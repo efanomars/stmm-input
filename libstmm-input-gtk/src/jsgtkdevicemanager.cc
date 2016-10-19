@@ -54,7 +54,7 @@ shared_ptr<JsGtkDeviceManager> JsGtkDeviceManager::create(bool bEnableEventClass
 }
 
 JsGtkDeviceManager::JsGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass)
-: StdDeviceManager({typeid(DeviceMgmtCapability), typeid(JoystickCapability)}
+: StdDeviceManager({typeid(JoystickCapability)}
 					, {typeid(DeviceMgmtEvent), typeid(JoystickButtonEvent), typeid(JoystickHatEvent), typeid(JoystickAxisEvent)}
 					, bEnableEventClasses, aEnDisableEventClass)
 , m_nCancelingNestedDepth(0)

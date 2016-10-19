@@ -55,7 +55,7 @@ shared_ptr<MasGtkDeviceManager> MasGtkDeviceManager::create(bool bEnableEventCla
 
 MasGtkDeviceManager::MasGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClass
 										, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
-: StdDeviceManager({typeid(DeviceMgmtCapability), typeid(KeyCapability), typeid(PointerCapability), typeid(TouchCapability)}
+: StdDeviceManager({typeid(KeyCapability), typeid(PointerCapability), typeid(TouchCapability)}
 					, {typeid(DeviceMgmtEvent), typeid(KeyEvent), typeid(PointerEvent), typeid(PointerScrollEvent), typeid(TouchEvent)}
 					, bEnableEventClasses, aEnDisableEventClass)
 , m_nCancelingNestedDepth(0)
