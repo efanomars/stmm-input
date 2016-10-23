@@ -33,6 +33,8 @@ namespace stmi
 class StdDeviceManager : public BasicDeviceManager, public DeviceMgmtCapability
 {
 public:
+	using BasicDeviceManager::getDevice;
+	using DeviceMgmtCapability::getDevice;
 	std::vector<Capability::Class> getCapabilityClasses() const override;
 
 	shared_ptr<Capability> getCapability(const Capability::Class& oClass) const override;
