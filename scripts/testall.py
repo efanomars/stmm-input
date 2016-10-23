@@ -18,7 +18,7 @@
 # File:   testall.py
 
 # - compiles and installs all the projects (binaries) contained in this source package
-#   for both Debug and Release configurations
+#   for both Debug and Release configurations and for both shared and static libs
 # - compiles the examples
 # - creates documentation and checks it is ok
 # - runs all tests
@@ -29,11 +29,11 @@ import os
 import subprocess
 
 
-def testAll(sBuildType, sDestDir):
-	subprocess.check_call("./scripts/uninstall_stmm-input-all.py -r -y --destdir {}".format(sDestDir).split())
+def testAll(sBuildType, sDestDir, sSudo, sStatic):
+	subprocess.check_call("./scripts/uninstall_stmm-input-all.py -r -y --destdir {}  {}".format(sDestDir, sSudo).split())
 
-	subprocess.check_call("./scripts/install_stmm-input-all.py -b {}  -t On  -d On --docs-to-log  --destdir {}"\
-			.format(sBuildType, sDestDir).split())
+	subprocess.check_call("./scripts/install_stmm-input-all.py -b {}  -t On  -d On --docs-to-log  --destdir {}  {}  {}"\
+			.format(sBuildType, sDestDir, sSudo, sStatic).split())
 
 	os.chdir("libstmm-input/build")
 	subprocess.check_call("make test".split())
@@ -97,13 +97,17 @@ def testAll(sBuildType, sDestDir):
 def main():
 
 	import argparse
-	oParser = argparse.ArgumentParser(description="Compile, document, install (sudo) and test all projects")
+	oParser = argparse.ArgumentParser(description="Uninstall, compile, document, reinstall and test all projects")
 	oParser.add_argument("-y", "--no-prompt", help="no prompt comfirmation", action="store_true"\
 						, default=False, dest="bNoPrompt")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
 						, default="/usr/local", dest="sDestDir")
+	oParser.add_argument("--no-sudo", help="don't use sudo to (un)install", action="store_true"\
+						, default=False, dest="bDontSudo")
 	oParser.add_argument("-b", "--buildtype", help="build type (default=Both)", choices=['Debug', 'Release', 'Both']\
 						, default="Both", dest="sBuildType")
+	oParser.add_argument("-l", "--link", help="build static library or shared", choices=['Static', 'Shared', 'Both']\
+						, default="Both", dest="sLinkType")
 	oArgs = oParser.parse_args()
 
 	while not oArgs.bNoPrompt:
@@ -113,17 +117,32 @@ def main():
 		elif sAnswer.casefold() == "no":
 			return #-----------------------------------------------------------
 
+	sDestDir = os.path.abspath(oArgs.sDestDir)
+
 	sScriptDir = os.path.dirname(os.path.abspath(__file__))
 	os.chdir(sScriptDir)
 	os.chdir("..")
 
 	subprocess.check_call("./scripts/checkcode.py".split())
 
-	if oArgs.sBuildType == "Both":
-		testAll("Debug", oArgs.sDestDir)
-		testAll("Release", oArgs.sDestDir)
+	if oArgs.bDontSudo:
+		sSudo = "--no-sudo"
 	else:
-		testAll(oArgs.sBuildType, oArgs.sDestDir)
+		sSudo = ""
+
+	if (oArgs.sLinkType == "Both") or (oArgs.sLinkType == "Static"):
+		if oArgs.sBuildType == "Both":
+			testAll("Debug", sDestDir, sSudo, "-s On")
+			testAll("Release", sDestDir, sSudo, "-s On")
+		else:
+			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s On")
+
+	if (oArgs.sLinkType == "Both") or (oArgs.sLinkType == "Shared"):
+		if oArgs.sBuildType == "Both":
+			testAll("Debug", sDestDir, sSudo, "-s Off")
+			testAll("Release", sDestDir, sSudo, "-s Off")
+		else:
+			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s Off")
 
 	print("---------------------------------")
 	print("testall.py finished successfully!")

@@ -35,6 +35,10 @@ sudo might be omitted if installing to a directory owned by the current user.
 
 Alternatively you can just execute the script
 
-  $ ./install_device-floater.py  -b Release  --destdir /home/adam/mylib
+  $ ./scripts/install_device-floater.py  -b Release  --destdir /home/adam/mylib
 
 setting the parameter(s) to your preferred value (like above).
+
+  $ ./scripts/install_device-floater.py  --help
+
+for a description of all available options.

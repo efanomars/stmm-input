@@ -11,10 +11,10 @@ set(STMMI_FAKE_TEST_SOURCES
         ${STMMI_FAKE_TEST_SOURCES_DIR}/testFakeDeviceManager.cxx
         )
 
-TestFiles("${STMMI_FAKE_TEST_SOURCES}" 
-          ""
+TestFiles("${STMMI_FAKE_TEST_SOURCES}" ""
           "stmm-input-fake"
-          "stmm-input-fake;stmm-input-base;stmm-input-ev;stmm-input" FALSE FALSE FALSE)
+          "${STMMI_FAKE_EXTRA_LIBS};stmm-input-fake"
+          FALSE FALSE FALSE)
 
 #TestFiles("${STMMI_FAKE_TEST_SOURCES_MAS}" "${STMMI_SOURCES_DATA};${STMMI_SOURCES_MAS};${STMMI_FAKE_TEST_WITH_SOURCES_MAS}" "${STMMI_FAKE_EXTRA_LIBS}" FALSE FALSE TRUE)
 

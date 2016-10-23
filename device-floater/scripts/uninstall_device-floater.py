@@ -15,9 +15,9 @@
 #  You should have received a copy of the GNU Lesser General Public
 #  License along with this library; if not, see <http://www.gnu.org/licenses/>
 
-# File:   uninstall_stmm-input-all.py
+# File:   uninstall_device-floater.py
 
-# Removes all files installed by the install_stmm-input-all.sh script.
+# Removes all files installed by the install_device-floater.sh script.
 
 import sys
 import os
@@ -25,7 +25,7 @@ import subprocess
 
 def main():
 	import argparse
-	oParser = argparse.ArgumentParser("Removes (with sudo) all files created by install_stmm-input-all.py")
+	oParser = argparse.ArgumentParser("Removes all files created by install_device-floater.py")
 	oParser.add_argument("-r", "--remove-builds", help="Remove build folders", action="store_true"\
 						, default=False, dest="bRemoveBuilds")
 	oParser.add_argument("-y", "--no-prompt", help="No prompt comfirmation", action="store_true"\
@@ -42,7 +42,8 @@ def main():
 	os.chdir(sScriptDir)
 	os.chdir("..")
 
-	print("Uninstall from dir: " + sDestDir + "   Remove build folders: " + str(oArgs.bRemoveBuilds))
+	if not oArgs.bNoPrompt:
+		print("Uninstall from dir: " + sDestDir + "   Remove build folders: " + str(oArgs.bRemoveBuilds))
 
 	while not oArgs.bNoPrompt:
 		sAnswer = input("Are you sure? (yes/no) >").strip()
@@ -51,33 +52,17 @@ def main():
 		elif sAnswer.casefold() == "no":
 			return #-----------------------------------------------------------
 
-	if oArgs.bRemoveBuilds:
-		sRemoveBuilds = "-r"
-	else:
-		sRemoveBuilds = ""
-
 	if oArgs.bDontSudo:
-		sSudo = "--no-sudo"
-	else:
 		sSudo = ""
+	else:
+		sSudo = "sudo"
 
-	subprocess.check_call("./device-floater/scripts/uninstall_device-floater.py -y {} --destdir {}  {}"\
-						.format(sRemoveBuilds, sDestDir, sSudo).split())
+	subprocess.check_call("{} rm -r -f {}/bin/device-floater".format(sSudo, sDestDir).split())
+	subprocess.check_call("{} rm -r -f {}/share/device-floater".format(sSudo, sDestDir).split())
 
-	subprocess.check_call("./libstmm-input/scripts/uninstall_libstmm-input.py -y {} --destdir {}  {}"\
-						.format(sRemoveBuilds, sDestDir, sSudo).split())
-
-	subprocess.check_call("./libstmm-input-base/scripts/uninstall_libstmm-input-base.py -y {} --destdir {}  {}"\
-						.format(sRemoveBuilds, sDestDir, sSudo).split())
-
-	subprocess.check_call("./libstmm-input-ev/scripts/uninstall_libstmm-input-ev.py -y {} --destdir {}  {}"\
-						.format(sRemoveBuilds, sDestDir, sSudo).split())
-
-	subprocess.check_call("./libstmm-input-fake/scripts/uninstall_libstmm-input-fake.py -y {} --destdir {}  {}"\
-						.format(sRemoveBuilds, sDestDir, sSudo).split())
-
-	subprocess.check_call("./libstmm-input-gtk/scripts/uninstall_libstmm-input-gtk.py -y {} --destdir {}  {}"\
-						.format(sRemoveBuilds, sDestDir, sSudo).split())
+	if oArgs.bRemoveBuilds:
+		os.chdir("..")
+		subprocess.check_call("{} rm -r -f device-floater/build".format(sSudo).split())
 
 
 if __name__ == "__main__":

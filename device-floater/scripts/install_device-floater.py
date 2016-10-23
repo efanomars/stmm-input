@@ -31,18 +31,27 @@ def main():
 						, default="Release", dest="sBuildType")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
 						, default="/usr/local", dest="sDestDir")
+	oParser.add_argument("--no-sudo", help="don't use sudo to install", action="store_true"\
+						, default=False, dest="bDontSudo")
 	oArgs = oParser.parse_args()
+
+	sDestDir = os.path.abspath(oArgs.sDestDir)
 
 	sScriptDir = os.path.dirname(os.path.abspath(__file__))
 	#print("sScriptDir:" + sScriptDir)
-	
 	os.chdir(sScriptDir)
+	os.chdir("..")
 	#
-	sDestDir = " -D CMAKE_INSTALL_PREFIX=" + oArgs.sDestDir
+	sDestDir = " -D CMAKE_INSTALL_PREFIX=" + sDestDir
 	#print("sDestDir:" + sDestDir)
 	#
 	sBuildType = " -D CMAKE_BUILD_TYPE=" + oArgs.sBuildType
 	#print("sBuildType:" + sBuildType)
+
+	if oArgs.bDontSudo:
+		sSudo = ""
+	else:
+		sSudo = "sudo"
 
 	if not os.path.isdir("build"):
 		os.mkdir("build")
@@ -51,7 +60,7 @@ def main():
 
 	subprocess.check_call("cmake {} {} ..".format(sBuildType, sDestDir).split())
 	subprocess.check_call("make".split())
-	subprocess.check_call("sudo make install".split())
+	subprocess.check_call("{} make install".format(sSudo).split())
 
 
 if __name__ == "__main__":

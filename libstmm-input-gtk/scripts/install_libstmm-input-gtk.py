@@ -15,9 +15,9 @@
 #  You should have received a copy of the GNU Lesser General Public
 #  License along with this library; if not, see <http://www.gnu.org/licenses/>
 
-# File:   install_libstmm-input-ev.py
+# File:   install_libstmm-input-gtk.py
 
-# Compiles and installs the libstmm-input-ev library.
+# Compiles and installs the libstmm-input-gtk library.
 
 import sys
 import os
@@ -39,12 +39,16 @@ def main():
 						, default=False, dest="bDocsWarningsToLog")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
 						, default="/usr/local", dest="sDestDir")
+	oParser.add_argument("--no-sudo", help="don't use sudo to install", action="store_true"\
+						, default=False, dest="bDontSudo")
 	oArgs = oParser.parse_args()
+
+	sDestDir = os.path.abspath(oArgs.sDestDir)
 
 	sScriptDir = os.path.dirname(os.path.abspath(__file__))
 	#print("sScriptDir:" + sScriptDir)
-	
 	os.chdir(sScriptDir)
+	os.chdir("..")
 	#
 	sBuildStaticLib = " -D BUILD_SHARED_LIBS="
 	if oArgs.sBuildStaticLib == "On":
@@ -80,11 +84,16 @@ def main():
 		sDocsWarningsToLog += "OFF "
 	#print("sDocsWarningsToLog:" + sDocsWarningsToLog)
 	#
-	sDestDir = " -D CMAKE_INSTALL_PREFIX=" + oArgs.sDestDir
+	sDestDir = " -D CMAKE_INSTALL_PREFIX=" + sDestDir
 	#print("sDestDir:" + sDestDir)
 	#
 	sBuildType = " -D CMAKE_BUILD_TYPE=" + oArgs.sBuildType
 	#print("sBuildType:" + sBuildType)
+
+	if oArgs.bDontSudo:
+		sSudo = ""
+	else:
+		sSudo = "sudo"
 
 	if not os.path.isdir("build"):
 		os.mkdir("build")
@@ -94,8 +103,17 @@ def main():
 	subprocess.check_call("cmake {} {} {} {} {} {} ..".format(\
 			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
 	subprocess.check_call("make".split())
-	subprocess.check_call("sudo make install".split())
-	subprocess.check_call("sudo ldconfig".split())
+	subprocess.check_call("{} make install".format(sSudo).split())
+
+	if oArgs.sBuildStaticLib == "Cache":
+		oProc = subprocess.Popen("cmake -N -LA".split(), stdout=subprocess.PIPE, shell=False)
+		(sOut, sErr) = oProc.communicate()
+		bSharedLib = ("BUILD_SHARED_LIBS:BOOL=ON" in str(sOut))
+	else:
+		bSharedLib = (oArgs.sBuildStaticLib == "Off")
+
+	if bSharedLib and not oArgs.bDontSudo:
+		subprocess.check_call("sudo ldconfig".split())
 
 
 if __name__ == "__main__":

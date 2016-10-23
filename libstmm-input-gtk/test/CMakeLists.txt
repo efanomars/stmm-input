@@ -18,7 +18,9 @@ list(APPEND  STMMI_GTK_TEST_SOURCES
         ${STMMI_GTK_TEST_SOURCES_ALL}
         )
 
-TestFiles("${STMMI_GTK_TEST_SOURCES}" "" "stmm-input-gtk" "stmm-input-gtk" FALSE FALSE FALSE)
+TestFiles("${STMMI_GTK_TEST_SOURCES}" ""
+        "stmm-input-gtk" "stmm-input-gtk"
+        FALSE FALSE FALSE)
 
 set(STMMI_GTK_TEST_SOURCES_MAS
         ${STMMI_GTK_TEST_SOURCES_DIR}/testMasGtkDeviceManager.cxx

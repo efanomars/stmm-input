@@ -41,9 +41,13 @@ owned by the current user.
 
 Alternatively you can just execute the script
 
-  $ ./install_libstmm-input-gtk.py -b Release  --destdir /home/adam/mylib
+  $ ./scripts/install_libstmm-input-gtk.py -b Release  --destdir /home/adam/mylib
 
 setting the parameter(s) to your preferred value (like above).
+
+  $ ./scripts/install_libstmm-input-gtk.py  --help
+
+for a description of all available options.
 
 
 Setting up googletest
