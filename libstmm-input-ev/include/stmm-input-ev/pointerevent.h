@@ -27,6 +27,8 @@
 #include <stmm-input/xyevent.h>
 
 #include <cassert>
+#include <utility>
+#include <vector>
 
 namespace stmi
 {

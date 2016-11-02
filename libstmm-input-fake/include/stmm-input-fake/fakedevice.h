@@ -24,6 +24,11 @@
 
 #include "devicemanager.h"
 
+#include <memory>
+#include <string>
+#include <type_traits>
+
+
 namespace stmi
 {
 

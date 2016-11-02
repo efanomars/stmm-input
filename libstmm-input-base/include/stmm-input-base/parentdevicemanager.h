@@ -23,6 +23,9 @@
 
 #include "childdevicemanager.h"
 
+#include <vector>
+
+
 namespace stmi
 {
 

@@ -29,6 +29,8 @@
 #include <gtkmm.h>
 
 #include <memory>
+#include <vector>
+
 
 namespace stmi
 {

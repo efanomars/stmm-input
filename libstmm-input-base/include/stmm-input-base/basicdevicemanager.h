@@ -23,10 +23,12 @@
 
 #include "childdevicemanager.h"
 
-#include <typeinfo>
+#include <type_traits>
 #include <unordered_map>
 #include <vector>
 #include <list>
+#include <limits>
+
 
 namespace stmi
 {

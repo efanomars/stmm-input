@@ -29,6 +29,7 @@
 #include <chrono>
 #include <memory>
 #include <functional>
+#include <type_traits>
 
 namespace stmi
 {
@@ -194,7 +195,7 @@ public:
 	 *         ...
 	 *         // The listener has to be stored in a member variable otherwise it will
 	 *         // automatically be removed from the device manager.
-	 *         m_refKeyEventListener = std::make_shared<stmi::DeviceManager::EventListener>(
+	 *         m_refKeyEventListener = std::make_shared<stmi::EventListener>(
 	 *             [this](const shared_ptr<stmi::Event>& refEvent)
 	 *             {
 	 *                 // Because of the callif condition below we know that refEvent

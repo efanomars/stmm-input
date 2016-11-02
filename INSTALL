@@ -54,7 +54,7 @@ Dependencies
 ============
 
 - libstmm-input depends on
-    + c++14 compiler
+    + libstdc++
 
 - libstmm-input-base depends on
     + libstmm-input
@@ -75,3 +75,13 @@ Dependencies
     + libgtkmm-3.0-dev
     + libxi-dev
     + libx11-dev
+
+Note: in some linux distributions the packages might be named slightly
+differently (the trailing '-dev' might not be needed).
+
+
+Needed packages
+===============
+To build the source files you need a c++14 compiler and cmake.
+To build the documentation you need doxygen and graphviz.
+To build the tests you need google test (gtest).

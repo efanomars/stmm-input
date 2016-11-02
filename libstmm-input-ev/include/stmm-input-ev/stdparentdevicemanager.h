@@ -25,6 +25,9 @@
 
 #include <stmm-input-base/parentdevicemanager.h>
 
+#include <vector>
+
+
 namespace stmi
 {
 

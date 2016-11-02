@@ -24,6 +24,7 @@
 #include "private-namedtypes.h"
 
 #include <typeinfo>
+#include <type_traits>
 #include <string>
 #include <memory>
 #include <atomic>

@@ -24,6 +24,9 @@
 #include "devicemanager.h"
 
 #include <cassert>
+#include <string>
+#include <functional>
+
 
 namespace stmi
 {

@@ -32,7 +32,9 @@
 #include <stmm-input/devicemanager.h>
 
 #include <memory>
-#include <list>
+#include <vector>
+#include <type_traits>
+
 
 namespace stmi
 {

@@ -31,6 +31,10 @@
 #endif
 #include <stmm-input/devicemanager.h>
 
+#include <string>
+#include <memory>
+
+
 namespace stmi
 {
 

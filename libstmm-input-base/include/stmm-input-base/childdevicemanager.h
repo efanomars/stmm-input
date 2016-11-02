@@ -23,6 +23,9 @@
 
 #include <stmm-input/devicemanager.h>
 
+#include <memory>
+
+
 namespace stmi
 {
 

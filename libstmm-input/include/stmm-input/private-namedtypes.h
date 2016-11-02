@@ -24,6 +24,7 @@
 #include <unordered_map>
 #include <typeinfo>
 #include <typeindex>
+#include <cstdlib>
 #include <cassert>
 #ifndef NDEBUG
 #include <iostream>

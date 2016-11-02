@@ -27,6 +27,9 @@
 #include <stmm-input/event.h>
 
 #include <cassert>
+#include <vector>
+#include <utility>
+
 
 namespace stmi
 {

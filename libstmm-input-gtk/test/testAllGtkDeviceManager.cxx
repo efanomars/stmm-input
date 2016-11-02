@@ -194,8 +194,8 @@ TEST_F(AllEvAllDMOneWinOneAccOneDevsListenerFixture, ListenerAndNestedAccessorRe
 	const std::shared_ptr<Flo::FakeGtkWindowData>& refFloWinData1 = refFakeFloFactory->getFakeWindowData(m_refWin1.operator->());
 	auto refFakeMasFactory = m_refMasAllEvDM->getFactory();
 	const std::shared_ptr<Mas::FakeGtkWindowData>& refMasWinData1 = refFakeMasFactory->getFakeWindowData(m_refWin1.operator->());
-	auto refFakeJsFactory = m_refJsAllEvDM->getFactory();
-	const std::shared_ptr<Js::FakeGtkWindowData>& refJsWinData1 = refFakeJsFactory->getFakeWindowData(m_refWin1.operator->());
+	// auto refFakeJsFactory = m_refJsAllEvDM->getFactory();
+	// const std::shared_ptr<Js::FakeGtkWindowData>& refJsWinData1 = refFakeJsFactory->getFakeWindowData(m_refWin1.operator->());
 
 	m_refFloAllEvDM->makeWindowActive(m_refGtkAccessor1);
 	m_refMasAllEvDM->makeWindowActive(m_refGtkAccessor1);
@@ -255,8 +255,8 @@ TEST_F(AllEvAllDMOneWinOneAccOneDevsListenerFixture, AccessorAndNestedListenerRe
 	const std::shared_ptr<Flo::FakeGtkWindowData>& refFloWinData1 = refFakeFloFactory->getFakeWindowData(m_refWin1.operator->());
 	auto refFakeMasFactory = m_refMasAllEvDM->getFactory();
 	const std::shared_ptr<Mas::FakeGtkWindowData>& refMasWinData1 = refFakeMasFactory->getFakeWindowData(m_refWin1.operator->());
-	auto refFakeJsFactory = m_refJsAllEvDM->getFactory();
-	const std::shared_ptr<Js::FakeGtkWindowData>& refJsWinData1 = refFakeJsFactory->getFakeWindowData(m_refWin1.operator->());
+	// auto refFakeJsFactory = m_refJsAllEvDM->getFactory();
+	// const std::shared_ptr<Js::FakeGtkWindowData>& refJsWinData1 = refFakeJsFactory->getFakeWindowData(m_refWin1.operator->());
 
 	m_refFloAllEvDM->makeWindowActive(m_refGtkAccessor1);
 	m_refMasAllEvDM->makeWindowActive(m_refGtkAccessor1);

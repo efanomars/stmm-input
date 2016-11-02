@@ -27,6 +27,7 @@
 #include "accessor.h"
 
 #include <typeinfo>
+#include <type_traits>
 #include <vector>
 #include <string>
 #include <memory>

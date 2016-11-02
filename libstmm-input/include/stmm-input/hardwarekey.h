@@ -22,7 +22,7 @@
 #define _STMI_HARDWARE_KEY_H_
 
 #include <type_traits>
-#include <functional>
+#include <cstdlib>
 #include <vector>
 
 namespace stmi

@@ -23,7 +23,7 @@
 
 #include "childdevicemanager.h"
 
-#include <typeinfo>
+#include <type_traits>
 #include <string>
 
 namespace stmi

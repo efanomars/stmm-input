@@ -25,6 +25,7 @@
 #include <stmm-input/capability.h>
 
 #include <algorithm>
+#include <vector>
 
 namespace stmi
 {
