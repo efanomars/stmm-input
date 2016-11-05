@@ -342,12 +342,16 @@ protected:
 		}
 		~RegisterClass()
 		{
-			if (m_oFirstInstanceClass) {
-				const std::type_info& oTypeInfo = m_oFirstInstanceClass.getTypeInfo();
-				if (getNamedTypes().hasType(oTypeInfo)) {
-					getNamedTypes().removeType(oTypeInfo);
-				}
-			}
+			// The following would be good in a run-time loaded shared object situation
+			// but is bad because at least g++ doesn't unload (destroy static objects)
+			// in the reverse order of the loading so that it can occur that
+			// stmm-input is unloaded before stmm-input-ev !!!
+			//if (m_oFirstInstanceClass) {
+			//	const std::type_info& oTypeInfo = m_oFirstInstanceClass.getTypeInfo();
+			//	if (getNamedTypes().hasType(oTypeInfo)) {
+			//		getNamedTypes().removeType(oTypeInfo);
+			//	}
+			//}
 		}
 		/** Get the class of the registered type.
 		 * @return A non-empty class.

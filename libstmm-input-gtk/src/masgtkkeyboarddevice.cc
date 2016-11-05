@@ -130,7 +130,7 @@ bool GtkKeyboardDevice::handleGdkEventKey(GdkEventKey* p0KeyEv, const shared_ptr
 			}
 //std::cout << "  handleGdkEventKey erase 1 nHardwareKey=" << nHardwareKey << std::endl;
 		}
-		nTimePressedStamp = StdDeviceManager::getUniqueTimeStamp();
+		nTimePressedStamp = MasGtkDeviceManager::getUniqueTimeStamp();
 		KeyData oKeyData;
 		oKeyData.m_nPressedTimeStamp = nTimePressedStamp;
 		m_oPressedKeys.emplace(eHardwareKey, oKeyData);

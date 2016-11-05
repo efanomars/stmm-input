@@ -153,7 +153,7 @@ bool GtkPointerDevice::handleGdkEventButton(GdkEventButton* p0ButtonEv, const sh
 		//TODO There probably should be an assert(false) here
 		return bContinue; //----------------------------------------------------
 	}
-	const uint64_t nTimeStamp = StdDeviceManager::getUniqueTimeStamp();
+	const uint64_t nTimeStamp = MasGtkDeviceManager::getUniqueTimeStamp();
 	const GdkEventType eGdkType = p0ButtonEv->type;
 	const bool bIsButtonPress = (eGdkType == GDK_BUTTON_PRESS);
 	if (! (bIsButtonPress || (eGdkType == GDK_BUTTON_RELEASE))) {
@@ -354,7 +354,7 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 				return bContinue; //--------------------------------------------
 			}
 		}
-		nSequenceStartTimeStamp = StdDeviceManager::getUniqueTimeStamp();
+		nSequenceStartTimeStamp = MasGtkDeviceManager::getUniqueTimeStamp();
 		SequenceData oSequenceData;
 		oSequenceData.m_nTouchStartTimeStamp = nSequenceStartTimeStamp;
 		oSequenceData.m_fLastX = fLastX;

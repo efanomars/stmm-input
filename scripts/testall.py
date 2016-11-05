@@ -90,7 +90,8 @@ def testAll(sBuildType, sDestDir, sSudo, sStatic):
 	subprocess.check_call("make test".split())
 	os.chdir("../../../..")
 
-	subprocess.check_call("./scripts/checkgtkexample.py".split())
+	if sStatic == "-s Off":
+		subprocess.check_call("./scripts/checkgtkexample.py".split())
 
 
 

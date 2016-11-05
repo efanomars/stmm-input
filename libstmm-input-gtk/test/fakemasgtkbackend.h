@@ -39,7 +39,6 @@ class FakeGtkBackend : public Private::Mas::GtkBackend
 public:
 	FakeGtkBackend(::stmi::MasGtkDeviceManager* p0Owner, const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager)
 	: Private::Mas::GtkBackend(p0Owner, refGdkDeviceManager)
-	, m_p0Owner(p0Owner)
 	, m_refGdkDeviceManager(refGdkDeviceManager)
 	, m_p0PointerDevice(reinterpret_cast<GdkDevice*>(16))
 	, m_p0KeyboardDevice(reinterpret_cast<GdkDevice*>(17))
@@ -100,7 +99,6 @@ public:
 		onDeviceChanged(bPointer);
 	}
 private:
-	::stmi::MasGtkDeviceManager* m_p0Owner;
 	Glib::RefPtr<Gdk::DeviceManager> m_refGdkDeviceManager;
 
 	// These are identifiers and do not point to an actual GdkDevice instance

@@ -92,8 +92,8 @@ public:
 	}
 	/* * Adds a type, its string representation and associated data.
 	 * Duplicates are not allowed.
-	 * @param p0StringId Must be PERSISTENT (static) for the lifetime of this class! Can't be null.
 	 * @param oType The C++ type.
+	 * @param p0StringId Must be PERSISTENT (static) for the lifetime of this class! Can't be null.
 	 * @param oData The data associated with the type.
 	 */
 	void addType(const std::type_info& oType, const char* const &p0StringId, const T& oData)
@@ -119,7 +119,7 @@ public:
 	void removeType(const std::type_info& oType)
 	{
 		auto itFind = m_oTypeData.find(std::type_index(oType));
-		if (itFind != m_oTypeData.end()) {
+		if (itFind == m_oTypeData.end()) {
 			return;
 		}
 		const TypeData& oTypeData = itFind->second;

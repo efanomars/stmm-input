@@ -22,7 +22,7 @@ The second parameter can be omitted ('/usr/local' is the default).
 
 If you want to install to your home folder (~/usr) instead of system wide
 
-  $ ./scripts/install_stmm-input-all.py  --dest-dir /home/myname/usr  --no-sudo
+  $ ./scripts/install_stmm-input-all.py  --destdir /home/myname/usr  --no-sudo
 
 and make sure needed bash environment variables are set before the call
 

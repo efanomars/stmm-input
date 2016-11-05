@@ -40,7 +40,6 @@ class FakeGtkBackend : public Private::Js::GtkBackend
 public:
 	FakeGtkBackend(::stmi::JsGtkDeviceManager* p0Owner)
 	: Private::Js::GtkBackend(p0Owner, JsDeviceFiles{}, false)
-	, m_p0Owner(p0Owner)
 	{
 	}
 	//
@@ -104,8 +103,6 @@ private:
 		return std::distance(m_aJoysticks.begin(), itFind);
 	}
 private:
-	::stmi::JsGtkDeviceManager* m_p0Owner;
-
 	std::vector< shared_ptr<Private::Js::JoystickDevice> > m_aJoysticks;
 };
 

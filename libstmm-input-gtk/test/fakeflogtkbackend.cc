@@ -32,7 +32,6 @@ namespace Flo
 
 FakeGtkBackend::FakeGtkBackend(::stmi::FloGtkDeviceManager* p0Owner, const Glib::RefPtr<Gdk::Display>& refGdkDisplay)
 : Private::Flo::GtkBackend(p0Owner, refGdkDisplay)
-, m_p0Owner(p0Owner)
 , m_refGdkDisplay(refGdkDisplay)
 , m_nFocusXWinId(None)
 {

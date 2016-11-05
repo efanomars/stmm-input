@@ -84,38 +84,40 @@ def main():
 	else:
 		sSudo = ""
 
-	print("== install libstmm-input ==============================")
+	sInfo = " " + oArgs.sBuildType + " == static " + oArgs.sBuildStaticLib + " "
+
+	print("== install libstmm-input =============" + sInfo + "==")
 	os.chdir("libstmm-input/scripts")
 	subprocess.check_call("./install_libstmm-input.py {} {} {} {} {} {} {}".format(\
 			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo).split())
 	os.chdir("../..")
 
-	print("== install libstmm-input-base =========================")
+	print("== install libstmm-input-base ========" + sInfo + "==")
 	os.chdir("libstmm-input-base/scripts")
 	subprocess.check_call("./install_libstmm-input-base.py {} {} {} {} {} {} {}".format(\
 			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo).split())
 	os.chdir("../..")
 
-	print("== install libstmm-input-ev ===========================")
+	print("== install libstmm-input-ev ==========" + sInfo + "==")
 	os.chdir("libstmm-input-ev/scripts")
 	subprocess.check_call("./install_libstmm-input-ev.py {} {} {} {} {} {} {}".format(\
 			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo).split())
 	os.chdir("../..")
 
-	print("== install libstmm-input-fake =========================")
+	print("== install libstmm-input-fake ========" + sInfo + "==")
 	os.chdir("libstmm-input-fake/scripts")
 	subprocess.check_call("./install_libstmm-input-fake.py {} {} {} {} {} {}".format(\
 			sBuildFakeTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo).split())
 	os.chdir("../..")
 
 	if not oArgs.bOmitGtk:
-		print("== install libstmm-input-gtk ==========================")
+		print("== install libstmm-input-gtk =======" + sInfo + "==")
 		os.chdir("libstmm-input-gtk/scripts")
 		subprocess.check_call("./install_libstmm-input-gtk.py {} {} {} {} {} {} {}".format(\
 				sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo).split())
 		os.chdir("../..")
 
-		print("== install device-floater =============================")
+		print("== install device-floater ==========" + sInfo + "==")
 		os.chdir("device-floater/scripts")
 		subprocess.check_call("./install_device-floater.py {} {} {}".format(sBuildType, sDestDir, sSudo).split())
 		os.chdir("../..")

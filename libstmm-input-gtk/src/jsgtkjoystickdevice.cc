@@ -247,7 +247,7 @@ void JoystickDevice::handleButton(JsGtkDeviceManager* p0Owner, const shared_ptr<
 											, eButton, refThis, p0Owner->m_nClassIdxJoystickButtonEvent, refEvent);
 			}
 		}
-		nPressedTimeStamp = StdDeviceManager::getUniqueTimeStamp();
+		nPressedTimeStamp = JsGtkDeviceManager::getUniqueTimeStamp();
 		oButtonStatus.m_bPressed = true;
 		oButtonStatus.m_nPressedTimeStamp = nPressedTimeStamp;
 		eInputType = JoystickButtonEvent::BUTTON_PRESS;
@@ -300,7 +300,7 @@ void JoystickDevice::handleHat(JsGtkDeviceManager* p0Owner, const shared_ptr<Gtk
 	const bool bIsPressed = (eValue != JoystickCapability::HAT_CENTER);
 	if (bIsPressed) {
 		if (!bWasPressed) {
-			oHatData.m_nPressedTimeStamp = StdDeviceManager::getUniqueTimeStamp();
+			oHatData.m_nPressedTimeStamp = JsGtkDeviceManager::getUniqueTimeStamp();
 		}
 	}
 	oHatData.m_nAxisX = nAxisX;

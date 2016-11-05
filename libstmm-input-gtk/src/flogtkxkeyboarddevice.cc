@@ -132,7 +132,7 @@ bool GtkXKeyboardDevice::handleXIDeviceEvent(XIDeviceEvent* p0XIDeviceEvent, con
 				return bContinue; //--------------------------------------------
 			}
 		}
-		nPressedTimeStamp = StdDeviceManager::getUniqueTimeStamp();
+		nPressedTimeStamp = FloGtkDeviceManager::getUniqueTimeStamp();
 		KeyData oKeyData;
 		oKeyData.m_nPressedTimeStamp = nPressedTimeStamp;
 		m_oPressedKeys.emplace(eHardwareKey, oKeyData);
@@ -259,7 +259,7 @@ void GtkXKeyboardDevice::cancelSelectedAccessorKeys()
 	}
 	m_oPressedKeys.clear();
 }
-void GtkXKeyboardDevice::sendKeyEventToListener(const StdDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
+void GtkXKeyboardDevice::sendKeyEventToListener(const FloGtkDeviceManager::ListenerData& oListenerData, int64_t nEventTimeUsec
 												, uint64_t nPressedTimeStamp
 												, KeyEvent::KEY_INPUT_TYPE eInputType, HARDWARE_KEY eHardwareKey
 												, const shared_ptr<GtkAccessor>& refAccessor

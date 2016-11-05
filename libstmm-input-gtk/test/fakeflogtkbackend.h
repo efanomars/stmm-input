@@ -106,7 +106,6 @@ private:
 		return std::distance(m_aXDeviceIds.begin(), itFind);
 	}
 private:
-	::stmi::FloGtkDeviceManager* m_p0Owner;
 	const Glib::RefPtr<Gdk::Display> m_refGdkDisplay;
 
 	std::vector< int32_t > m_aXDeviceIds;
