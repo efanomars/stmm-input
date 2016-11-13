@@ -62,6 +62,9 @@ void GtkWindowData::setXWinAndXDisplay(Gtk::Window* p0GtkmmWindow)
 }
 void GtkWindowData::disable()
 {
+	if (!m_bIsEnabled) {
+		return;
+	}
 	m_bIsEnabled = false;
 	m_oIsActiveConn.disconnect();
 	disconnectAllDevices();
@@ -90,11 +93,10 @@ bool GtkWindowData::setXIEventsForDevice(int32_t nXDeviceId, bool bSet)
 //std::cout << "Flo::GtkWindowData::selectXIEvents()  nXDeviceId=" << nXDeviceId << "  nXWinId=" << m_nXWinId << "  bSet=" << bSet << std::endl;
 	assert(m_p0Owner != nullptr);
 	//assert(m_bIsEnabled);
-
+	if ((!m_refAccessor) || m_refAccessor->isDeleted()) {
+		return false; //----------------------------------------------------
+	}
 	if (!m_bIsRealized) {
-		if (m_refAccessor->isDeleted()) {
-			return false; //------------------------------------------------
-		}
 		const bool bIsRealized = m_refAccessor->getGtkmmWindow()->get_realized();
 		if (!bIsRealized) {
 			// the xwindow doesn't even exist yet!
