@@ -41,6 +41,10 @@ set(STMM_COMPILE_WARNINGS "-Wall -Wextra -Werror") # "-Wpedantic"
 set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${STMM_COMPILE_WARNINGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STMM_COMPILE_WARNINGS}")
 
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif()
+
 # Define executable
 add_executable(spinn ${SPINN_SOURCES})
 
