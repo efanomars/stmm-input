@@ -35,7 +35,7 @@ void notify_window_destroyed(gpointer p0Data, GObject *p0Window)
 	assert(p0GtkAccessor != nullptr);
 	p0GtkAccessor->windowWasDestroyed((GtkWindow*)p0Window);
 }
-} // namespace GtkAccessor
+} // namespace GtkAccessorNS
 } // namespace Private
 
 bool GtkAccessor::operator==(const Accessor& oOther) const

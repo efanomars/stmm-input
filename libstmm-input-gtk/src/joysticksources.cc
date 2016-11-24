@@ -156,7 +156,7 @@ bool JoystickLifeSource::dispatch(sigc::slot_base* p0Slot)
 		return bContinue; //----------------------------------------------------
 	}
 
-	struct inotify_event* p0Event = (struct inotify_event *)aBuf;
+	struct inotify_event* p0Event = nullptr;
 	for (char* p0Cur = aBuf; p0Cur < (aBuf + nLen); p0Cur += sizeof(struct inotify_event) + p0Event->len) {
 		p0Event = (struct inotify_event *)p0Cur;
 		if ((p0Event->mask & IN_ISDIR) != 0) {

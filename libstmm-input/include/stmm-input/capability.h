@@ -328,6 +328,7 @@ namespace std {
 			return oClass.getTypeInfo().hash_code();
 		}
 	};
-}
+} // namespace std
+
 #endif	/* _STMI_CAPABILITY_H_ */
 
