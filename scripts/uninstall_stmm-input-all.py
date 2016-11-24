@@ -25,7 +25,7 @@ import subprocess
 
 def main():
 	import argparse
-	oParser = argparse.ArgumentParser("Removes (with sudo) all files created by install_stmm-input-all.py")
+	oParser = argparse.ArgumentParser("Removes all files created by install_stmm-input-all.py")
 	oParser.add_argument("-r", "--remove-builds", help="Remove build folders", action="store_true"\
 						, default=False, dest="bRemoveBuilds")
 	oParser.add_argument("-y", "--no-prompt", help="No prompt comfirmation", action="store_true"\
