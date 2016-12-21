@@ -189,6 +189,9 @@ public:
 		m_oRecycler.create(ref);
 		return ref;
 	}
+	#ifdef STMI_TESTING_IFACE
+	virtual ~GtkWindowDataFactory() = default;
+	#endif
 private:
 	Recycler<GtkWindowData> m_oRecycler;
 };
