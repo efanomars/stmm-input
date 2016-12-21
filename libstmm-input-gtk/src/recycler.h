@@ -52,7 +52,7 @@ public:
 	{
 		static_assert(std::is_base_of<B,T>::value, "Wrong type.");
 		for (auto& refB : m_oAll) {
-			if (refB.unique()) {
+			if (refB.use_count() == 1) {
 //#ifndef NDEBUG
 //static int32_t nCount = 0;
 //std::cout << "recycled " << nCount << '\n';

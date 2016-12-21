@@ -114,7 +114,7 @@ public:
 	std::shared_ptr<Private::Js::GtkWindowData> create() override
 	{
 		for (auto& refGtkWindowData : m_aFreePool) {
-			if (refGtkWindowData.unique()) {
+			if (refGtkWindowData.use_count() == 1) {
 				// Recycle
 				return refGtkWindowData; //-------------------------------------
 			}
@@ -127,7 +127,7 @@ public:
 	const std::shared_ptr<FakeGtkWindowData>& getFakeWindowData(Gtk::Window* p0GtkmmWindow)
 	{
 		for (auto& refGtkWindowData : m_aFreePool) {
-			if (!refGtkWindowData.unique()) {
+			if (!(refGtkWindowData.use_count() == 1)) {
 				auto& refAccessor = refGtkWindowData->getAccessor();
 				if ((refAccessor) && (!refAccessor->isDeleted()) && (refAccessor->getGtkmmWindow() == p0GtkmmWindow)) {
 					return refGtkWindowData;
@@ -142,7 +142,7 @@ public:
 	const std::shared_ptr<FakeGtkWindowData>& getActiveWindowData()
 	{
 		for (auto& refGtkWindowData : m_aFreePool) {
-			if (!refGtkWindowData.unique()) {
+			if (!(refGtkWindowData.use_count() == 1)) {
 				auto& refAccessor = refGtkWindowData->getAccessor();
 				if ((refAccessor) && (!refAccessor->isDeleted()) && refGtkWindowData->isWindowActive()) {
 					return refGtkWindowData;
