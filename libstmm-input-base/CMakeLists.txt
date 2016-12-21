@@ -13,6 +13,7 @@ include(CommonUtil)
 CheckBinaryNotSourceTree()
 CheckBuildType()
 DefineSharedLibOption()
+DefineCommonOptions()
 
 # Libtool CURRENT/REVISION/AGE: here
 #   MAJOR is CURRENT interface

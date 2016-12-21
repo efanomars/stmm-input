@@ -13,6 +13,7 @@ include(CommonUtil)
 CheckBinaryNotSourceTree()
 CheckBuildType()
 DefineSharedLibOption()
+DefineCommonOptions()
 
 include(FindPkgConfig)
 

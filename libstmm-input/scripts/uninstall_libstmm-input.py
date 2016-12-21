@@ -17,7 +17,7 @@
 
 # File:   uninstall_libstmm-input.py
 
-# Removes all files installed by the install_libstmm-input.sh script.
+# Removes all files installed by the install_libstmm-input.py script.
 
 import sys
 import os

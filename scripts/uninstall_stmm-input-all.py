@@ -17,7 +17,7 @@
 
 # File:   uninstall_stmm-input-all.py
 
-# Removes all files installed by the install_stmm-input-all.sh script.
+# Removes all files installed by the install_stmm-input-all.py script.
 
 import sys
 import os

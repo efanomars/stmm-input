@@ -17,7 +17,7 @@
 
 # File:   uninstall_libstmm-input-gtk.py
 
-# Removes all files installed by the install_libstmm-input-gtk.sh script.
+# Removes all files installed by the install_libstmm-input-gtk.py script.
 
 import sys
 import os

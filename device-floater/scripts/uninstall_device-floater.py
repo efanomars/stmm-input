@@ -17,7 +17,7 @@
 
 # File:   uninstall_device-floater.py
 
-# Removes all files installed by the install_device-floater.sh script.
+# Removes all files installed by the install_device-floater.py script.
 
 import sys
 import os

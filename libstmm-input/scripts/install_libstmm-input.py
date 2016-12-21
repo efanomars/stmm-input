@@ -41,6 +41,8 @@ def main():
 						, default="/usr/local", dest="sDestDir")
 	oParser.add_argument("--no-sudo", help="don't use sudo to install", action="store_true"\
 						, default=False, dest="bDontSudo")
+	oParser.add_argument("--sanitize", help="compile with -fsanitize=address (Debug only)", action="store_true"\
+						, default=False, dest="bSanitize")
 	oArgs = oParser.parse_args()
 
 	sDestDir = os.path.abspath(oArgs.sDestDir)
@@ -50,58 +52,66 @@ def main():
 	os.chdir(sScriptDir)
 	os.chdir("..")
 	#
-	sBuildStaticLib = " -D BUILD_SHARED_LIBS="
+	sBuildStaticLib = "-D BUILD_SHARED_LIBS="
 	if oArgs.sBuildStaticLib == "On":
-		sBuildStaticLib += "OFF "
+		sBuildStaticLib += "OFF"
 	elif oArgs.sBuildStaticLib == "Off":
-		sBuildStaticLib += "ON "
+		sBuildStaticLib += "ON"
 	else:
 		sBuildStaticLib = ""
 	#print("sBuildStaticLib:" + sBuildStaticLib)
 	#
-	sBuildTests = " -D BUILD_TESTING="
+	sBuildTests = "-D BUILD_TESTING="
 	if oArgs.sBuildTests == "On":
-		sBuildTests += "ON "
+		sBuildTests += "ON"
 	elif oArgs.sBuildTests == "Off":
-		sBuildTests += "OFF "
+		sBuildTests += "OFF"
 	else:
 		sBuildTests = ""
 	#print("sBuildTests:" + sBuildTests)
 	#
-	sBuildDocs = " -D BUILD_DOCS="
+	sBuildDocs = "-D BUILD_DOCS="
 	if oArgs.sBuildDocs == "On":
-		sBuildDocs += "ON "
+		sBuildDocs += "ON"
 	elif oArgs.sBuildDocs == "Off":
-		sBuildDocs += "OFF "
+		sBuildDocs += "OFF"
 	else:
 		sBuildDocs = ""
 	#print("sBuildDocs:" + sBuildDocs)
 	#
-	sDocsWarningsToLog = " -D BUILD_DOCS_WARNINGS_TO_LOG_FILE="
+	sDocsWarningsToLog = "-D BUILD_DOCS_WARNINGS_TO_LOG_FILE="
 	if oArgs.bDocsWarningsToLog:
-		sDocsWarningsToLog += "ON "
+		sDocsWarningsToLog += "ON"
 	else:
-		sDocsWarningsToLog += "OFF "
+		sDocsWarningsToLog += "OFF"
 	#print("sDocsWarningsToLog:" + sDocsWarningsToLog)
 	#
-	sDestDir = " -D CMAKE_INSTALL_PREFIX=" + sDestDir
+	sDestDir = "-D CMAKE_INSTALL_PREFIX=" + sDestDir
 	#print("sDestDir:" + sDestDir)
 	#
-	sBuildType = " -D CMAKE_BUILD_TYPE=" + oArgs.sBuildType
+	sBuildType = "-D CMAKE_BUILD_TYPE=" + oArgs.sBuildType
 	#print("sBuildType:" + sBuildType)
+	#
+	if oArgs.bSanitize:
+		sSanitize = "-D BUILD_WITH_SANITIZE=ON"
+	else:
+		sSanitize = ""
+	#print("sSanitize:" + sSanitize)
 
+	#
 	if oArgs.bDontSudo:
 		sSudo = ""
 	else:
 		sSudo = "sudo"
 
+	#
 	if not os.path.isdir("build"):
 		os.mkdir("build")
 
 	os.chdir("build")
 
-	subprocess.check_call("cmake {} {} {} {} {} {} ..".format(\
-			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir).split())
+	subprocess.check_call("cmake {} {} {} {} {} {} {} ..".format(\
+			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSanitize).split())
 	subprocess.check_call("make".split())
 	subprocess.check_call("{} make install".format(sSudo).split())
 

@@ -17,7 +17,7 @@
 
 # File:   uninstall_libstmm-input-fake.py
 
-# Removes all files installed by the install_libstmm-input-fake.sh script.
+# Removes all files installed by the install_libstmm-input-fake.py script.
 
 import sys
 import os

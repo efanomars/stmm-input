@@ -42,10 +42,10 @@ def main():
 	os.chdir(sScriptDir)
 	os.chdir("..")
 	#
-	sDestDir = " -D CMAKE_INSTALL_PREFIX=" + sDestDir
+	sDestDir = "-D CMAKE_INSTALL_PREFIX=" + sDestDir
 	#print("sDestDir:" + sDestDir)
 	#
-	sBuildType = " -D CMAKE_BUILD_TYPE=" + oArgs.sBuildType
+	sBuildType = "-D CMAKE_BUILD_TYPE=" + oArgs.sBuildType
 	#print("sBuildType:" + sBuildType)
 
 	if oArgs.bDontSudo:

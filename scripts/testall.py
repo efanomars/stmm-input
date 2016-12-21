@@ -29,66 +29,78 @@ import os
 import subprocess
 
 
-def testAll(sBuildType, sDestDir, sSudo, sStatic):
+def testAll(sBuildType, sDestDir, sSudo, sStatic, bSanitize):
+	if bSanitize:
+		sSanitize = "--sanitize"
+		sSanitizeOptions = "ASAN_OPTIONS=check_initialization_order=1:strict_init_order=1:detect_odr_violation=1"
+		# ":alloc_dealloc_mismatch=1:detect_leaks=1:allow_user_segv_handler=1:new_delete_type_mismatch=1
+		sSanitizeIgnoreLeaksOptions = ":detect_leaks=0:new_delete_type_mismatch=0"
+	else:
+		sSanitize = ""
+		sSanitizeOptions = ""
+		sSanitizeIgnoreLeaksOptions = ""
+
 	subprocess.check_call("./scripts/uninstall_stmm-input-all.py -r -y --destdir {}  {}".format(sDestDir, sSudo).split())
 
-	subprocess.check_call("./scripts/install_stmm-input-all.py -b {}  -t On  -d On --docs-to-log  --destdir {}  {}  {}"\
-			.format(sBuildType, sDestDir, sSudo, sStatic).split())
+	subprocess.check_call("./scripts/install_stmm-input-all.py -b {}  -t On  -d On --docs-to-log  --destdir {}  {} {} {}"\
+			.format(sBuildType, sDestDir, sSudo, sStatic, sSanitize).split())
+
 
 	os.chdir("libstmm-input/build")
-	subprocess.check_call("make test".split())
+	subprocess.check_call(sSanitizeOptions + " make test", shell=True)
 	if os.path.getsize("stmm-input-doxy.log") > 0:
 		raise RuntimeError("Error: stmm-input-doxy.log not empty")
 	os.chdir("../..")
 
 	os.chdir("libstmm-input-base/build")
-	subprocess.check_call("make test".split())
+	subprocess.check_call(sSanitizeOptions + " make test", shell=True)
 	if os.path.getsize("stmm-input-base-doxy.log") > 0:
 		raise RuntimeError("Error: stmm-input-base-doxy.log not empty")
 	os.chdir("../..")
 
 	os.chdir("libstmm-input-ev/build")
-	subprocess.check_call("make test".split())
+	subprocess.check_call(sSanitizeOptions + " make test", shell=True)
 	if os.path.getsize("stmm-input-ev-doxy.log") > 0:
 		raise RuntimeError("Error: stmm-input-ev-doxy.log not empty")
 	os.chdir("../..")
 
 	os.chdir("libstmm-input-fake/build")
-	subprocess.check_call("make test".split())
+	subprocess.check_call(sSanitizeOptions + " make test", shell=True)
 	if os.path.getsize("stmm-input-fake-doxy.log") > 0:
 		raise RuntimeError("Error: stmm-input-fake-doxy.log not empty")
 	os.chdir("../..")
 
 	os.chdir("libstmm-input-gtk/build")
-	subprocess.check_call("make test".split())
+	subprocess.check_call(sSanitizeOptions + sSanitizeIgnoreLeaksOptions + " make test", shell=True)
 	if os.path.getsize("stmm-input-gtk-doxy.log") > 0:
 		raise RuntimeError("Error: stmm-input-gtk-doxy.log not empty")
 	os.chdir("../..")
 
-	os.chdir("libstmm-input-gtk/examples/bare-app")
-	if not os.path.isdir("build"):
-		os.mkdir("build")
-	os.chdir("build")
-	subprocess.check_call("cmake -D CMAKE_BUILD_TYPE={} ..".format(sBuildType).split())
-	subprocess.check_call("make".split())
-	os.chdir("../../../..")
+	if not bSanitize:
+		os.chdir("libstmm-input-gtk/examples/bare-app")
+		if not os.path.isdir("build"):
+			os.mkdir("build")
+		os.chdir("build")
+		subprocess.check_call("cmake -D CMAKE_BUILD_TYPE={} ..".format(sBuildType).split())
+		subprocess.check_call("make".split())
+		os.chdir("../../../..")
 
-	os.chdir("libstmm-input-gtk/examples/showevs")
-	if not os.path.isdir("build"):
-		os.mkdir("build")
-	os.chdir("build")
-	subprocess.check_call("cmake -D CMAKE_BUILD_TYPE={} ..".format(sBuildType).split())
-	subprocess.check_call("make".split())
-	os.chdir("../../../..")
+		os.chdir("libstmm-input-gtk/examples/showevs")
+		if not os.path.isdir("build"):
+			os.mkdir("build")
+		os.chdir("build")
+		subprocess.check_call("cmake -D CMAKE_BUILD_TYPE={} ..".format(sBuildType).split())
+		subprocess.check_call("make".split())
+		os.chdir("../../../..")
 
-	os.chdir("libstmm-input-fake/examples/spinn")
-	if not os.path.isdir("build"):
-		os.mkdir("build")
-	os.chdir("build")
-	subprocess.check_call("cmake -D CMAKE_BUILD_TYPE={} -D BUILD_TESTING=ON ..".format(sBuildType).split())
-	subprocess.check_call("make".split())
-	subprocess.check_call("make test".split())
-	os.chdir("../../../..")
+		os.chdir("libstmm-input-fake/examples/spinn")
+		if not os.path.isdir("build"):
+			os.mkdir("build")
+		os.chdir("build")
+		subprocess.check_call("cmake -D CMAKE_BUILD_TYPE={} -D BUILD_TESTING=ON ..".format(sBuildType).split())
+		subprocess.check_call("make".split())
+		subprocess.check_call("make test".split())
+		os.chdir("../../../..")
 
 	if sStatic == "-s Off":
 		subprocess.check_call("./scripts/checkgtkexample.py".split())
@@ -109,6 +121,8 @@ def main():
 						, default="Both", dest="sBuildType")
 	oParser.add_argument("-l", "--link", help="build static library or shared", choices=['Static', 'Shared', 'Both']\
 						, default="Both", dest="sLinkType")
+	oParser.add_argument("--sanitize", help="execute tests with llvm address sanitize checks (Debug+Static only)", action="store_true"\
+						, default=False, dest="bSanitize")
 	oArgs = oParser.parse_args()
 
 	while not oArgs.bNoPrompt:
@@ -133,17 +147,21 @@ def main():
 
 	if (oArgs.sLinkType == "Both") or (oArgs.sLinkType == "Static"):
 		if oArgs.sBuildType == "Both":
-			testAll("Debug", sDestDir, sSudo, "-s On")
-			testAll("Release", sDestDir, sSudo, "-s On")
+			if oArgs.bSanitize:
+				testAll("Debug", sDestDir, sSudo, "-s On", True)
+			testAll("Debug", sDestDir, sSudo, "-s On", False)
+			testAll("Release", sDestDir, sSudo, "-s On", False)
 		else:
-			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s On")
+			if oArgs.bSanitize and (oArgs.sBuildType == "Debug"):
+				testAll("Debug", sDestDir, sSudo, "-s On", True)
+			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s On", False)
 
 	if (oArgs.sLinkType == "Both") or (oArgs.sLinkType == "Shared"):
 		if oArgs.sBuildType == "Both":
-			testAll("Debug", sDestDir, sSudo, "-s Off")
-			testAll("Release", sDestDir, sSudo, "-s Off")
+			testAll("Debug", sDestDir, sSudo, "-s Off", False)
+			testAll("Release", sDestDir, sSudo, "-s Off", False)
 		else:
-			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s Off")
+			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s Off", False)
 
 	print("---------------------------------")
 	print("testall.py finished successfully!")
