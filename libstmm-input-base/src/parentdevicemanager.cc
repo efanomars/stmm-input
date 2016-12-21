@@ -164,6 +164,10 @@ bool ParentDeviceManager::removeEventListener(const shared_ptr<EventListener>& r
 	}
 	return bRemoved;
 }
+bool ParentDeviceManager::removeEventListener(const shared_ptr<EventListener>& refEventListener)
+{
+	return removeEventListener(refEventListener, false);
+}
 
 } // namespace stmi
 

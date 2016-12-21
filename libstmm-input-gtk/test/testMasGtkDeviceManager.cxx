@@ -62,16 +62,14 @@ TEST_F(MasDMFixture, AddListener)
 			[](const shared_ptr<stmi::Event>& /*refEvent*/)
 			{
 			});
-	//TODO WHY is SECOND param needed !!!??? inline doesn't seem to work
-	const bool bAdded = m_refAllEvDM->addEventListener(refListener, std::shared_ptr<stmi::CallIf>{});
+	const bool bAdded = m_refAllEvDM->addEventListener(refListener);
 	EXPECT_TRUE(bAdded);
-	const bool bAdded2 = m_refAllEvDM->addEventListener(refListener, std::shared_ptr<stmi::CallIf>{});
+	const bool bAdded2 = m_refAllEvDM->addEventListener(refListener);
 	EXPECT_FALSE(bAdded2);
 
-	//TODO WHY is SECOND param needed !!!??? inline doesn't seem to work
-	const bool bRemoved = m_refAllEvDM->removeEventListener(refListener, true);
+	const bool bRemoved = m_refAllEvDM->removeEventListener(refListener);
 	EXPECT_TRUE(bRemoved);
-	const bool bRemoved2 = m_refAllEvDM->removeEventListener(refListener, true);
+	const bool bRemoved2 = m_refAllEvDM->removeEventListener(refListener);
 	EXPECT_FALSE(bRemoved2);
 }
 

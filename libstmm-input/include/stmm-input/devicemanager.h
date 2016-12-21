@@ -235,11 +235,11 @@ public:
 	 * @return Whether listener was removed.
 	 */
 	virtual bool removeEventListener(const shared_ptr<EventListener>& refEventListener, bool bFinalize) = 0;
-	/** Shortcut of removeEventListener(refEventListener, false). */
-	inline bool removeEventListener(const shared_ptr<EventListener>& refEventListener)
-	{
-		return removeEventListener(refEventListener, false);
-	}
+	/** Removes an event listener from the device manager.
+	 * Shortcut of removeEventListener(refEventListener, false).
+	 * @param refEventListener The listener to remove. Cannot be null.
+	 */
+	virtual bool removeEventListener(const shared_ptr<EventListener>& refEventListener) = 0;
 
 	/** Current time from epoch in microseconds.
 	 * Helper function used to set timestamp of events.

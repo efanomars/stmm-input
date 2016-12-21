@@ -67,6 +67,7 @@ public:
 	bool addEventListener(const shared_ptr<EventListener>& refEventListener, const shared_ptr<CallIf>& refCallIf) override;
 	bool addEventListener(const shared_ptr<EventListener>& refEventListener) override;
 	bool removeEventListener(const shared_ptr<EventListener>& refEventListener, bool bFinalize) override;
+	bool removeEventListener(const shared_ptr<EventListener>& refEventListener) override;
 
 protected:
 	/** Constructor.

@@ -57,6 +57,7 @@ public:
 	, m_refCapability(refCapability)
 	{
 		static_assert(std::is_base_of<Capability, CAPA>::value, "");
+		assert(m_refCapability);
 	}
 	std::string getName() const override
 	{

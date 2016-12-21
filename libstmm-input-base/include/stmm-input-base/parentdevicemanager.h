@@ -80,6 +80,9 @@ public:
 	/** Calls removeEventListener of children.
 	 */
 	bool removeEventListener(const shared_ptr<EventListener>& refEventListener, bool bFinalize) override;
+	/** Calls removeEventListener of children.
+	 */
+	bool removeEventListener(const shared_ptr<EventListener>& refEventListener) override;
 protected:
 	ParentDeviceManager() = default;
 	/** Initialization.

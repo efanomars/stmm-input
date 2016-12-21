@@ -207,6 +207,10 @@ bool BasicDeviceManager::removeEventListener(const shared_ptr<EventListener>& re
 	maybeRemoveDataOfRemovedListeners();
 	return true;
 }
+bool BasicDeviceManager::removeEventListener(const shared_ptr<EventListener>& refEventListener)
+{
+	return removeEventListener(refEventListener, false);
+}
 void BasicDeviceManager::maybeRemoveDataOfRemovedListeners()
 {
 	if ((!m_bListenerListDirty) || (m_nListenerListRecursing > 0)) {
@@ -214,7 +218,7 @@ void BasicDeviceManager::maybeRemoveDataOfRemovedListeners()
 		// or still working on the list
 		return; //--------------------------------------------------------------
 	}
-	if (!m_refListeners.unique()) {
+	if (!(m_refListeners.use_count() == 1)) {
 		// Someone in the callback stack is iterating over the list
 		// do not remove!
 		return; //--------------------------------------------------------------
