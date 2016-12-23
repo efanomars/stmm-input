@@ -22,7 +22,8 @@
 # - compiles the examples
 # - creates documentation and checks it is ok
 # - runs all tests
-# - makes sure no line in the code start with std::cout
+# - makes sure no line in the code starts with std::cout
+# - optionally calls clang-llvm sanitizer
 
 import sys
 import os
@@ -34,11 +35,11 @@ def testAll(sBuildType, sDestDir, sSudo, sStatic, bSanitize):
 		sSanitize = "--sanitize"
 		sSanitizeOptions = "ASAN_OPTIONS=check_initialization_order=1:strict_init_order=1:detect_odr_violation=1"
 		# ":alloc_dealloc_mismatch=1:detect_leaks=1:allow_user_segv_handler=1:new_delete_type_mismatch=1
-		sSanitizeIgnoreLeaksOptions = ":detect_leaks=0:new_delete_type_mismatch=0"
+		sSanitizeIgnoreOptions = ":detect_leaks=0:new_delete_type_mismatch=0"
 	else:
 		sSanitize = ""
 		sSanitizeOptions = ""
-		sSanitizeIgnoreLeaksOptions = ""
+		sSanitizeIgnoreOptions = ""
 
 	subprocess.check_call("./scripts/uninstall_stmm-input-all.py -r -y --destdir {}  {}".format(sDestDir, sSudo).split())
 
@@ -71,7 +72,7 @@ def testAll(sBuildType, sDestDir, sSudo, sStatic, bSanitize):
 	os.chdir("../..")
 
 	os.chdir("libstmm-input-gtk/build")
-	subprocess.check_call(sSanitizeOptions + sSanitizeIgnoreLeaksOptions + " make test", shell=True)
+	subprocess.check_call(sSanitizeOptions + sSanitizeIgnoreOptions + " make test", shell=True)
 	if os.path.getsize("stmm-input-gtk-doxy.log") > 0:
 		raise RuntimeError("Error: stmm-input-gtk-doxy.log not empty")
 	os.chdir("../..")

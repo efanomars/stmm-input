@@ -59,6 +59,7 @@ def main():
 							" ../{}"
 							" --exclude=.git"
 							" --exclude=stuff"
+							" --exclude=googletest"
 							" --exclude=.metadata"
 							" --exclude=libstmm-input-fake/examples/.metadata"
 							" --exclude=libstmm-input-gtk/examples/.metadata"

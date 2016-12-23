@@ -12,10 +12,7 @@ set(STMMI_FAKE_TEST_SOURCES
         )
 
 TestFiles("${STMMI_FAKE_TEST_SOURCES}" ""
-          "stmm-input-fake"
           "${STMMI_FAKE_EXTRA_LIBS};stmm-input-fake"
           FALSE FALSE FALSE)
-
-#TestFiles("${STMMI_FAKE_TEST_SOURCES_MAS}" "${STMMI_SOURCES_DATA};${STMMI_SOURCES_MAS};${STMMI_FAKE_TEST_WITH_SOURCES_MAS}" "${STMMI_FAKE_EXTRA_LIBS}" FALSE FALSE TRUE)
 
 include(CTest)

@@ -84,4 +84,5 @@ Needed packages
 ===============
 To build the source files you need a c++14 compiler and cmake.
 To build the documentation you need doxygen and graphviz.
-To build the tests you need google test (gtest).
+To build the tests you need google test (it is downloaded as a git submodule).
+To run the scripts you need python3.

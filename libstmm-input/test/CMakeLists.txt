@@ -15,6 +15,6 @@ set(STMMI_TEST_SOURCES_NO_EVS
         ${STMMI_TEST_SOURCES_DIR}/testHardwareKeys.cxx
       )
 
-TestFiles("${STMMI_TEST_SOURCES_NO_EVS}" "" "stmm-input" "stmm-input" FALSE FALSE FALSE)
+TestFiles("${STMMI_TEST_SOURCES_NO_EVS}" "" "stmm-input" FALSE FALSE FALSE)
 
 include(CTest)

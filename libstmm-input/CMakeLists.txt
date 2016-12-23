@@ -14,6 +14,7 @@ CheckBinaryNotSourceTree()
 CheckBuildType()
 DefineSharedLibOption()
 DefineCommonOptions()
+DefineCommonCompileOptions()
 
 # Libtool CURRENT/REVISION/AGE: here
 #   MAJOR is CURRENT interface
@@ -56,7 +57,10 @@ set(STMMI_SOURCES
         ${STMMI_SOURCES_DIR}/xyevent.cc
         )
 
-DefineCallerCompileOptions()
+# Define library
+add_library(stmm-input ${STMMI_SOURCES})
+
+DefineTargetPublicCompileOptions(stmm-input)
 
 # Set install dir for pkg-config file
 set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
@@ -66,9 +70,6 @@ if (PKG_CONFIG_FOUND)
     configure_file("${PROJECT_SOURCE_DIR}/stmm-input.pc.in"
                    "${PROJECT_BINARY_DIR}/stmm-input.pc" @ONLY)
 endif()
-
-# Define library
-add_library(stmm-input ${STMMI_SOURCES})
 
 message(STATUS "")
 message(STATUS "stmm-input was configured with the following options:")
@@ -81,6 +82,7 @@ message(STATUS " STMMI_SOURCES:              ${STMMI_SOURCES}")
 message(STATUS " install prefix:             ${prefix}")
 message(STATUS " BUILD_DOCS:                 ${BUILD_DOCS}")
 message(STATUS " BUILD_TESTING:              ${BUILD_TESTING}")
+message(STATUS " BUILD_WITH_SANITIZE:        ${BUILD_WITH_SANITIZE}")
 
 # Documentation
 add_subdirectory(doc)
@@ -90,6 +92,7 @@ if (BUILD_DOCS)
 endif()
 
 # Testing
+add_subdirectory(googletest)
 enable_testing()
 add_subdirectory(test)
 

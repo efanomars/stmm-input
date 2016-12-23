@@ -13,6 +13,6 @@ set(STMMI_TEST_SOURCES
         "${STMMI_TEST_SOURCES_DIR}/testCallIfSimplifier.cxx"
       )
 
-TestFiles("${STMMI_TEST_SOURCES}" "" "stmm-input-base" "stmm-input-base" TRUE TRUE FALSE)
+TestFiles("${STMMI_TEST_SOURCES}" "" "stmm-input-base" TRUE TRUE FALSE)
 
 include(CTest)

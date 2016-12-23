@@ -28,6 +28,10 @@ oPattStdCout = re.compile("^std::cout <<")
 def checkSourceFile(sPathFile):
 	if "/build/" in sPathFile:
 		return
+	if "/googletest/" in sPathFile:
+		return
+	if "/gtest/" in sPathFile:
+		return
 	print("Checking: " + sPathFile)
 	try:
 		oF = open(sPathFile, 'r')
@@ -44,7 +48,10 @@ def checkCurDir():
 			# don't consider hidden files
 			continue
 		sPathEntry = os.path.abspath(sEntry)
-		if os.path.isdir(sPathEntry):
+		if os.path.islink(sPathEntry):
+			# don't follow symbolic links
+			continue
+		elif os.path.isdir(sPathEntry):
 			os.chdir(sEntry)
 			checkCurDir()
 			os.chdir("..")

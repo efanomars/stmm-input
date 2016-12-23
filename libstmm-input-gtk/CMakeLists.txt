@@ -14,6 +14,7 @@ CheckBinaryNotSourceTree()
 CheckBuildType()
 DefineSharedLibOption()
 DefineCommonOptions()
+DefineCommonCompileOptions()
 
 include(FindPkgConfig)
 if (NOT PKG_CONFIG_FOUND)
@@ -172,16 +173,16 @@ list(APPEND  STMMI_SOURCES
         ${STMMI_SOURCES_ALL}
         )
 
-DefineCallerCompileOptions()
+# Define library
+add_library(stmm-input-gtk ${STMMI_SOURCES})
+
+DefineTargetPublicCompileOptions(stmm-input-gtk)
 
 # Set install dir for pkg-config file
 set(STMMI_GTK_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 # Create pkg-config file for shared library
 configure_file("${PROJECT_SOURCE_DIR}/stmm-input-gtk.pc.in"
                "${PROJECT_BINARY_DIR}/stmm-input-gtk.pc" @ONLY)
-
-# Define library
-add_library(stmm-input-gtk ${STMMI_SOURCES})
 
 message(STATUS "")
 message(STATUS "stmm-input-gtk was configured with the following options:")
@@ -205,6 +206,7 @@ if (BUILD_DOCS)
 endif()
 
 # Testing
+add_subdirectory(googletest)
 enable_testing()
 add_subdirectory(test)
 

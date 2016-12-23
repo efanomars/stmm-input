@@ -14,6 +14,7 @@ CheckBinaryNotSourceTree()
 CheckBuildType()
 DefineSharedLibOption()
 DefineCommonOptions()
+DefineCommonCompileOptions()
 
 include(FindPkgConfig)
 
@@ -88,7 +89,10 @@ set(STMMI_SOURCES
         ${STMMI_SOURCES_DIR}/touchevent.cc
        )
 
-DefineCallerCompileOptions()
+# Define library
+add_library(stmm-input-ev ${STMMI_SOURCES})
+
+DefineTargetPublicCompileOptions(stmm-input-ev)
 
 # Set install dir for pkg-config file
 set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
@@ -98,9 +102,6 @@ if (PKG_CONFIG_FOUND)
     configure_file("${PROJECT_SOURCE_DIR}/stmm-input-ev.pc.in"
                    "${PROJECT_BINARY_DIR}/stmm-input-ev.pc" @ONLY)
 endif()
-
-# Define library
-add_library(stmm-input-ev ${STMMI_SOURCES})
 
 message(STATUS "")
 message(STATUS "stmm-input-ev was configured with the following options:")
@@ -124,6 +125,7 @@ if (BUILD_DOCS)
 endif()
 
 # Testing
+add_subdirectory(googletest)
 enable_testing()
 add_subdirectory(test)
 

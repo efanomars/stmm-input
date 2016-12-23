@@ -14,6 +14,7 @@ CheckBinaryNotSourceTree()
 CheckBuildType()
 DefineSharedLibOption()
 DefineCommonOptions()
+DefineCommonCompileOptions()
 
 # Libtool CURRENT/REVISION/AGE: here
 #   MAJOR is CURRENT interface
@@ -72,7 +73,10 @@ set(STMMI_SOURCES
         ${STMMI_SOURCES_DIR}/util.h
       )
 
-DefineCallerCompileOptions()
+# Define library
+add_library(stmm-input-base ${STMMI_SOURCES})
+
+DefineTargetPublicCompileOptions(stmm-input-base)
 
 # Set install dir for pkg-config file
 set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
@@ -82,9 +86,6 @@ if (PKG_CONFIG_FOUND)
     configure_file("${PROJECT_SOURCE_DIR}/stmm-input-base.pc.in"
                    "${PROJECT_BINARY_DIR}/stmm-input-base.pc" @ONLY)
 endif()
-
-# Define library
-add_library(stmm-input-base ${STMMI_SOURCES})
 
 message(STATUS "")
 message(STATUS "stmm-input-base was configured with the following options:")
@@ -108,6 +109,7 @@ if (BUILD_DOCS)
 endif()
 
 # Testing
+add_subdirectory(googletest)
 enable_testing()
 add_subdirectory(test)
 

@@ -35,20 +35,52 @@ function(DefineCommonOptions)
 endfunction(DefineCommonOptions)
 
 
-function(DefineCallerCompileOptions)
+function(DefineCommonCompileOptions)
+    # Compiler option also used for googletest
+    string(STRIP "${CMAKE_CXX_FLAGS} -std=c++14" CMAKE_CXX_FLAGS)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" PARENT_SCOPE)
     if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
-        set(STMMI_COMPILE_WARNINGS "-Wall -Wextra -Werror \
- -pedantic-errors -Wmissing-include-dirs -Winit-self \
- -Woverloaded-virtual") # "-Wpedantic -Wredundant-decls -Wsign-conversion"
-        if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") AND NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6))
-            set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS}  -Wno-potentially-evaluated-expression")
+        if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+            if (BUILD_WITH_SANITIZE)
+                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address" PARENT_SCOPE)
+            endif()
         endif()
-        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb"  PARENT_SCOPE)
-        if (BUILD_WITH_SANITIZE)
-            set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address"  PARENT_SCOPE)
+    endif()
+endfunction(DefineCommonCompileOptions)
+
+function(DefineTargetInterfaceCompileOptions STMMI_TARGET)
+    DefineTargetCompileOptionsType(${STMMI_TARGET} ON)
+endfunction(DefineTargetInterfaceCompileOptions)
+
+function(DefineTargetPublicCompileOptions STMMI_TARGET)
+    DefineTargetCompileOptionsType(${STMMI_TARGET} OFF)
+endfunction(DefineTargetPublicCompileOptions)
+
+function(DefineTargetCompileOptionsType STMMI_TARGET STMMI_INTERFACE_TYPE)
+    # STMMI_COMPILE_WARNINGS holds target specific flags
+    set(STMMI_COMPILE_WARNINGS "${CMAKE_CXX_FLAGS}")
+    if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
+        set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -Wall -Wextra -Werror \
+-pedantic-errors -Wmissing-include-dirs -Winit-self \
+-Woverloaded-virtual") # "-Wpedantic -Wredundant-decls -Wsign-conversion"
+        if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") AND NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6))
+            set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -Wno-potentially-evaluated-expression")
+        endif()
+        if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+            set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -ggdb")
+            if (BUILD_WITH_SANITIZE)
+                set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -fsanitize=address")
+            endif()
         endif()
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-        set(STMMI_COMPILE_WARNINGS "/W4 /WX /EHsc")
+        set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} /W4 /WX /EHsc")
     endif()
-    set(CMAKE_CXX_FLAGS       "${CMAKE_CXX_FLAGS} ${STMMI_COMPILE_WARNINGS} -std=c++14"  PARENT_SCOPE)
-endfunction(DefineCallerCompileOptions)
+    #set(CMAKE_CXX_FLAGS       "${CMAKE_CXX_FLAGS} ${STMMI_COMPILE_WARNINGS} -std=c++14"  PARENT_SCOPE)
+    #
+    string(REPLACE " " ";" REPLACED_FLAGS ${STMMI_COMPILE_WARNINGS})
+    if (STMMI_INTERFACE_TYPE)
+        target_compile_options(${STMMI_TARGET} INTERFACE ${REPLACED_FLAGS})
+    else()
+        target_compile_options(${STMMI_TARGET} PUBLIC ${REPLACED_FLAGS})
+    endif()
+endfunction(DefineTargetCompileOptionsType)

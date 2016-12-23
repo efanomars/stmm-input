@@ -7,7 +7,6 @@
 #                      is created.
 # STMMI_WITH_SOURCES   list of sources that are compiled with each of the tests in 
 #                      STMMI_TEST_SOURCES
-# STMMI_TARGET_LIB     the target library or empty string if not needed
 # STMMI_LINKED_LIBS    list of (shared) libraries that have to be linked to each test.
 #                      One of them might be the to be tested library target name
 #                      (cmake will recognize and link the freshly created one instead of 
@@ -26,45 +25,11 @@
 # STMMI_HEADERS_DIR    The directory of public headers of the to be tested library
 # STMMI_INCLUDE_DIR    The directory containing STMMI_HEADERS_DIR
 # STMMI_SOURCES_DIR    The directory of private headers of the to be tested library
-# 
-function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_TARGET_LIB  STMMI_LINKED_LIBS  STMMI_ADD_FAKES  STMMI_ADD_EVS  STMMI_FAKE_IFACE)
-
-    set(BUILD_TESTING_GOOGLE_TEST_LIBRARY_PATH "/usr/lib"
-          CACHE PATH "The path to the GoogleTest shared libraries (gtest.so and gtest_main.so)")
-    mark_as_advanced(BUILD_TESTING_GOOGLE_TEST_LIBRARY_PATH)
-    set(BUILD_TESTING_GOOGLE_TEST_INCLUDE_PATH "/usr/include"
-          CACHE PATH "The path to the GoogleTest include dir 'gtest/'")
-    mark_as_advanced(BUILD_TESTING_GOOGLE_TEST_INCLUDE_PATH)
+#
+function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  STMMI_ADD_FAKES  STMMI_ADD_EVS  STMMI_FAKE_IFACE)
 
     if (BUILD_TESTING)
 
-        find_library(STMMIFINDGTEST   gtest   PATHS ${BUILD_TESTING_GOOGLE_TEST_LIBRARY_PATH})
-        if ("${STMMIFINDGTEST}" STREQUAL "STMMIFINDGTEST-NOTFOUND")
-            message(FATAL_ERROR "Couldn't find library gtest")
-        endif ("${STMMIFINDGTEST}" STREQUAL "STMMIFINDGTEST-NOTFOUND")
-        mark_as_advanced(STMMIFINDGTEST)
-
-        find_library(STMMIFINDGTESTMAIN   gtest_main   PATHS ${BUILD_TESTING_GOOGLE_TEST_LIBRARY_PATH})
-        if ("${STMMIFINDGTESTMAIN}" STREQUAL "STMMIFINDGTESTMAIN-NOTFOUND")
-            message(FATAL_ERROR "Couldn't find library gtest_main")
-        endif ("${STMMIFINDGTESTMAIN}" STREQUAL "STMMIFINDGTESTMAIN-NOTFOUND")
-        mark_as_advanced(STMMIFINDGTESTMAIN)
-
-        find_file(STMMIFINDGTESTH  "gtest/gtest.h"  PATHS ${BUILD_TESTING_GOOGLE_TEST_INCLUDE_PATH}
-                    NO_CMAKE_PATH  NO_CMAKE_ENVIRONMENT_PATH)
-        if ("${STMMIFINDGTESTH}" STREQUAL "STMMIFINDGTESTH-NOTFOUND")
-            message(FATAL_ERROR "Couldn't find file 'gtest/gtest.h'")
-        endif ("${STMMIFINDGTESTH}" STREQUAL "STMMIFINDGTESTH-NOTFOUND")
-        get_filename_component(GTESTHDIR  "${STMMIFINDGTESTH}"  DIRECTORY)
-        get_filename_component(GTESTINCLUDEDIR  "${GTESTHDIR}"  DIRECTORY)
-        mark_as_advanced(STMMIFINDGTESTH)
-        #message(STATUS "BUILD_TESTING_GOOGLE_TEST_LIBRARY_PATH         ${BUILD_TESTING_GOOGLE_TEST_LIBRARY_PATH}")
-        #message(STATUS "BUILD_TESTING_GOOGLE_TEST_INCLUDE_PATH         ${BUILD_TESTING_GOOGLE_TEST_INCLUDE_PATH}")
-        #message(STATUS "GTESTHDIR         ${GTESTHDIR}")
-        #message(STATUS "GTESTINCLUDEDIR   ${GTESTINCLUDEDIR}")
-        #message(STATUS "STMMIFINDGTEST         ${STMMIFINDGTEST}")
-        #message(STATUS "STMMIFINDGTESTMAIN     ${STMMIFINDGTESTMAIN}")
-        #message(STATUS "STMMIFINDGTESTH        ${STMMIFINDGTESTH}")
         #message(STATUS "CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}")
         #message(STATUS "PROJECT_SOURCE_DIR       ${PROJECT_SOURCE_DIR}")
         message(STATUS "STMMI_LINKED_LIBS    ${STMMI_LINKED_LIBS}")
@@ -155,15 +120,10 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_TARGET_LIB  STM
             #    target_link_libraries(${STMMI_TEST_CUR_TGT} stmmiwithsourcesobjlib) # link precompiled object files
             #endif (STMMI_WITH_SOURCES_LEN GREATER 0)
 
-            if (NOT ("${STMMI_TARGET_LIB}" STREQUAL ""))
-                # This is needed for tests since the target lib is not installed yet
-                # and an #include<targetlib/header.h> would not be found otherwise
-                target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_INCLUDE_DIR})
-            endif (NOT ("${STMMI_TARGET_LIB}" STREQUAL ""))
+            target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_INCLUDE_DIR})
             if (STMMI_ADD_FAKES  OR  STMMI_ADD_EVS)
                 target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${PROJECT_BINARY_DIR})
             endif (STMMI_ADD_FAKES  OR  STMMI_ADD_EVS)
-            target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${GTESTINCLUDEDIR})
             # tests can also involve non public part of the library!
             target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_SOURCES_DIR})
             target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_HEADERS_DIR})
@@ -173,17 +133,14 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_TARGET_LIB  STM
             if (STMMI_ADD_EVS)
                 target_compile_definitions(${STMMI_TEST_CUR_TGT} PUBLIC STMI_TESTING_ADD_EVS)
             endif (STMMI_ADD_EVS)
+            DefineTargetPublicCompileOptions(${STMMI_TEST_CUR_TGT})
 
-            target_link_libraries(${STMMI_TEST_CUR_TGT} ${STMMIFINDGTESTMAIN} ${STMMIFINDGTEST}) # link against gtest libs
+            target_link_libraries(${STMMI_TEST_CUR_TGT} gtest gtest_main) # link against gtest libs
             target_link_libraries(${STMMI_TEST_CUR_TGT}  ${STMMI_LINKED_LIBS})
-#                foreach (STMMI_TEST_CUR_LIB  ${STMMI_LINKED_LIBS})
-#message(STATUS "STMMI_TEST_CUR_LIB    ${STMMI_TEST_CUR_LIB}")
-#                    target_link_libraries(${STMMI_TEST_CUR_TGT}  ${STMMI_TEST_CUR_LIB})
-#                endforeach (STMMI_TEST_CUR_LIB  ${STMMI_LINKED_LIBS})
 
             add_test(NAME ${STMMI_TEST_CUR_TGT} COMMAND ${STMMI_TEST_CUR_TGT})       # this is how to add tests to CMake
 
          endforeach (STMMI_TEST_CUR_FILE  ${STMMI_TEST_SOURCES})
     endif (BUILD_TESTING)
 
-endfunction(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_TARGET_LIB  STMMI_LINKED_LIBS  STMMI_ADD_FAKES  STMMI_ADD_EVS  STMMI_FAKE_IFACE)
+endfunction(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  STMMI_ADD_FAKES  STMMI_ADD_EVS  STMMI_FAKE_IFACE)

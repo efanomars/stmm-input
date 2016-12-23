@@ -12,6 +12,7 @@ include(CommonUtil)
 
 CheckBinaryNotSourceTree()
 CheckBuildType()
+DefineCommonCompileOptions()
 
 include(FindPkgConfig)
 if (NOT PKG_CONFIG_FOUND)
@@ -37,8 +38,6 @@ list(APPEND STMMI_DEVFLO_EXTRA_LIBS           ${GTKMM_LIBRARIES}    ${XI_LIBRARI
 string(STRIP "${STMMI_DEVFLO_EXTRA_LIBS}" STMMI_DEVFLO_EXTRA_LIBS)
 string(STRIP "${STMMI_DEVFLO_EXTRA_INCLUDE_DIRS}" STMMI_DEVFLO_EXTRA_INCLUDE_DIRS)
 
-include_directories("${STMMI_DEVFLO_EXTRA_INCLUDE_DIRS}")
-
 # Source files (and headers only used for building)
 set(STMMI_DEVFLO_SOURCES
         ${PROJECT_SOURCE_DIR}/src/devicefloater.h
@@ -53,7 +52,11 @@ set(STMMI_DEVFLO_DATA_FILES
         ${PROJECT_SOURCE_DIR}/data/mouse_347.png
         )
 
-DefineCallerCompileOptions()
+add_executable(device-floater ${STMMI_DEVFLO_SOURCES} ${PROJECT_BINARY_DIR}/config.cc)
+
+target_include_directories(device-floater PUBLIC ${STMMI_DEVFLO_EXTRA_INCLUDE_DIRS})
+
+DefineTargetPublicCompileOptions(device-floater)
 
 include(GNUInstallDirs)
 set(STMMI_DEVFLO_PKG_DATA_DIR "${CMAKE_INSTALL_FULL_DATADIR}/device-floater")
@@ -63,18 +66,15 @@ set(STMMI_DEVFLO_PKG_REL_DATA_DIR "${CMAKE_INSTALL_DATADIR}/device-floater")
 configure_file("${PROJECT_SOURCE_DIR}/src/config.cc.in"
                "${PROJECT_BINARY_DIR}/config.cc" @ONLY)
 # This allows config.cc to find the config.h include
-include_directories("${PROJECT_SOURCE_DIR}/src")
-
-add_executable(device-floater ${STMMI_DEVFLO_SOURCES} ${PROJECT_BINARY_DIR}/config.cc)
+target_include_directories(device-floater PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
 message(STATUS "")
 message(STATUS "device-floater was configured with the following options:")
 message(STATUS " CMAKE_BUILD_TYPE:                ${CMAKE_BUILD_TYPE}")
 message(STATUS " CMAKE_CXX_COMPILER_ID:           ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS " CMAKE_CXX_COMPILER_VERSION:      ${CMAKE_CXX_COMPILER_VERSION}")
-message(STATUS " CMAKE_CXX_FLAGS:                 ${CMAKE_CXX_FLAGS}")
-message(STATUS " CMAKE_CXX_FLAGS_DEBUG:           ${CMAKE_CXX_FLAGS_DEBUG}")
-message(STATUS " STMMI_DEVFLO_EXTRA_INCLUDE_DIRS: ${STMMI_DEVFLO_EXTRA_INCLUDE_DIRS}")
+#message(STATUS " CMAKE_CXX_FLAGS:                 $<TARGET_PROPERTY:device-floater,COMPILE_OPTIONS>")
+#message(STATUS " STMMI_DEVFLO_EXTRA_INCLUDE_DIRS: ${STMMI_DEVFLO_EXTRA_INCLUDE_DIRS}")
 message(STATUS " STMMI_DEVFLO_EXTRA_LIBS:         ${STMMI_DEVFLO_EXTRA_LIBS}")
 message(STATUS " STMMI_DEVFLO_SOURCES:            ${STMMI_DEVFLO_SOURCES}")
 message(STATUS " STMMI_DEVFLO_DATA_FILES          ${STMMI_DEVFLO_DATA_FILES}")
