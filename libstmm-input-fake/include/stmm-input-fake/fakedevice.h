@@ -22,7 +22,7 @@
 #ifndef _STMI_TESTING_FAKE_DEVICE_H_
 #define _STMI_TESTING_FAKE_DEVICE_H_
 
-#include "devicemanager.h"
+#include <stmm-input/devicemanager.h>
 
 #include <memory>
 #include <string>
