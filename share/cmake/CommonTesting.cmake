@@ -2,6 +2,8 @@
 
 # Modified from Barthélémy von Haller's  github.com/Barthelemy/CppProjectTemplate
 
+# TestFiles            Create test for a list of files
+#
 # Parameters:
 # STMMI_TEST_SOURCES   list of test source files for each of which a test executable
 #                      is created.
@@ -32,10 +34,11 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  ST
 
         #message(STATUS "CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}")
         #message(STATUS "PROJECT_SOURCE_DIR       ${PROJECT_SOURCE_DIR}")
-        message(STATUS "STMMI_LINKED_LIBS    ${STMMI_LINKED_LIBS}")
-        message(STATUS "STMMI_ADD_FAKES      ${STMMI_ADD_FAKES}")
         message(STATUS "STMMI_TEST_SOURCES   ${STMMI_TEST_SOURCES}")
         message(STATUS "STMMI_WITH_SOURCES   ${STMMI_WITH_SOURCES}")
+        message(STATUS "STMMI_LINKED_LIBS    ${STMMI_LINKED_LIBS}")
+        message(STATUS "STMMI_ADD_FAKES      ${STMMI_ADD_FAKES}")
+        message(STATUS "STMMI_ADD_EVS        ${STMMI_ADD_EVS}")
         message(STATUS "STMMI_FAKE_IFACE     ${STMMI_FAKE_IFACE}")
         message(STATUS "STMMI_HEADERS_DIR    ${STMMI_HEADERS_DIR}")
         message(STATUS "STMMI_SOURCES_DIR    ${STMMI_SOURCES_DIR}")

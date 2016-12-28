@@ -49,32 +49,32 @@ def testAll(sBuildType, sDestDir, sSudo, sStatic, bSanitize):
 
 	os.chdir("libstmm-input/build")
 	subprocess.check_call(sSanitizeOptions + " make test", shell=True)
-	if os.path.getsize("stmm-input-doxy.log") > 0:
-		raise RuntimeError("Error: stmm-input-doxy.log not empty")
+	if os.path.getsize("libstmm-input_doxy.log") > 0:
+		raise RuntimeError("Error: libstmm-input_doxy.log not empty")
 	os.chdir("../..")
 
 	os.chdir("libstmm-input-base/build")
 	subprocess.check_call(sSanitizeOptions + " make test", shell=True)
-	if os.path.getsize("stmm-input-base-doxy.log") > 0:
-		raise RuntimeError("Error: stmm-input-base-doxy.log not empty")
+	if os.path.getsize("libstmm-input-base_doxy.log") > 0:
+		raise RuntimeError("Error: libstmm-input-base_doxy.log not empty")
 	os.chdir("../..")
 
 	os.chdir("libstmm-input-ev/build")
 	subprocess.check_call(sSanitizeOptions + " make test", shell=True)
-	if os.path.getsize("stmm-input-ev-doxy.log") > 0:
-		raise RuntimeError("Error: stmm-input-ev-doxy.log not empty")
+	if os.path.getsize("libstmm-input-ev_doxy.log") > 0:
+		raise RuntimeError("Error: libstmm-input-ev_doxy.log not empty")
 	os.chdir("../..")
 
 	os.chdir("libstmm-input-fake/build")
 	subprocess.check_call(sSanitizeOptions + " make test", shell=True)
-	if os.path.getsize("stmm-input-fake-doxy.log") > 0:
-		raise RuntimeError("Error: stmm-input-fake-doxy.log not empty")
+	if os.path.getsize("libstmm-input-fake_doxy.log") > 0:
+		raise RuntimeError("Error: libstmm-input-fake_doxy.log not empty")
 	os.chdir("../..")
 
 	os.chdir("libstmm-input-gtk/build")
 	subprocess.check_call(sSanitizeOptions + sSanitizeIgnoreOptions + " make test", shell=True)
-	if os.path.getsize("stmm-input-gtk-doxy.log") > 0:
-		raise RuntimeError("Error: stmm-input-gtk-doxy.log not empty")
+	if os.path.getsize("libstmm-input-gtk_doxy.log") > 0:
+		raise RuntimeError("Error: libstmm-input-gtk_doxy.log not empty")
 	os.chdir("../..")
 
 	if not bSanitize:
@@ -124,6 +124,8 @@ def main():
 						, default="Both", dest="sLinkType")
 	oParser.add_argument("--sanitize", help="execute tests with llvm address sanitize checks (Debug+Static only)", action="store_true"\
 						, default=False, dest="bSanitize")
+	oParser.add_argument("--tidy", help="apply clang-tidy to source code", action="store_true"\
+						, default=False, dest="bTidy")
 	oArgs = oParser.parse_args()
 
 	while not oArgs.bNoPrompt:
@@ -146,23 +148,43 @@ def main():
 	else:
 		sSudo = ""
 
+	bTidyDone = False  # tidy should be applied only once for the same build type
+
 	if (oArgs.sLinkType == "Both") or (oArgs.sLinkType == "Static"):
 		if oArgs.sBuildType == "Both":
 			if oArgs.bSanitize:
 				testAll("Debug", sDestDir, sSudo, "-s On", True)
+			#
 			testAll("Debug", sDestDir, sSudo, "-s On", False)
+			if oArgs.bTidy:
+				subprocess.check_call("./scripts/checktidy.py".split())
+			#
 			testAll("Release", sDestDir, sSudo, "-s On", False)
+			if oArgs.bTidy:
+				subprocess.check_call("./scripts/checktidy.py".split())
+				bTidyDone = True
 		else:
 			if oArgs.bSanitize and (oArgs.sBuildType == "Debug"):
 				testAll("Debug", sDestDir, sSudo, "-s On", True)
+			#
 			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s On", False)
+			if oArgs.bTidy:
+				subprocess.check_call("./scripts/checktidy.py".split())
+				bTidyDone = True
 
 	if (oArgs.sLinkType == "Both") or (oArgs.sLinkType == "Shared"):
 		if oArgs.sBuildType == "Both":
 			testAll("Debug", sDestDir, sSudo, "-s Off", False)
+			if oArgs.bTidy and not bTidyDone:
+				subprocess.check_call("./scripts/checktidy.py".split())
+			#
 			testAll("Release", sDestDir, sSudo, "-s Off", False)
+			if oArgs.bTidy and not bTidyDone:
+				subprocess.check_call("./scripts/checktidy.py".split())
 		else:
 			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s Off", False)
+			if oArgs.bTidy and not bTidyDone:
+				subprocess.check_call("./scripts/checktidy.py".split())
 
 	print("---------------------------------")
 	print("testall.py finished successfully!")
