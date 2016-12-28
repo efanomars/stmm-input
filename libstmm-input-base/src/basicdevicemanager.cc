@@ -161,7 +161,8 @@ bool BasicDeviceManager::addEventListener(const shared_ptr<EventListener>& refEv
 		for (int32_t nClassIdx = 0; nClassIdx < nTotEventClasses; ++nClassIdx) {
 			auto& refClassCallIf = oListenerData.m_aCallIfEventClass[nClassIdx];
 			refClassCallIf = CallIfSimplifier::simplify(refCallIf, m_aEventClasses[nClassIdx]);
-			const std::type_info& oCallIfType = typeid(*refClassCallIf);
+			const CallIf& oClassCallIf = *refClassCallIf;
+			const std::type_info& oCallIfType = typeid(oClassCallIf);
 			if (oCallIfType == typeid(CallIfTrue)) {
 				// True is the same as no callif
 				// False is the same as no listener, but we keep it anyway

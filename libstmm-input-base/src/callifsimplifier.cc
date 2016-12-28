@@ -30,7 +30,8 @@ const shared_ptr<CallIf> simplify(
 						const shared_ptr<CallIf>& refCallIf, const Event::Class& oEventClass)
 {
 //std::cout << "CallIfSimplifier::simplify  oEventClass=" << oEventClass.getId() << std::endl;
-	const std::type_info& oCallIfType = typeid(*refCallIf);
+	const CallIf& oCallIf = *refCallIf;
+	const std::type_info& oCallIfType = typeid(oCallIf);
 	if (oCallIfType == typeid(CallIfEventClass)) { // this can be done because the class is final
 		auto p0ECF = static_cast<CallIfEventClass*>(refCallIf.get());
 		if (p0ECF->getClass() == oEventClass) {
@@ -48,8 +49,10 @@ const shared_ptr<CallIf> simplify(
 		auto p0AndF = static_cast<CallIfAnd*>(refCallIf.get());
 		auto refSF1 = simplify(p0AndF->getCallIf1(), oEventClass);
 		auto refSF2 = simplify(p0AndF->getCallIf2(), oEventClass);
-		const std::type_info& oSF1Type = typeid(*refSF1);
-		const std::type_info& oSF2Type = typeid(*refSF2);
+		const CallIf& oSF1 = *refSF1;
+		const CallIf& oSF2 = *refSF2;
+		const std::type_info& oSF1Type = typeid(oSF1);
+		const std::type_info& oSF2Type = typeid(oSF2);
 		if (oSF1Type == typeid(CallIfTrue)) {
 			// And(True,Op2) = Op2
 			return refSF2; //---------------------------------------------------
@@ -64,8 +67,10 @@ const shared_ptr<CallIf> simplify(
 		auto p0OrF = static_cast<CallIfOr*>(refCallIf.get());
 		auto refSF1 = simplify(p0OrF->getCallIf1(), oEventClass);
 		auto refSF2 = simplify(p0OrF->getCallIf2(), oEventClass);
-		const std::type_info& oSF1Type = typeid(*refSF1);
-		const std::type_info& oSF2Type = typeid(*refSF2);
+		const CallIf& oSF1 = *refSF1;
+		const CallIf& oSF2 = *refSF2;
+		const std::type_info& oSF1Type = typeid(oSF1);
+		const std::type_info& oSF2Type = typeid(oSF2);
 		if (oSF1Type == typeid(CallIfFalse)) {
 			// Or(False, Op2) = Op2
 			return refSF2; //---------------------------------------------------
@@ -79,7 +84,8 @@ const shared_ptr<CallIf> simplify(
 	} else if (oCallIfType == typeid(CallIfNot)) {
 		auto p0NotF = static_cast<CallIfNot*>(refCallIf.get());
 		auto refSF = simplify(p0NotF->getCallIf(), oEventClass);
-		const std::type_info& oSFType = typeid(*refSF);
+		const CallIf& oSF = *refSF;
+		const std::type_info& oSFType = typeid(oSF);
 		if (oSFType == typeid(CallIfFalse)) {
 			// Not(False) = True
 			return CallIfTrue::getInstance(); //--------------------------------
