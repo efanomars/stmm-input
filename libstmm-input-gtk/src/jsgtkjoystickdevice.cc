@@ -380,8 +380,8 @@ void JoystickDevice::finalizeListenerButton(JsGtkDeviceManager::ListenerData& oL
 	// work on copy
 	auto aButtonPressed = m_aButtonPressed;
 
-	const size_t nTotButtons = aButtonPressed.size();
-	for (size_t nButtonIdx = 0; nButtonIdx < nTotButtons; ++nButtonIdx) {
+	const int32_t nTotButtons = static_cast<int32_t>(aButtonPressed.size());
+	for (int32_t nButtonIdx = 0; nButtonIdx < nTotButtons; ++nButtonIdx) {
 		auto& oButtonData = aButtonPressed[nButtonIdx];
 		if (!oButtonData.m_bPressed) {
 			continue; // for -------------
@@ -475,8 +475,8 @@ void JoystickDevice::cancelSelectedAccessorButtons(const shared_ptr<JoystickCapa
 	// work on copy
 	auto aButtonPressed = m_aButtonPressed;
 
-	const size_t nTotButtons = aButtonPressed.size();
-	for (size_t nButtonIdx = 0; nButtonIdx < nTotButtons; ++nButtonIdx) {
+	const int32_t nTotButtons = static_cast<int32_t>(aButtonPressed.size());
+	for (int32_t nButtonIdx = 0; nButtonIdx < nTotButtons; ++nButtonIdx) {
 		auto& oButtonData = aButtonPressed[nButtonIdx];
 		if (!oButtonData.m_bPressed) {
 			continue; // for

@@ -191,7 +191,7 @@ bool GtkPointerDevice::handleGdkEventButton(GdkEventButton* p0ButtonEv, const sh
 			// orphan release, ignore it
 			return bContinue; //------------------------------------------------
 		}
-		const int32_t nTotButtons = m_aButtons.size();
+		const int32_t nTotButtons = static_cast<int32_t>(m_aButtons.size());
 		// Is any other button pressed after the release?
 		bAnyButtonPressed = (nTotButtons > 1);
 		// erase the button
@@ -423,7 +423,7 @@ void GtkPointerDevice::finalizeListenerButton(MasGtkDeviceManager::ListenerData&
 	// work on copy
 	auto aButtons = m_aButtons;
 
-	const int32_t nTotPressedButtons = aButtons.size();
+	const int32_t nTotPressedButtons = static_cast<int32_t>(aButtons.size());
 	int32_t nPressedButtonCount = 0;
 	for (auto& nButton : aButtons) {
 		++nPressedButtonCount;

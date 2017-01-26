@@ -89,7 +89,7 @@ function(DefineTargetCompileOptionsType STMMI_TARGET STMMI_INTERFACE_TYPE)
         endif()
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         # no idea if this really works
-        set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} /W4 /WX /EHsc")
+        set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} /W2 /EHsc") # /WX warnings as errors
     endif()
     #
     string(REPLACE " " ";" REPLACED_FLAGS ${STMMI_COMPILE_WARNINGS})

@@ -143,7 +143,7 @@ shared_ptr<GtkXKeyboardDevice> FloGtkDeviceManager::addGtkXKeyboardDevice(int nX
 }
 void FloGtkDeviceManager::removeGtkXKeyboardDevice(int32_t nIdx)
 {
-	const int32_t nLastIdx = m_aKeyboardDevices.size() - 1;
+	const int32_t nLastIdx = static_cast<int32_t>(m_aKeyboardDevices.size()) - 1;
 	if (nIdx < nLastIdx) {
 		m_aKeyboardDevices[nIdx].swap(m_aKeyboardDevices[nLastIdx]);
 	}

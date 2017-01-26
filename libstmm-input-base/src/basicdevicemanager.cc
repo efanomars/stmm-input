@@ -154,7 +154,7 @@ bool BasicDeviceManager::addEventListener(const shared_ptr<EventListener>& refEv
 	oListenerData.m_refCallIf = refCallIf;
 	oListenerData.m_p0EventListener = p0EventListener;
 	oListenerData.m_itListeners = itListeners;
-	const int32_t nTotEventClasses = m_aEventClasses.size();
+	const int32_t nTotEventClasses = static_cast<int32_t>(m_aEventClasses.size());
 	assert(oListenerData.m_aCallIfEventClass.empty());
 	oListenerData.m_aCallIfEventClass.resize(nTotEventClasses);
 	if (refCallIf) {
@@ -301,9 +301,10 @@ std::vector<Event::Class> BasicDeviceManager::getEventClasses() const
 }
 int32_t BasicDeviceManager::getEventClassIndex(const Event::Class& oEventClass) const
 {
-	for (size_t nIdx = 0; nIdx < m_aEventClasses.size(); ++nIdx) {
+	const int32_t nTotEventClasses = static_cast<int32_t>(m_aEventClasses.size());
+	for (int32_t nIdx = 0; nIdx < nTotEventClasses; ++nIdx) {
 		if (m_aEventClasses[nIdx] == oEventClass) {
-			return static_cast<int32_t>(nIdx);
+			return nIdx;
 		}
 	}
 	return -1;

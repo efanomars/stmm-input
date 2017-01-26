@@ -75,7 +75,7 @@ public:
 	{
 		const int32_t nIdx = findDeviceId(nDeviceId);
 		assert(nIdx >= 0);
-		const int32_t nLastIdx = m_aJoysticks.size() - 1;
+		const int32_t nLastIdx = static_cast<int32_t>(m_aJoysticks.size()) - 1;
 		if (nIdx < nLastIdx) {
 			m_aJoysticks[nIdx].swap(m_aJoysticks[nLastIdx]);
 		}
