@@ -80,7 +80,7 @@ function(DefineTargetCompileOptionsType STMMI_TARGET STMMI_INTERFACE_TYPE)
     if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
         set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -Wall -Wextra -Werror \
 -pedantic-errors -Wmissing-include-dirs -Winit-self \
--Woverloaded-virtual") # "-Wpedantic -Wredundant-decls -Wsign-conversion"
+-Woverloaded-virtual -Wsign-promo") # "-Wpedantic -Wredundant-decls -Wsign-conversion  -Wold-style-cast"
         #if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") AND NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6))
         #    set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -Wno-potentially-evaluated-expression")
         #endif()
