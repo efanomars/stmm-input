@@ -53,8 +53,9 @@ removes the build subfolder of each project.
 Dependencies
 ============
 
-- libstmm-input depends on
-    + libstdc++
+- libstmm-input
+    + no dependencies
+    + uses RTTI
 
 - libstmm-input-base depends on
     + libstmm-input
@@ -70,6 +71,7 @@ Dependencies
     + libxi-dev
     + libx11-dev
     + libgtkmm-3.0-dev
+    + uses exceptions
 
 - device-floater     depends on
     + libgtkmm-3.0-dev
