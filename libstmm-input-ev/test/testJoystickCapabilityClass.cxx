@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -73,7 +73,7 @@ TEST_F(JoystickCapabilityClassFixture, HatsFirstAndLastExist)
 	EXPECT_TRUE(std::find(oAllHats.begin(), oAllHats.end(), stmi::JoystickCapability::HAT_CENTER_CANCEL) != oAllHats.end());
 
 	EXPECT_TRUE(stmi::JoystickCapability::isValidHatValue(stmi::JoystickCapability::HAT_LEFTUP));
-	EXPECT_FALSE(stmi::JoystickCapability::isValidHatValue((stmi::JoystickCapability::HAT_VALUE)(-77)));
+	EXPECT_FALSE(stmi::JoystickCapability::isValidHatValue(static_cast<stmi::JoystickCapability::HAT_VALUE>(-77)));
 }
 
 TEST_F(JoystickCapabilityClassFixture, ButtonsFirstAndLastExist)
@@ -83,7 +83,7 @@ TEST_F(JoystickCapabilityClassFixture, ButtonsFirstAndLastExist)
 	EXPECT_TRUE(std::find(oAllButtons.begin(), oAllButtons.end(), stmi::JoystickCapability::BUTTON_GEAR_UP) != oAllButtons.end());
 
 	EXPECT_TRUE(stmi::JoystickCapability::isValidButton(stmi::JoystickCapability::BUTTON_A));
-	EXPECT_FALSE(stmi::JoystickCapability::isValidButton((stmi::JoystickCapability::BUTTON)(-77)));
+	EXPECT_FALSE(stmi::JoystickCapability::isValidButton(static_cast<stmi::JoystickCapability::BUTTON>(-77)));
 }
 
 TEST_F(JoystickCapabilityClassFixture, AxesFirstAndLastExist)
@@ -93,7 +93,7 @@ TEST_F(JoystickCapabilityClassFixture, AxesFirstAndLastExist)
 	EXPECT_TRUE(std::find(oAllAxes.begin(), oAllAxes.end(), stmi::JoystickCapability::AXIS_TILT_Y) != oAllAxes.end());
 
 	EXPECT_TRUE(stmi::JoystickCapability::isValidAxis(stmi::JoystickCapability::AXIS_THROTTLE));
-	EXPECT_FALSE(stmi::JoystickCapability::isValidAxis((stmi::JoystickCapability::AXIS)(-77)));
+	EXPECT_FALSE(stmi::JoystickCapability::isValidAxis(static_cast<stmi::JoystickCapability::AXIS>(-77)));
 }
 
 } // namespace testing

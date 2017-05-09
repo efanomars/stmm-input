@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -229,7 +229,7 @@ protected:
 			static_assert(!std::is_same<Capability,T>::value, "Wrong type.");
 			static_assert(!std::is_same<DeviceManagerCapability,T>::value, "Wrong type.");
 			assert(p0CapabilityClassId != nullptr);
-			assert((*p0CapabilityClassId) != (char)0);
+			assert((*p0CapabilityClassId) != static_cast<char>(0));
 			assert(!getNamedTypes().hasType(typeid(T)));
 			getNamedTypes().addType(typeid(T), p0CapabilityClassId, std::is_base_of<DeviceManagerCapability,T>::value);
 			m_oFirstInstanceClass = Class(typeid(T));

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -134,7 +134,7 @@ public:
 			std::cout << "  stringId=" << oPair.first << " typeid().name=" << oPair.second.name() << std::endl;
 		}
 		for (auto& oPair : m_oTypeData) {
-			std::cout << "  typeid().name=" << (*oPair.first).name() << " addr=" << (int64_t)(oPair.first) 
+			std::cout << "  typeid().name=" << (*oPair.first).name() << " addr=" << reinterpret_cast<int64_t>(oPair.first)
 						<< "   stringId=" << oPair.second.m_p0StringId << "   size(m_oData)=" << sizeof(oPair.second.m_oData) << std::endl;
 		}
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -135,7 +135,7 @@ JoystickButtonEvent::JoystickButtonEvent(int64_t nTimeUsec, const shared_ptr<Acc
 bool JoystickButtonEvent::getAsKey(HARDWARE_KEY& eKey, AS_KEY_INPUT_TYPE& eType, bool& bMoreThanOne) const
 {
 	eKey = static_cast<HARDWARE_KEY>(m_eButton);
-	eType = (AS_KEY_INPUT_TYPE)m_eType;
+	eType = static_cast<AS_KEY_INPUT_TYPE>(m_eType);
 	bMoreThanOne = false;
 	return true;
 }

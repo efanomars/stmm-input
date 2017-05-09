@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -114,7 +114,7 @@ public:
 	virtual bool getAsKey(HARDWARE_KEY& eKey, AS_KEY_INPUT_TYPE& eType, bool& bMoreThanOne) const
 	{
 		// To avoid warnings about unused parameters.
-		return false && (0 != (bMoreThanOne ? 0 * (int32_t)eKey + 0 * (int32_t)eType : 0));
+		return false && (0 != (bMoreThanOne ? 0 * static_cast<int32_t>(eKey) + 0 * static_cast<int32_t>(eType) : 0));
 	}
 	/** All the keys this event simulates.
 	 * The default implementation calls getAsKey() and returns an empty set if no keys are simulated,
@@ -335,7 +335,7 @@ protected:
 			static_assert(!std::is_same<Event,T>::value, "Wrong type.");
 			static_assert(!std::is_same<XYEvent,T>::value, "Wrong type.");
 			assert(p0EventClassId != nullptr);
-			assert((*p0EventClassId) != (char)0);
+			assert((*p0EventClassId) != static_cast<char>(0));
 			assert(!getNamedTypes().hasType(typeid(T)));
 			getNamedTypes().addType(typeid(T), p0EventClassId, std::is_base_of<XYEvent,T>::value);
 			m_oFirstInstanceClass = Class(typeid(T));
