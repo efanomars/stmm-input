@@ -24,6 +24,7 @@
 # - runs all tests
 # - makes sure no line in the code starts with std::cout
 # - optionally calls clang-llvm sanitizer
+# - optionally calls clang-tidy
 
 import sys
 import os

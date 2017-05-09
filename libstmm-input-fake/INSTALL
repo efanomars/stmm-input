@@ -35,7 +35,9 @@ To change the default installation directory add definition
 sudo might be omitted in the preceding command if installing to a directory 
 owned by the current user.
 
+  $ sudo ldconfig
 
+  
 Alternatively you can just execute the script
 
   $ ./scripts/install_libstmm-input-fake.py -b Release  --destdir /home/adam/mylib
@@ -70,4 +72,4 @@ create a symbolic link to them. From this directory:
   $ rmdir googletest
   $ ln -s /path/to/googletest/dir  googletest
 
-In both cases cmake will build googletest suorces with the library's tests.
+In both cases cmake will build googletest sources with the library's tests.

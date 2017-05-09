@@ -58,6 +58,7 @@ set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/childdevicemanager.h
         ${STMMI_HEADERS_DIR}/parentdevicemanager.h
         ${STMMI_HEADERS_DIR}/stmm-input-base.h
+        ${STMMI_HEADERS_DIR}/stmm-input-base-config.h
       )
 #
 # Sources dir
@@ -68,20 +69,25 @@ set(STMMI_SOURCES
         ${STMMI_SOURCES_DIR}/callifsimplifier.h
         ${STMMI_SOURCES_DIR}/childdevicemanager.cc
         ${STMMI_SOURCES_DIR}/parentdevicemanager.cc
-        #${STMMI_SOURCES_DIR}/basicdevice.cc
         ${STMMI_SOURCES_DIR}/basicdevicemanager.cc
         ${STMMI_SOURCES_DIR}/util.h
       )
 
 # Define library
-add_library(stmm-input-base ${STMMI_SOURCES})
+add_library(stmm-input-base ${STMMI_SOURCES} ${PROJECT_BINARY_DIR}/stmm-input-base-config.cc)
 
 DefineTargetPublicCompileOptions(stmm-input-base)
 
-# Set install dir for pkg-config file
-set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+# Set version for stmm-input-base-config.cc.in
+set(STMMI_PKG_VERSION "${STMM_INPUT_BASE_VERSION}")
+# Create config file for library
+configure_file("${PROJECT_SOURCE_DIR}/src/stmm-input-base-config.cc.in"
+               "${PROJECT_BINARY_DIR}/stmm-input-base-config.cc" @ONLY)
 
 if (PKG_CONFIG_FOUND)
+    # Set install dir for pkg-config file
+    set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+
     # Create pkg-config file for shared library
     configure_file("${PROJECT_SOURCE_DIR}/stmm-input-base.pc.in"
                    "${PROJECT_BINARY_DIR}/stmm-input-base.pc" @ONLY)
@@ -135,4 +141,3 @@ install(FILES ${STMMI_HEADERS} DESTINATION "include/stmm-input-base")
 if (PKG_CONFIG_FOUND)
     install(FILES  ${PROJECT_BINARY_DIR}/stmm-input-base.pc   DESTINATION "lib/pkgconfig")
 endif()
-

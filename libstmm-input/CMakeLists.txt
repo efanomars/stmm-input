@@ -40,6 +40,7 @@ set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/hardwarekey.h
         ${STMMI_HEADERS_DIR}/private-namedtypes.h
         ${STMMI_HEADERS_DIR}/stmm-input.h
+        ${STMMI_HEADERS_DIR}/stmm-input-config.h
         ${STMMI_HEADERS_DIR}/xyevent.h
         )
 #
@@ -58,14 +59,20 @@ set(STMMI_SOURCES
         )
 
 # Define library
-add_library(stmm-input ${STMMI_SOURCES})
+add_library(stmm-input ${STMMI_SOURCES} ${PROJECT_BINARY_DIR}/stmm-input-config.cc)
 
 DefineTargetPublicCompileOptions(stmm-input)
 
-# Set install dir for pkg-config file
-set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+# Set version for stmm-input-config.cc.in
+set(STMMI_PKG_VERSION "${STMM_INPUT_VERSION}")
+# Create config file for library
+configure_file("${PROJECT_SOURCE_DIR}/src/stmm-input-config.cc.in"
+               "${PROJECT_BINARY_DIR}/stmm-input-config.cc" @ONLY)
 
 if (PKG_CONFIG_FOUND)
+    # Set install dir for pkg-config file
+    set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+
     # Create pkg-config file for shared library
     configure_file("${PROJECT_SOURCE_DIR}/stmm-input.pc.in"
                    "${PROJECT_BINARY_DIR}/stmm-input.pc" @ONLY)

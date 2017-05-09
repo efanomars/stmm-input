@@ -26,6 +26,7 @@
 #include "gtkaccessor.h"
 #include "gtkdevicemanager.h"
 #include "gdkkeyconverterevdev.h"
+#include "stmm-input-gtk-config.h"
 
 #include <stmm-input-ev/stmm-input-ev.h>
 

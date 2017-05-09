@@ -1,7 +1,7 @@
 stmm-input-fake                                                    {#mainpage}
 ===============
 
-Header-only library for developers that need to simulate a device manager
+Library for developers that need to simulate a device manager
 to feed their test code with fake events defined by the library
 libstmm-input-ev.
 
@@ -14,8 +14,9 @@ exposes methods that simulate
 Usage
 -----
 
-In your test cases instead of instantiating a device manager with 
-stmi::GtkDeviceManager::create() use std::make_shared<stmi::testing::FakeDeviceManager>()
+In your test cases instead of instantiating a device manager with
+(for example) stmi::GtkDeviceManager::create() use 
+std::make_shared<stmi::testing::FakeDeviceManager>()
 and pass it to the to be tested classes instead.
 
 See the 'examples/' subfolder.

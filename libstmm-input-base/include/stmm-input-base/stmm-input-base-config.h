@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,24 +15,31 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
 /*
- * File:   stmm-input-ev.h
+ * File:   stmm-input-base-config.h
  */
 
-#ifndef _STMI_STMM_INPUT_EV_H_
-#define _STMI_STMM_INPUT_EV_H_
+#ifndef _STMI_STMM_INPUT_BASE_LIB_CONFIG_
+#define _STMI_STMM_INPUT_BASE_LIB_CONFIG_
 
-/* This file includes all headers of the stmm-input-ev library. */
+namespace stmi
+{
 
-#include "devicemgmtevent.h"
-#include "joystickevent.h"
-#include "keyevent.h"
-#include "pointerevent.h"
-#include "touchevent.h"
-#include "stddevicemanager.h"
-#include "stdparentdevicemanager.h"
-#include "stmm-input-ev-config.h"
+namespace libconfig
+{
 
-#include <stmm-input-base/stmm-input-base.h>
+namespace base
+{
 
-#endif	/* _STMI_STMM_INPUT_EV_H_ */
+/** The stmm-input-base library version.
+ * @return The version string. Cannot be empty.
+ */
+const char* getVersion();
+
+} // namespace base
+
+} // namespace libconfig
+
+} // namespace stmi
+
+#endif	/* _STMI_STMM_INPUT_BASE_LIB_CONFIG_ */
 

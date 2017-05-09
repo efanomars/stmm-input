@@ -25,6 +25,7 @@
 
 #include "callifs.h"
 #include "xyevent.h"
+#include "stmm-input-config.h"
 
 #endif	/* _STMI_STMM_INPUT_H_ */
 

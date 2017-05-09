@@ -79,13 +79,13 @@ set(STMMI_HEADERS_DATA
         )
 # "SubProject" STMMI_HEADERS_MAS depends on 
 #   STMMI_HEADERS_DATA 
-#   libstmm-input-base
+#   libstmm-input-ev
 set(STMMI_HEADERS_MAS
 # Moved to sources        ${STMMI_HEADERS_DIR}/masgtkdevicemanager.h
         )
 # "SubProject" STMMI_HEADERS_FLO depends on
 #   STMMI_HEADERS_DATA 
-#   libstmm-input-base
+#   libstmm-input-ev
 #   libxi-dev
 #   libx11-dev
 set(STMMI_HEADERS_FLO
@@ -93,7 +93,7 @@ set(STMMI_HEADERS_FLO
         )
 # "SubProject" STMMI_HEADERS_JS depends on
 #   STMMI_HEADERS_DATA 
-#   libstmm-input-base
+#   libstmm-input-ev
 set(STMMI_HEADERS_JS
 # Moved to sources        ${STMMI_HEADERS_DIR}/jsgtkdevicemanager.h
         )
@@ -104,6 +104,7 @@ set(STMMI_HEADERS_JS
 set(STMMI_HEADERS_ALL
         ${STMMI_HEADERS_DIR}/gtkdevicemanager.h
         ${STMMI_HEADERS_DIR}/stmm-input-gtk.h
+        ${STMMI_HEADERS_DIR}/stmm-input-gtk-config.h
         )
 # Concatenate header file lists
 #set(STMMI_HEADERS)
@@ -174,9 +175,15 @@ list(APPEND  STMMI_SOURCES
         )
 
 # Define library
-add_library(stmm-input-gtk ${STMMI_SOURCES})
+add_library(stmm-input-gtk ${STMMI_SOURCES} ${PROJECT_BINARY_DIR}/stmm-input-gtk-config.cc)
 
 DefineTargetPublicCompileOptions(stmm-input-gtk)
+
+# Set version for stmm-input-gtk-config.cc.in
+set(STMMI_PKG_VERSION "${STMM_INPUT_GTK_VERSION}")
+# Create config file for library
+configure_file("${PROJECT_SOURCE_DIR}/src/stmm-input-gtk-config.cc.in"
+               "${PROJECT_BINARY_DIR}/stmm-input-gtk-config.cc" @ONLY)
 
 # Set install dir for pkg-config file
 set(STMMI_GTK_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})

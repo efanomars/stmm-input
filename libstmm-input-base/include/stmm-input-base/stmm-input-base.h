@@ -27,6 +27,7 @@
 #include "basicdevicemanager.h"
 #include "childdevicemanager.h"
 #include "parentdevicemanager.h"
+#include "stmm-input-base-config.h"
 
 #include <stmm-input/stmm-input.h>
 

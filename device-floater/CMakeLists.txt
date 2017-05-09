@@ -40,6 +40,7 @@ string(STRIP "${STMMI_DEVFLO_EXTRA_INCLUDE_DIRS}" STMMI_DEVFLO_EXTRA_INCLUDE_DIR
 
 # Source files (and headers only used for building)
 set(STMMI_DEVFLO_SOURCES
+        ${PROJECT_SOURCE_DIR}/src/config.h
         ${PROJECT_SOURCE_DIR}/src/devicefloater.h
         ${PROJECT_SOURCE_DIR}/src/devicefloater.cc
         ${PROJECT_SOURCE_DIR}/src/main.cc

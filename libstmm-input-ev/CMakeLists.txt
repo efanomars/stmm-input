@@ -67,6 +67,7 @@ set(STMMI_HEADERS
         ${STMMI_HEADERS_DIR}/stddevicemanager.h
         ${STMMI_HEADERS_DIR}/stdparentdevicemanager.h
         ${STMMI_HEADERS_DIR}/stmm-input-ev.h
+        ${STMMI_HEADERS_DIR}/stmm-input-ev-config.h
         ${STMMI_HEADERS_DIR}/touchcapability.h
         ${STMMI_HEADERS_DIR}/touchevent.h
        )
@@ -90,14 +91,20 @@ set(STMMI_SOURCES
        )
 
 # Define library
-add_library(stmm-input-ev ${STMMI_SOURCES})
+add_library(stmm-input-ev ${STMMI_SOURCES} ${PROJECT_BINARY_DIR}/stmm-input-ev-config.cc)
 
 DefineTargetPublicCompileOptions(stmm-input-ev)
 
-# Set install dir for pkg-config file
-set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+# Set version for stmm-input-base-config.cc.in
+set(STMMI_PKG_VERSION "${STMM_INPUT_EV_VERSION}")
+# Create config file for library
+configure_file("${PROJECT_SOURCE_DIR}/src/stmm-input-ev-config.cc.in"
+               "${PROJECT_BINARY_DIR}/stmm-input-ev-config.cc" @ONLY)
 
 if (PKG_CONFIG_FOUND)
+    # Set install dir for pkg-config file
+    set(STMMI_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+
     # Create pkg-config file for shared library
     configure_file("${PROJECT_SOURCE_DIR}/stmm-input-ev.pc.in"
                    "${PROJECT_BINARY_DIR}/stmm-input-ev.pc" @ONLY)

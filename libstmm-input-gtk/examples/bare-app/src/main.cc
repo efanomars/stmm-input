@@ -17,7 +17,7 @@
 
 #include "barewindow.h"
 
-#include <stmm-input-gtk/gtkdevicemanager.h>
+#include <stmm-input-gtk/stmm-input-gtk.h>
 #include <stmm-input/devicemanager.h>
 #include <stmm-input/event.h>
 
@@ -39,6 +39,10 @@ int bareAppMain(int argc, char** argv)
 	Glib::RefPtr<Gtk::Application> refApp = Gtk::Application::create(argc, argv, sAppName);
 	std::cout << "bare-app prints hardware key events from keyboards and simulated keys events" << std::endl;
 	std::cout << "of buttons, hats, etc. from mice and joysticks to the terminal" << std::endl;
+	std::cout << "bare-app uses libstmm-input      version " << stmi::libconfig::core::getVersion() << std::endl;
+	std::cout << "              libstmm-input-base version " << stmi::libconfig::base::getVersion() << std::endl;
+	std::cout << "              libstmm-input-ev   version " << stmi::libconfig::ev::getVersion() << std::endl;
+	std::cout << "              libstmm-input-gtk  version " << stmi::libconfig::gtk::getVersion() << std::endl;
 	// device manager has to be created after gtk is initialized!
 	shared_ptr<stmi::DeviceManager> refDM = stmi::GtkDeviceManager::create();
 	if (!refDM) {

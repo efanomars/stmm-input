@@ -29,6 +29,7 @@
 #include "fakekeydevice.h"
 #include "fakepointerdevice.h"
 #include "faketouchdevice.h"
+#include "stmm-input-fake-config.h"
 
 #include <stmm-input-ev/stmm-input-ev.h>
 

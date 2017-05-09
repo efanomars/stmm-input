@@ -17,7 +17,7 @@
 
 # File:   install_libstmm-input-fake.py
 
-# Compiles and installs the libstmm-input-fake header-only library.
+# Compiles and installs the libstmm-input-fake library.
 
 import sys
 import os
@@ -26,6 +26,8 @@ import subprocess
 def main():
 	import argparse
 	oParser = argparse.ArgumentParser()
+	oParser.add_argument("-s", "--staticlib", help="build static library (instead of shared)", choices=['On', 'Off', 'Cache']\
+						, default="Cache", dest="sBuildStaticLib")
 	oParser.add_argument("-b", "--buildtype", help="build type (default=Release)"\
 						, choices=['Debug', 'Release', 'MinSizeRel', 'RelWithDebInfo']\
 						, default="Release", dest="sBuildType")
@@ -49,6 +51,15 @@ def main():
 	#print("sScriptDir:" + sScriptDir)
 	os.chdir(sScriptDir)
 	os.chdir("..")
+	#
+	sBuildStaticLib = "-D BUILD_SHARED_LIBS="
+	if oArgs.sBuildStaticLib == "On":
+		sBuildStaticLib += "OFF"
+	elif oArgs.sBuildStaticLib == "Off":
+		sBuildStaticLib += "ON"
+	else:
+		sBuildStaticLib = ""
+	#print("sBuildStaticLib:" + sBuildStaticLib)
 	#
 	sBuildTests = "-D BUILD_TESTING="
 	if oArgs.sBuildTests == "On":
@@ -99,19 +110,20 @@ def main():
 
 	os.chdir("build")
 
-	subprocess.check_call("cmake {} {} {} {} {} {} ..".format(\
-			sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSanitize).split())
+	subprocess.check_call("cmake {} {} {} {} {} {} {} ..".format(\
+			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSanitize).split())
 	subprocess.check_call("make".split())
-
-	# The following is (probably) necessary because it's a header-only library
-	oProc = subprocess.Popen("cmake -N -LA".split(), stdout=subprocess.PIPE, shell=False)
-	(sOut, sErr) = oProc.communicate()
-	if "BUILD_DOCS:BOOL=ON" in str(sOut):
-		subprocess.check_call("make doc".split())
-
 	subprocess.check_call("{} make install".format(sSudo).split())
-	#if not oArgs.bDontSudo:
-	#	subprocess.check_call("sudo ldconfig".split())
+
+	if oArgs.sBuildStaticLib == "Cache":
+		oProc = subprocess.Popen("cmake -N -LA".split(), stdout=subprocess.PIPE, shell=False)
+		(sOut, sErr) = oProc.communicate()
+		bSharedLib = ("BUILD_SHARED_LIBS:BOOL=ON" in str(sOut))
+	else:
+		bSharedLib = (oArgs.sBuildStaticLib == "Off")
+
+	if bSharedLib and not oArgs.bDontSudo:
+		subprocess.check_call("sudo ldconfig".split())
 
 
 if __name__ == "__main__":

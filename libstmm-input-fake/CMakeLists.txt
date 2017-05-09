@@ -12,11 +12,9 @@ include(CommonUtil)
 
 CheckBinaryNotSourceTree()
 CheckBuildType()
-#header-only# DefineSharedLibOption()
+DefineSharedLibOption()
 DefineCommonOptions()
 DefineCommonCompileOptions()
-
-include(FindPkgConfig)
 
 # Libtool CURRENT/REVISION/AGE: here
 #   MAJOR is CURRENT interface
@@ -30,6 +28,8 @@ set(STMM_INPUT_FAKE_VERSION "${STMM_INPUT_FAKE_MAJOR_VERSION}.${STMM_INPUT_FAKE_
 set(STMM_INPUT_EV_MAJOR_VERSION_REQ 0)
 set(STMM_INPUT_EV_MINOR_VERSION_REQ 1)
 set(STMM_INPUT_EV_VERSION_REQ "${STMM_INPUT_EV_MAJOR_VERSION_REQ}.${STMM_INPUT_EV_MINOR_VERSION_REQ}")
+
+include(FindPkgConfig)
 
 if (PKG_CONFIG_FOUND)
     pkg_check_modules(STMMINPUTEV  REQUIRED  stmm-input-ev>=${STMM_INPUT_EV_VERSION_REQ})
@@ -68,6 +68,7 @@ set(STMMI_HEADERS_FAKES
         ${STMMI_HEADERS_DIR}/fakepointerdevice.h
         ${STMMI_HEADERS_DIR}/faketouchdevice.h
         ${STMMI_HEADERS_DIR}/stmm-input-fake.h
+        ${STMMI_HEADERS_DIR}/stmm-input-fake-config.h
         )
 # Concatenate header file lists
 #set(STMMI_HEADERS)
@@ -75,22 +76,28 @@ list(APPEND STMMI_HEADERS
         ${STMMI_HEADERS_FAKES}
         )
 #
-#header-only# # Sources dir
-#header-only# set(STMMI_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/src")
-#header-only# # Source files (and headers only used for building)
-#header-only# # Concatenate source file lists
-#header-only# list(APPEND  STMMI_SOURCES
-#header-only#         )
+# Sources dir
+set(STMMI_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/src")
+# Source files (and headers only used for building)
+# Concatenate source file lists
+list(APPEND  STMMI_SOURCES
+        )
 
 # Define library
-add_library(stmm-input-fake INTERFACE ) # ${STMMI_SOURCES}
+add_library(stmm-input-fake ${STMMI_SOURCES} ${PROJECT_BINARY_DIR}/stmm-input-fake-config.cc)
 
-DefineTargetInterfaceCompileOptions(stmm-input-fake)
+DefineTargetPublicCompileOptions(stmm-input-fake)
 
-# Set install dir for pkg-config file
-set(STMMI_FAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+# Set version for stmm-input-fake-config.cc.in
+set(STMMI_PKG_VERSION "${STMM_INPUT_FAKE_VERSION}")
+# Create config file for library
+configure_file("${PROJECT_SOURCE_DIR}/src/stmm-input-fake-config.cc.in"
+               "${PROJECT_BINARY_DIR}/stmm-input-fake-config.cc" @ONLY)
 
 if (PKG_CONFIG_FOUND)
+    # Set install dir for pkg-config file
+    set(STMMI_FAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+
     # Create pkg-config file for shared library
     configure_file("${PROJECT_SOURCE_DIR}/stmm-input-fake.pc.in"
                    "${PROJECT_BINARY_DIR}/stmm-input-fake.pc" @ONLY)
@@ -105,39 +112,39 @@ message(STATUS " CMAKE_CXX_FLAGS:               ${CMAKE_CXX_FLAGS}")
 message(STATUS " STMMI_FAKE_EXTRA_INCLUDE_DIRS: ${STMMI_FAKE_EXTRA_INCLUDE_DIRS}")
 message(STATUS " STMMI_FAKE_EXTRA_LIBS:         ${STMMI_FAKE_EXTRA_LIBS}")
 message(STATUS " STMMI_HEADERS:                 ${STMMI_HEADERS}")
-#header-only# message(STATUS " STMMI_SOURCES:                 ${STMMI_SOURCES}")
+message(STATUS " STMMI_SOURCES:                 ${STMMI_SOURCES}")
 message(STATUS " install prefix:                ${prefix}")
 message(STATUS " BUILD_DOCS:                    ${BUILD_DOCS}")
 message(STATUS " BUILD_TESTING:                 ${BUILD_TESTING}")
 
 # Documentation
 add_subdirectory(doc)
-#header-only# if (BUILD_DOCS)
-#header-only#     # build automatically, otherwise call `make doc`
-#header-only#     add_dependencies(stmm-input-fake doc)
-#header-only# endif()
+if (BUILD_DOCS)
+    # build automatically, otherwise call `make doc`
+    add_dependencies(stmm-input-fake doc)
+endif()
 
 # Testing
 add_subdirectory(googletest)
 enable_testing()
 add_subdirectory(test)
 
-#header-only# # Set library versions
-#header-only# set_target_properties(stmm-input-fake PROPERTIES
-#header-only#         VERSION ${STMM_INPUT_FAKE_VERSION}
-#header-only#         SOVERSION ${STMM_INPUT_FAKE_MAJOR_VERSION}
-#header-only# #        OUTPUT_NAME "stmm-input-fake-${STMM_INPUT_FAKE_VERSION}"
-#header-only#         )
+# Set library versions
+set_target_properties(stmm-input-fake PROPERTIES
+        VERSION ${STMM_INPUT_FAKE_VERSION}
+        SOVERSION ${STMM_INPUT_FAKE_MAJOR_VERSION}
+#        OUTPUT_NAME "stmm-input-fake-${STMM_INPUT_FAKE_VERSION}"
+        )
 
-#header-only# # Determine header installation dir
-#header-only# target_include_directories(stmm-input-fake    BEFORE INTERFACE
-#header-only#            $<BUILD_INTERFACE:${STMMI_HEADERS_DIR}>
-#header-only#            $<INSTALL_INTERFACE:include/stmm-input-fake>  # <prefix>/include/stmm-input-fake
-#header-only#           )
+# Determine header installation dir
+target_include_directories(stmm-input-fake    BEFORE PUBLIC
+           $<BUILD_INTERFACE:${STMMI_HEADERS_DIR}>
+           $<INSTALL_INTERFACE:include/stmm-input-fake>  # <prefix>/include/stmm-input-fake
+          )
 
-#header-only# target_link_libraries(stmm-input-fake INTERFACE ${STMMI_FAKE_EXTRA_LIBS}) # ${STMMI_FAKE_EXTRA_LDFLAGS}
+target_link_libraries(stmm-input-fake ${STMMI_FAKE_EXTRA_LIBS}) # ${STMMI_FAKE_EXTRA_LDFLAGS}
 
-#header-only# install(TARGETS stmm-input-fake LIBRARY DESTINATION "lib"  ARCHIVE DESTINATION "lib")
+install(TARGETS stmm-input-fake LIBRARY DESTINATION "lib"  ARCHIVE DESTINATION "lib")
 
 install(FILES ${STMMI_HEADERS}   DESTINATION "include/stmm-input-fake")
 

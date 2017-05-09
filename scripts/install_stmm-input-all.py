@@ -115,8 +115,8 @@ def main():
 
 	print("== install libstmm-input-fake ========" + sInfo + "==")
 	os.chdir("libstmm-input-fake/scripts")
-	subprocess.check_call("./install_libstmm-input-fake.py {} {} {} {} {} {} {}".format(\
-			sBuildFakeTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize).split())
+	subprocess.check_call("./install_libstmm-input-fake.py {} {} {} {} {} {} {} {}".format(\
+			sBuildStaticLib, sBuildFakeTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize).split())
 	os.chdir("../..")
 
 	if not oArgs.bOmitGtk:

@@ -58,8 +58,8 @@ def main():
 		sSudo = "sudo"
 
 	subprocess.check_call("{} rm -r -f       {}/include/stmm-input-fake".format(sSudo, sDestDir).split())
-	#subprocess.check_call("{} rm    -f        {}/lib/libstmm-input-fake.so*".format(sSudo, sDestDir), shell=True)
-	#subprocess.check_call("{} rm    -f        {}/lib/libstmm-input-fake.a".format(sSudo, sDestDir).split())
+	subprocess.check_call("{} rm    -f        {}/lib/libstmm-input-fake.so*".format(sSudo, sDestDir), shell=True)
+	subprocess.check_call("{} rm    -f        {}/lib/libstmm-input-fake.a".format(sSudo, sDestDir).split())
 	subprocess.check_call("{} rm    -f {}/lib/pkgconfig/stmm-input-fake.pc".format(sSudo, sDestDir).split())
 	subprocess.check_call("{} rm -r -f     {}/share/doc/stmm-input-fake".format(sSudo, sDestDir).split())
 
@@ -68,8 +68,8 @@ def main():
 		subprocess.check_call("{} rm -r -f libstmm-input-fake/build".format(sSudo).split())
 		subprocess.check_call("{} rm -r -f libstmm-input-fake/examples/spinn/build".format(sSudo).split())
 
-	#if not oArgs.bDontSudo:
-		#subprocess.check_call("sudo ldconfig".split())
+	if not oArgs.bDontSudo:
+		subprocess.check_call("sudo ldconfig".split())
 
 
 if __name__ == "__main__":
