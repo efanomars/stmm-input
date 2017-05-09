@@ -17,7 +17,7 @@
 
 #include "spinn.h"
 
-#include "fakedevicemanager.h"
+#include <stmm-input-fake/stmm-input-fake.h>
 
 /* from the fit library (github.com/pfultz2/Fit) */
 #define EXPECT_TRUE(...) if (!(__VA_ARGS__)) { std::cout << "***FAILED:  EXPECT_TRUE(" << #__VA_ARGS__ << ")\n     File: " << __FILE__ << ": " << __LINE__ << '\n'; return 1; }
@@ -92,6 +92,8 @@ int testPointer()
 
 int main(int /*argc*/, char** /*argv*/)
 {
+	std::cout << "Spinn Tests using stmm-input-fake version: " << stmi::libconfig::fake::getVersion() << '\n';
+
 	EXECUTE_TEST(example::testing::testConstruction());
 	EXECUTE_TEST(example::testing::testKeys());
 	EXECUTE_TEST(example::testing::testPointer());
