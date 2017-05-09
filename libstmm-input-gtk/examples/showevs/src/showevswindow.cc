@@ -1,5 +1,5 @@
 /*
- *  Copyright © 2016   Stefano Marsili, <stemars@gmx.ch>
+ *  Copyright © 2016-2017   Stefano Marsili, <stemars@gmx.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -570,7 +570,7 @@ void ShowEvsWindow::onWindowBButtonClicked()
 		m_refWindowB->set_title("WindowB (Parent)");
 		m_refWindowB->set_default_size(s_nInitialWindowSizeW / 1.4, s_nInitialWindowSizeH / 1.8);
 
-		m_refWindowB->signal_hide().connect(sigc::mem_fun(this, &ShowEvsWindow::onWindowAHide));
+		m_refWindowB->signal_hide().connect(sigc::mem_fun(this, &ShowEvsWindow::onWindowBHide));
 		m_refWindowB->set_transient_for(*this);
 		m_refWindowB->set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
 		//
