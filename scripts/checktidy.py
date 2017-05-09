@@ -52,10 +52,10 @@ def main():
 	callTidy("libstmm-input")
 	callTidy("libstmm-input-base")
 	callTidy("libstmm-input-ev")
-	#callTidy("libstmm-input-fake")
-	os.chdir("libstmm-input-fake/examples")
-	callTidy("spinn")
-	os.chdir("../..")
+	callTidy("libstmm-input-fake")
+	#os.chdir("libstmm-input-fake/examples")
+	#callTidy("spinn")
+	#os.chdir("../..")
 	callTidy("libstmm-input-gtk")
 
 
