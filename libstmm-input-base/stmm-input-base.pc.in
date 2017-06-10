@@ -9,6 +9,7 @@ Name: stmm-input-base
 Description: C++ Device Input Framework - Helper classes for implementations
 Version: @STMM_INPUT_BASE_VERSION@
 URL: https://github.com/efanomars/stmm-input
+# Beware! The space between the library name and the comparison (>=) is necessary!
 Requires: stmm-input >= @STMM_INPUT_VERSION_REQ@
 Conflicts:
 Libs: -L${libdir} -lstmm-input-base

@@ -31,7 +31,7 @@ import os
 import subprocess
 
 
-def testAll(sBuildType, sDestDir, sSudo, sStatic, bSanitize):
+def testAll(sBuildType, sOmitGtk, sOmitX11, sDestDir, sSudo, sStatic, bSanitize):
 	if bSanitize:
 		sSanitize = "--sanitize"
 		sSanitizeOptions = "ASAN_OPTIONS=check_initialization_order=1:strict_init_order=1:detect_odr_violation=1"
@@ -45,7 +45,8 @@ def testAll(sBuildType, sDestDir, sSudo, sStatic, bSanitize):
 	subprocess.check_call("./scripts/uninstall_stmm-input-all.py -r -y --destdir {}  {}".format(sDestDir, sSudo).split())
 
 	subprocess.check_call("./scripts/install_stmm-input-all.py -b {}  -t On  -d On --docs-to-log  --destdir {}  {} {} {}"\
-			.format(sBuildType, sDestDir, sSudo, sStatic, sSanitize).split())
+			" {} {}"\
+			.format(sBuildType, sDestDir, sSudo, sStatic, sSanitize, sOmitGtk, sOmitX11).split())
 
 
 	os.chdir("libstmm-input/build")
@@ -72,13 +73,14 @@ def testAll(sBuildType, sDestDir, sSudo, sStatic, bSanitize):
 		raise RuntimeError("Error: libstmm-input-fake_doxy.log not empty")
 	os.chdir("../..")
 
-	os.chdir("libstmm-input-gtk/build")
-	subprocess.check_call(sSanitizeOptions + sSanitizeIgnoreOptions + " make test", shell=True)
-	if os.path.getsize("libstmm-input-gtk_doxy.log") > 0:
-		raise RuntimeError("Error: libstmm-input-gtk_doxy.log not empty")
-	os.chdir("../..")
+	if (sOmitGtk == ""):
+		os.chdir("libstmm-input-gtk/build")
+		subprocess.check_call(sSanitizeOptions + sSanitizeIgnoreOptions + " make test", shell=True)
+		if os.path.getsize("libstmm-input-gtk_doxy.log") > 0:
+			raise RuntimeError("Error: libstmm-input-gtk_doxy.log not empty")
+		os.chdir("../..")
 
-	if not bSanitize:
+	if (not bSanitize) and (sOmitGtk == ""):
 		os.chdir("libstmm-input-gtk/examples/bare-app")
 		if not os.path.isdir("build"):
 			os.mkdir("build")
@@ -104,10 +106,14 @@ def testAll(sBuildType, sDestDir, sSudo, sStatic, bSanitize):
 		subprocess.check_call("make test".split())
 		os.chdir("../../../..")
 
-	if sStatic == "-s Off":
+	if (sStatic == "-s Off") and (sOmitGtk == ""):
 		subprocess.check_call("./scripts/checkgtkexample.py".split())
 
 
+def checkTidy(sOmitGtk, sOmitX11):
+	#
+	subprocess.check_call("./scripts/checktidy.py {} {}".format(sOmitGtk, sOmitX11).split())
+	
 
 def main():
 
@@ -115,6 +121,10 @@ def main():
 	oParser = argparse.ArgumentParser(description="Uninstall, compile, document, reinstall and test all projects")
 	oParser.add_argument("-y", "--no-prompt", help="no prompt comfirmation", action="store_true"\
 						, default=False, dest="bNoPrompt")
+	oParser.add_argument("--omit-gtk", help="do not compile and test gtk dependant projects", action="store_true"\
+						, default=False, dest="bOmitGtk")
+	oParser.add_argument("--omit-x11", help="do not compile and test x11 dependant projects", action="store_true"\
+						, default=False, dest="bOmitX11")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
 						, default="/usr/local", dest="sDestDir")
 	oParser.add_argument("--no-sudo", help="don't use sudo to (un)install", action="store_true"\
@@ -149,43 +159,54 @@ def main():
 	else:
 		sSudo = ""
 
+	if oArgs.bOmitGtk:
+		sOmitGtk = "--omit-gtk"
+		oArgs.bOmitX11 = True
+	else:
+		sOmitGtk = ""
+
+	if oArgs.bOmitX11:
+		sOmitX11 = "--omit-x11"
+	else:
+		sOmitX11 = ""
+
 	bTidyDone = False  # tidy should be applied only once for the same build type
 
 	if (oArgs.sLinkType == "Both") or (oArgs.sLinkType == "Static"):
 		if oArgs.sBuildType == "Both":
 			if oArgs.bSanitize:
-				testAll("Debug", sDestDir, sSudo, "-s On", True)
+				testAll("Debug", sOmitGtk, sOmitX11, sDestDir, sSudo, "-s On", True)
 			#
-			testAll("Debug", sDestDir, sSudo, "-s On", False)
+			testAll("Debug", sOmitGtk, sOmitX11, sDestDir, sSudo, "-s On", False)
 			if oArgs.bTidy:
-				subprocess.check_call("./scripts/checktidy.py".split())
+				checkTidy(sOmitGtk, sOmitX11)
 			#
-			testAll("Release", sDestDir, sSudo, "-s On", False)
+			testAll("Release", sOmitGtk, sOmitX11, sDestDir, sSudo, "-s On", False)
 			if oArgs.bTidy:
-				subprocess.check_call("./scripts/checktidy.py".split())
+				checkTidy(sOmitGtk, sOmitX11)
 				bTidyDone = True
 		else:
 			if oArgs.bSanitize and (oArgs.sBuildType == "Debug"):
-				testAll("Debug", sDestDir, sSudo, "-s On", True)
+				testAll("Debug", sOmitGtk, sOmitX11, sDestDir, sSudo, "-s On", True)
 			#
-			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s On", False)
+			testAll(oArgs.sBuildType, sOmitGtk, sOmitX11, sDestDir, sSudo, "-s On", False)
 			if oArgs.bTidy:
-				subprocess.check_call("./scripts/checktidy.py".split())
+				checkTidy(sOmitGtk, sOmitX11)
 				bTidyDone = True
 
 	if (oArgs.sLinkType == "Both") or (oArgs.sLinkType == "Shared"):
 		if oArgs.sBuildType == "Both":
-			testAll("Debug", sDestDir, sSudo, "-s Off", False)
+			testAll("Debug", sOmitGtk, sOmitX11, sDestDir, sSudo, "-s Off", False)
 			if oArgs.bTidy and not bTidyDone:
-				subprocess.check_call("./scripts/checktidy.py".split())
+				checkTidy(sOmitGtk, sOmitX11)
 			#
-			testAll("Release", sDestDir, sSudo, "-s Off", False)
+			testAll("Release", sOmitGtk, sOmitX11, sDestDir, sSudo, "-s Off", False)
 			if oArgs.bTidy and not bTidyDone:
-				subprocess.check_call("./scripts/checktidy.py".split())
+				checkTidy(sOmitGtk, sOmitX11)
 		else:
-			testAll(oArgs.sBuildType, sDestDir, sSudo, "-s Off", False)
+			testAll(oArgs.sBuildType, sOmitGtk, sOmitX11, sDestDir, sSudo, "-s Off", False)
 			if oArgs.bTidy and not bTidyDone:
-				subprocess.check_call("./scripts/checktidy.py".split())
+				checkTidy(sOmitGtk, sOmitX11)
 
 	print("---------------------------------")
 	print("testall.py finished successfully!")

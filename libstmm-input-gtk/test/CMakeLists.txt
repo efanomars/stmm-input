@@ -42,25 +42,27 @@ TestFiles("${STMMI_GTK_TEST_SOURCES_MAS}"
           "${STMMI_SOURCES_DATA};${STMMI_SOURCES_MAS};${STMMI_GTK_TEST_WITH_SOURCES_MAS}"
           "${STMMI_GTK_EXTRA_LIBS}" FALSE FALSE TRUE)
 
-set(STMMI_GTK_TEST_SOURCES_FLO
-        ${STMMI_GTK_TEST_SOURCES_DIR}/testFloGtkDeviceManager.cxx
-        )
+if (NOT OMIT_X11)
+    set(STMMI_GTK_TEST_SOURCES_FLO
+            ${STMMI_GTK_TEST_SOURCES_DIR}/testFloGtkDeviceManager.cxx
+            )
 
-set(STMMI_GTK_TEST_WITH_SOURCES_FLO
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkbackend.h
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkbackend.cc
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkwindowdata.h
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkwindowdata.cc
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkdevicemanager.h
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fixtureFloDM.h
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fixtureGlibApp.h
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fixturevariantKeyRepeatMode.h
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fixturevariantEventClasses.h
-        )
+    set(STMMI_GTK_TEST_WITH_SOURCES_FLO
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkbackend.h
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkbackend.cc
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkwindowdata.h
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkwindowdata.cc
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fakeflogtkdevicemanager.h
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fixtureFloDM.h
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fixtureGlibApp.h
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fixturevariantKeyRepeatMode.h
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fixturevariantEventClasses.h
+            )
 
-TestFiles("${STMMI_GTK_TEST_SOURCES_FLO}"
-          "${STMMI_SOURCES_DATA};${STMMI_SOURCES_FLO};${STMMI_GTK_TEST_WITH_SOURCES_FLO}"
-          "${STMMI_GTK_EXTRA_LIBS}" FALSE FALSE TRUE)
+    TestFiles("${STMMI_GTK_TEST_SOURCES_FLO}"
+              "${STMMI_SOURCES_DATA};${STMMI_SOURCES_FLO};${STMMI_GTK_TEST_WITH_SOURCES_FLO}"
+              "${STMMI_GTK_EXTRA_LIBS}" FALSE FALSE TRUE)
+endif()
 
 set(STMMI_GTK_TEST_SOURCES_JS
         ${STMMI_GTK_TEST_SOURCES_DIR}/testJsGtkDeviceManager.cxx
@@ -79,19 +81,21 @@ TestFiles("${STMMI_GTK_TEST_SOURCES_JS}"
           "${STMMI_SOURCES_DATA};${STMMI_SOURCES_JS};${STMMI_GTK_TEST_WITH_SOURCES_JS}"
           "${STMMI_GTK_EXTRA_LIBS}" FALSE FALSE TRUE)
 
-set(STMMI_GTK_TEST_SOURCES_ALL
-        ${STMMI_GTK_TEST_SOURCES_DIR}/testAllGtkDeviceManager.cxx
-        )
+if (NOT OMIT_X11)
+    set(STMMI_GTK_TEST_SOURCES_ALL
+            ${STMMI_GTK_TEST_SOURCES_DIR}/testAllGtkDeviceManager.cxx
+            )
 
-set(STMMI_GTK_TEST_WITH_SOURCES_ALL
-        ${STMMI_GTK_TEST_WITH_SOURCES_MAS}
-        ${STMMI_GTK_TEST_WITH_SOURCES_FLO}
-        ${STMMI_GTK_TEST_WITH_SOURCES_JS}
-        ${STMMI_GTK_TEST_SOURCES_DIR}/fixtureAllDM.h
-        )
+    set(STMMI_GTK_TEST_WITH_SOURCES_ALL
+            ${STMMI_GTK_TEST_WITH_SOURCES_MAS}
+            ${STMMI_GTK_TEST_WITH_SOURCES_FLO}
+            ${STMMI_GTK_TEST_WITH_SOURCES_JS}
+            ${STMMI_GTK_TEST_SOURCES_DIR}/fixtureAllDM.h
+            )
 
-TestFiles("${STMMI_GTK_TEST_SOURCES_ALL}"
-          "${STMMI_SOURCES_DATA};${STMMI_SOURCES_MAS};${STMMI_SOURCES_FLO};${STMMI_SOURCES_JS};${STMMI_GTK_TEST_WITH_SOURCES_ALL}"
-          "${STMMI_GTK_EXTRA_LIBS}" FALSE FALSE TRUE)
+    TestFiles("${STMMI_GTK_TEST_SOURCES_ALL}"
+              "${STMMI_SOURCES_DATA};${STMMI_SOURCES_MAS};${STMMI_SOURCES_FLO};${STMMI_SOURCES_JS};${STMMI_GTK_TEST_WITH_SOURCES_ALL}"
+              "${STMMI_GTK_EXTRA_LIBS}" FALSE FALSE TRUE)
+endif()
 
 include(CTest)

@@ -43,12 +43,21 @@ def callTidy(sSubDir):
 
 def main():
 
+	import argparse
+	oParser = argparse.ArgumentParser(description="Clang tidy")
+	oParser.add_argument("--omit-gtk", help="do not compile and test gtk dependant projects", action="store_true"\
+						, default=False, dest="bOmitGtk")
+	oParser.add_argument("--omit-x11", help="do not compile and test x11 dependant projects", action="store_true"\
+						, default=False, dest="bOmitX11")
+	oArgs = oParser.parse_args()
+
 	sScriptDir = os.path.dirname(os.path.abspath(__file__))
 
 	os.chdir(sScriptDir)
 	os.chdir("..")
 	#
-	callTidy("device-floater")
+	if not (oArgs.bOmitGtk or oArgs.bOmitX11):
+		callTidy("device-floater")
 	callTidy("libstmm-input")
 	callTidy("libstmm-input-base")
 	callTidy("libstmm-input-ev")
@@ -56,7 +65,8 @@ def main():
 	#os.chdir("libstmm-input-fake/examples")
 	#callTidy("spinn")
 	#os.chdir("../..")
-	callTidy("libstmm-input-gtk")
+	if not oArgs.bOmitGtk:
+		callTidy("libstmm-input-gtk")
 
 
 if __name__ == "__main__":

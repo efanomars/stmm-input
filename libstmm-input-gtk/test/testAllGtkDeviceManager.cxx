@@ -42,6 +42,7 @@ TEST_F(GlibAppFixture, CreateFakeAllGtkDeviceManager)
 	auto refFakeMasDM = FakeMasGtkDeviceManager::create(false, {}, KEY_REPEAT_MODE_SUPPRESS
 												, shared_ptr<GdkKeyConverter>{}, Glib::RefPtr<Gdk::DeviceManager>{});
 	auto refFakeJsDM = FakeJsGtkDeviceManager::create(false, {});
+	//
 	auto refAllEvDM = StdParentDeviceManager::create({refFakeMasDM, refFakeFloDM, refFakeJsDM});
 	EXPECT_TRUE(refAllEvDM.operator bool());
 }

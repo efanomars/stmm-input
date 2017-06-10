@@ -9,6 +9,7 @@ Name: stmm-input-fake
 Description: C++ Device Input Framework - Development testing library
 Version: @STMM_INPUT_FAKE_VERSION@
 URL: https://github.com/efanomars/stmm-input
+# Beware! The space between the library name and the comparison (>=) is necessary!
 Requires: stmm-input-ev >= @STMM_INPUT_EV_VERSION_REQ@
 Conflicts:
 Libs: -L${libdir} -lstmm-input-fake

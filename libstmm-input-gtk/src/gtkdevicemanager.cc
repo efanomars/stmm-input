@@ -22,7 +22,9 @@
 
 #include "gdkkeyconverterevdev.h"
 #include "masgtkdevicemanager.h"
+#ifndef STMI_OMIT_X11
 #include "flogtkdevicemanager.h"
+#endif // STMI_OMIT_X11
 #include "jsgtkdevicemanager.h"
 
 #include "parentdevicemanager.h"
@@ -65,6 +67,7 @@ shared_ptr<GtkDeviceManager> GtkDeviceManager::create(bool bEnableEventClasses, 
 		std::cerr << "GtkDeviceManager initialization error: " << oErr.what() << std::endl;
 		return refRes;
 	}
+	#ifndef STMI_OMIT_X11
 	try {
 		auto refFDM = FloGtkDeviceManager::create(bEnableEventClasses, aEnDisableEventClass, eKeyRepeatMode
 												, (refGdkConverter ? refGdkConverter : GdkKeyConverterEvDev::getConverter())
@@ -74,6 +77,7 @@ shared_ptr<GtkDeviceManager> GtkDeviceManager::create(bool bEnableEventClasses, 
 		std::cerr << "FloGtkDeviceManager initialization error: " << oErr.what() << std::endl;
 		return refRes;
 	}
+	#endif // STMI_OMIT_X11
 	try {
 		JsDeviceFiles oDeviceFiles;
 		oDeviceFiles.addBaseNrFiles("/dev/input/js");

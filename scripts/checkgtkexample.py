@@ -27,6 +27,7 @@ import subprocess
 
 def main():
 
+	print("Compiling libstmm-input-gtk/README.md example")
 	sScriptDir = os.path.dirname(os.path.abspath(__file__))
 
 	os.chdir(sScriptDir)

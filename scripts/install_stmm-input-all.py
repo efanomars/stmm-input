@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#  Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+#  Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
 # 
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
@@ -40,6 +40,8 @@ def main():
 						, default=False, dest="bDocsWarningsToLog")
 	oParser.add_argument("--omit-gtk", help="do not compile gtk dependant projects", action="store_true"\
 						, default=False, dest="bOmitGtk")
+	oParser.add_argument("--omit-x11", help="do not compile x11 dependant projects", action="store_true"\
+						, default=False, dest="bOmitX11")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
 						, default="/usr/local", dest="sDestDir")
 	oParser.add_argument("--no-sudo", help="don't use sudo to install", action="store_true"\
@@ -61,11 +63,19 @@ def main():
 	#
 	sBuildTests = "-t " + oArgs.sBuildTests
 	#print("sBuildTests:" + sBuildTests)
-	if not oArgs.bOmitGtk:
-		sBuildFakeTests = sBuildTests
-	else:
-		sBuildFakeTests = "-t Off"
+	sBuildFakeTests = sBuildTests
+	if oArgs.bOmitGtk:
+		oArgs.bOmitX11 = True
+	#if not oArgs.bOmitGtk:
+		#sBuildFakeTests = sBuildTests
+	#else:
+		#sBuildFakeTests = "-t Off"
+		#oArgs.bOmitX11 = True
 	#print("sBuildFakeTests:" + sBuildFakeTests)
+	if oArgs.bOmitX11:
+		sOmitX11 = "--omit-x11"
+	else:
+		sOmitX11 = ""
 	#
 	sBuildDocs = "-d " + oArgs.sBuildDocs
 	#print("sBuildDocs:" + sBuildDocs)
@@ -122,14 +132,15 @@ def main():
 	if not oArgs.bOmitGtk:
 		print("== install libstmm-input-gtk =======" + sInfo + "==")
 		os.chdir("libstmm-input-gtk/scripts")
-		subprocess.check_call("./install_libstmm-input-gtk.py {} {} {} {} {} {} {} {}".format(\
-				sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize).split())
+		subprocess.check_call("./install_libstmm-input-gtk.py {} {} {} {} {} {} {} {} {}".format(\
+				sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize, sOmitX11).split())
 		os.chdir("../..")
 
-		print("== install device-floater ==========" + sInfo + "==")
-		os.chdir("device-floater/scripts")
-		subprocess.check_call("./install_device-floater.py {} {} {}".format(sBuildType, sDestDir, sSudo).split())
-		os.chdir("../..")
+		if not oArgs.bOmitX11:
+			print("== install device-floater ==========" + sInfo + "==")
+			os.chdir("device-floater/scripts")
+			subprocess.check_call("./install_device-floater.py {} {} {}".format(sBuildType, sDestDir, sSudo).split())
+			os.chdir("../..")
 
 
 if __name__ == "__main__":

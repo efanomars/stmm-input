@@ -9,16 +9,18 @@ project(bare-app CXX)
 set(RUNTIME_OUTPUT_DIRECTORY "build")
 
 include(FindPkgConfig)
-find_package(PkgConfig)
+if (NOT PKG_CONFIG_FOUND)
+     message(FATAL_ERROR "Mandatory 'pkg-config' not found!")
+endif()
 
 # Version
 set(BARE_APP_VERSION "0.1.0")
 
 # Required libraries
-pkg_check_modules(STMM_INPUT_GTK  REQUIRED  stmm-input-gtk>=0.1.0)
+pkg_check_modules(STMMINPUTGTK  REQUIRED  stmm-input-gtk>=0.1.0)
 
-list(APPEND BARE_APP_EXTRA_INCLUDE_DIRS   ${STMM_INPUT_GTK_INCLUDE_DIRS})
-list(APPEND BARE_APP_EXTRA_LIBS           ${STMM_INPUT_GTK_LIBRARIES})
+list(APPEND BARE_APP_EXTRA_INCLUDE_DIRS   ${STMMINPUTGTK_INCLUDE_DIRS})
+list(APPEND BARE_APP_EXTRA_LIBS           ${STMMINPUTGTK_LIBRARIES})
 
 # Add include directories of used libraries
 include_directories("${BARE_APP_EXTRA_INCLUDE_DIRS}")

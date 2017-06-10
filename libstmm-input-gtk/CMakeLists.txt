@@ -42,21 +42,34 @@ set(X11_VERSION_REQ "1.6.2")
 pkg_check_modules(STMMINPUTEV    REQUIRED  stmm-input-ev>=${STMM_INPUT_EV_VERSION_REQ})
 
 pkg_check_modules(GTKMM  REQUIRED  gtkmm-3.0>=${GTKMM_VERSION_REQ})
-pkg_check_modules(XI     REQUIRED  xi>=${XI_VERSION_REQ})
-pkg_check_modules(X11    REQUIRED  x11>=${X11_VERSION_REQ})
+set(STMMI_GTK_X11_DEPENDENCIES )
+if (NOT OMIT_X11)
+    pkg_check_modules(XI     REQUIRED  xi>=${XI_VERSION_REQ})
+    pkg_check_modules(X11    REQUIRED  x11>=${X11_VERSION_REQ})
+    # Beware! The space between the library name and the comparison is necessary!
+    set(STMMI_GTK_X11_DEPENDENCIES "xi >= ${XI_VERSION_REQ}  x11 >= ${X11_VERSION_REQ}")
+endif()
 
 list(APPEND STMMI_GTK_EXTRA_INCLUDE_DIRS
     ${STMMINPUTEV_INCLUDE_DIRS}
     ${GTKMM_INCLUDE_DIRS}
-    ${XI_INCLUDE_DIRS}
-    ${X11_INCLUDE_DIRS}
     )
+if (NOT OMIT_X11)
+    list(APPEND STMMI_GTK_EXTRA_INCLUDE_DIRS
+        ${XI_INCLUDE_DIRS}
+        ${X11_INCLUDE_DIRS}
+        )
+endif()
 list(APPEND STMMI_GTK_EXTRA_LIBS
     ${STMMINPUTEV_LIBRARIES}
     ${GTKMM_LIBRARIES}
-    ${XI_LIBRARIES}
-    ${X11_LIBRARIES}
     )
+if (NOT OMIT_X11)
+    list(APPEND STMMI_GTK_EXTRA_LIBS
+        ${XI_LIBRARIES}
+        ${X11_LIBRARIES}
+        )
+endif()
 
 string(STRIP "${STMMI_GTK_EXTRA_LIBS}" STMMI_GTK_EXTRA_LIBS)
 string(STRIP "${STMMI_GTK_EXTRA_INCLUDE_DIRS}" STMMI_GTK_EXTRA_INCLUDE_DIRS)
@@ -77,22 +90,26 @@ set(STMMI_HEADERS_DATA
         ${STMMI_HEADERS_DIR}/jsdevicefiles.h
         ${STMMI_HEADERS_DIR}/keyrepeatmode.h
         )
-# "SubProject" STMMI_HEADERS_MAS depends on 
-#   STMMI_HEADERS_DATA 
+# "SubProject" STMMI_HEADERS_MAS depends on
+#   STMMI_HEADERS_DATA
 #   libstmm-input-ev
 set(STMMI_HEADERS_MAS
 # Moved to sources        ${STMMI_HEADERS_DIR}/masgtkdevicemanager.h
         )
 # "SubProject" STMMI_HEADERS_FLO depends on
-#   STMMI_HEADERS_DATA 
+#   STMMI_HEADERS_DATA
 #   libstmm-input-ev
 #   libxi-dev
 #   libx11-dev
-set(STMMI_HEADERS_FLO
-# Moved to sources        ${STMMI_HEADERS_DIR}/flogtkdevicemanager.h
-        )
+if (NOT OMIT_X11)
+    set(STMMI_HEADERS_FLO
+    # Moved to sources        ${STMMI_HEADERS_DIR}/flogtkdevicemanager.h
+            )
+else()
+    set(STMMI_HEADERS_FLO)
+endif()
 # "SubProject" STMMI_HEADERS_JS depends on
-#   STMMI_HEADERS_DATA 
+#   STMMI_HEADERS_DATA
 #   libstmm-input-ev
 set(STMMI_HEADERS_JS
 # Moved to sources        ${STMMI_HEADERS_DIR}/jsgtkdevicemanager.h
@@ -137,19 +154,23 @@ set(STMMI_SOURCES_MAS
         ${STMMI_SOURCES_DIR}/masgtkwindowdata.h
         ${STMMI_SOURCES_DIR}/masgtkwindowdata.cc
         )
-set(STMMI_SOURCES_FLO
-        ${STMMI_SOURCES_DIR}/flogtkbackend.h
-        ${STMMI_SOURCES_DIR}/flogtkbackend.cc
-        ${STMMI_SOURCES_DIR}/floatingsources.h
-        ${STMMI_SOURCES_DIR}/floatingsources.cc
-        ${STMMI_SOURCES_DIR}/flogtkdevicemanager.h
-        ${STMMI_SOURCES_DIR}/flogtkdevicemanager.cc
-        ${STMMI_SOURCES_DIR}/flogtklistenerextradata.h
-        ${STMMI_SOURCES_DIR}/flogtkwindowdata.h
-        ${STMMI_SOURCES_DIR}/flogtkwindowdata.cc
-        ${STMMI_SOURCES_DIR}/flogtkxkeyboarddevice.h
-        ${STMMI_SOURCES_DIR}/flogtkxkeyboarddevice.cc
-        )
+if (NOT OMIT_X11)
+    set(STMMI_SOURCES_FLO
+            ${STMMI_SOURCES_DIR}/flogtkbackend.h
+            ${STMMI_SOURCES_DIR}/flogtkbackend.cc
+            ${STMMI_SOURCES_DIR}/floatingsources.h
+            ${STMMI_SOURCES_DIR}/floatingsources.cc
+            ${STMMI_SOURCES_DIR}/flogtkdevicemanager.h
+            ${STMMI_SOURCES_DIR}/flogtkdevicemanager.cc
+            ${STMMI_SOURCES_DIR}/flogtklistenerextradata.h
+            ${STMMI_SOURCES_DIR}/flogtkwindowdata.h
+            ${STMMI_SOURCES_DIR}/flogtkwindowdata.cc
+            ${STMMI_SOURCES_DIR}/flogtkxkeyboarddevice.h
+            ${STMMI_SOURCES_DIR}/flogtkxkeyboarddevice.cc
+            )
+else()
+    set(STMMI_SOURCES_FLO)
+endif()
 set(STMMI_SOURCES_JS
         ${STMMI_SOURCES_DIR}/jsgtkbackend.h
         ${STMMI_SOURCES_DIR}/jsgtkbackend.cc
@@ -179,6 +200,10 @@ add_library(stmm-input-gtk ${STMMI_SOURCES} ${PROJECT_BINARY_DIR}/stmm-input-gtk
 
 DefineTargetPublicCompileOptions(stmm-input-gtk)
 
+if (OMIT_X11)
+    target_compile_definitions(stmm-input-gtk PUBLIC STMI_OMIT_X11)
+endif()
+
 # Set version for stmm-input-gtk-config.cc.in
 set(STMMI_PKG_VERSION "${STMM_INPUT_GTK_VERSION}")
 # Create config file for library
@@ -204,6 +229,7 @@ message(STATUS " STMMI_SOURCES:                 ${STMMI_SOURCES}")
 message(STATUS " install prefix:                ${prefix}")
 message(STATUS " BUILD_DOCS:                    ${BUILD_DOCS}")
 message(STATUS " BUILD_TESTING:                 ${BUILD_TESTING}")
+message(STATUS " OMIT_X11:                      ${OMIT_X11}")
 
 # Documentation
 add_subdirectory(doc)
