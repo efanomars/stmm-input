@@ -40,30 +40,30 @@ def main():
 		for sExclPattern in aExclPatterns:
 			sExcludes += " --exclude=" + os.path.join(sProjDir, sExclPattern)
 
-	sScriptDir = os.path.dirname(os.path.abspath(__file__))
+	sScriptDirPath = os.path.dirname(os.path.abspath(__file__))
+	sSourceDirPath = os.path.dirname(sScriptDirPath)
+	sSourceDir = os.path.basename(sSourceDirPath)
+	sParentDirPath = os.path.dirname(sSourceDirPath)
 
-	os.chdir(sScriptDir)
-	os.chdir("..")
-
-	sSourceDir = os.path.basename(os.getcwd())
+	os.chdir(sParentDirPath)
 
 
 	oToday = date.today()
 	sToday = ("000" + str(oToday.year))[-4:] + ("0" + str(oToday.month))[-2:] + ("0" + str(oToday.day))[-2:]
 
-	#print("sExcludes=" + sExcludes)
 	#print("sSourceDir=" + sSourceDir)
+	#print("sExcludes=" + sExcludes)
 	#print("sToday=" + sToday)
 
-	sCmd = ("tar -zcf  ../stmm-input-{}.tar.gz -v"
-							" ../{}"
+	sCmd = ("tar -zcf  stmm-input-{}.tar.gz -v"
+							" {}"
 							" --exclude=.git"
 							" --exclude=stuff"
 							" --exclude=googletest"
 							" --exclude=.metadata"
 							" --exclude=libstmm-input-fake/examples/.metadata"
 							" --exclude=libstmm-input-gtk/examples/.metadata"
-							" {}").format(sToday, sSourceDir, sExcludes)
+							" {}").format(sToday, sExcludes, sSourceDir)
 	#print(sCmd)
 
 	subprocess.check_call(sCmd.split())
