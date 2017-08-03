@@ -88,7 +88,7 @@ XiDevicesWindow::XiDevicesWindow(const Glib::ustring sTitle, int32_t nAcquireSec
 	m_oMainVBox.pack_start(m_oAliveHBox, Gtk::PACK_SHRINK);
 	m_oMainVBox.pack_start(m_oScrolled);
 
-	add(m_oMainVBox);
+	Gtk::Window::add(m_oMainVBox);
 	show_all_children();
 
 	m_oFloater.m_oDeviceChangedSignal.connect( sigc::mem_fun(this, &XiDevicesWindow::devicesChanged) );
