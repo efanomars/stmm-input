@@ -61,7 +61,7 @@ endfunction(DefineCommonCompileOptions)
 # STMMI_TARGET   The (library) target
 #
 function(DefineTargetInterfaceCompileOptions STMMI_TARGET)
-    DefineTargetCompileOptionsType(${STMMI_TARGET} ON)
+    DefineTargetCompileOptionsType(${STMMI_TARGET} ON OFF)
 endfunction(DefineTargetInterfaceCompileOptions)
 
 # DefineTargetPublicCompileOptions       Define compile options for a normal target
@@ -70,20 +70,35 @@ endfunction(DefineTargetInterfaceCompileOptions)
 # STMMI_TARGET   The (library) target
 #
 function(DefineTargetPublicCompileOptions STMMI_TARGET)
-    DefineTargetCompileOptionsType(${STMMI_TARGET} OFF)
+    DefineTargetCompileOptionsType(${STMMI_TARGET} OFF OFF)
 endfunction(DefineTargetPublicCompileOptions)
 
+# DefineTestTargetPublicCompileOptions       Define compile options for a test target
+#
+# Parameters:
+# STMMI_TARGET   The (library) target
+#
+function(DefineTestTargetPublicCompileOptions STMMI_TARGET)
+    DefineTargetCompileOptionsType(${STMMI_TARGET} OFF ON)
+endfunction(DefineTestTargetPublicCompileOptions)
+
 # private:
-function(DefineTargetCompileOptionsType STMMI_TARGET STMMI_INTERFACE_TYPE)
+function(DefineTargetCompileOptionsType STMMI_TARGET STMMI_INTERFACE_TYPE STMMI_USES_GTEST)
     # STMMI_COMPILE_WARNINGS holds target specific flags
     set(STMMI_COMPILE_WARNINGS "${CMAKE_CXX_FLAGS}")
+    set(STMMI_PRIVATE_COMPILE_WARNINGS "")
     if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
         set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -Wall -Wextra -Werror \
 -pedantic-errors -Wmissing-include-dirs -Winit-self \
--Woverloaded-virtual -Wsign-promo") # "-Wpedantic -Wredundant-decls -Wsign-conversion  -Wold-style-cast"
+-Woverloaded-virtual -Wsign-promo") # "-Wsuggest-override -Wpedantic -Wredundant-decls -Wsign-conversion  -Wold-style-cast"
         #if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") AND NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6))
         #    set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -Wno-potentially-evaluated-expression")
         #endif()
+        if (NOT STMMI_USES_GTEST)
+            if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") AND NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.4))
+                set(STMMI_PRIVATE_COMPILE_WARNINGS "${STMMI_PRIVATE_COMPILE_WARNINGS} -Wsuggest-override")
+            endif()
+        endif()
         if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
             set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -ggdb")
         endif()
@@ -92,10 +107,18 @@ function(DefineTargetCompileOptionsType STMMI_TARGET STMMI_INTERFACE_TYPE)
         set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} /W2 /EHsc") # /WX warnings as errors
     endif()
     #
-    string(REPLACE " " ";" REPLACED_FLAGS ${STMMI_COMPILE_WARNINGS})
+    string(STRIP "${STMMI_COMPILE_WARNINGS}" STMMI_COMPILE_WARNINGS)
+    if (NOT ("${STMMI_COMPILE_WARNINGS}" STREQUAL ""))
+        string(REPLACE " " ";" REPLACED_FLAGS ${STMMI_COMPILE_WARNINGS})
+    endif()
     if (STMMI_INTERFACE_TYPE)
         target_compile_options(${STMMI_TARGET} INTERFACE ${REPLACED_FLAGS})
     else()
         target_compile_options(${STMMI_TARGET} PUBLIC ${REPLACED_FLAGS})
+        string(STRIP "${STMMI_PRIVATE_COMPILE_WARNINGS}" STMMI_PRIVATE_COMPILE_WARNINGS)
+        if (NOT ("${STMMI_PRIVATE_COMPILE_WARNINGS}" STREQUAL ""))
+            string(REPLACE " " ";" REPLACED_FLAGS ${STMMI_PRIVATE_COMPILE_WARNINGS})
+            target_compile_options(${STMMI_TARGET} PRIVATE ${REPLACED_FLAGS})
+        endif()
     endif()
 endfunction(DefineTargetCompileOptionsType)

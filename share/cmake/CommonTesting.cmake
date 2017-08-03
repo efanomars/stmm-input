@@ -2,22 +2,26 @@
 
 # Modified from Barthélémy von Haller's  github.com/Barthelemy/CppProjectTemplate
 
-# TestFiles            Create test for a list of files
+# TestFiles            Create test executables for a target library.
 #
 # Parameters:
 # STMMI_TEST_SOURCES   list of test source files for each of which a test executable
 #                      is created.
 # STMMI_WITH_SOURCES   list of sources that are compiled with each of the tests in 
 #                      STMMI_TEST_SOURCES
-# STMMI_LINKED_LIBS    list of (shared) libraries that have to be linked to each test.
+# STMMI_LINKED_LIBS    list of libraries that have to be linked to each test.
 #                      One of them might be the to be tested library target name
 #                      (cmake will recognize and link the freshly created one instead of 
-#                      the installed one).
+#                      the possibly installed one).
 #                      ex. "stmm-input-ev;stmm-input-gtk". Note: don't prepend 'lib'!
 # STMMI_ADD_FAKES      bool that tells whether the fake devices defined in 'libstmm-input-fake'
-#                      should be compiled with the tests.
+#                      should be compiled with the tests. Used when the target library can't
+#                      itself depend on 'libstmm-input-fake'.
 # STMMI_ADD_EVS        bool that tells whether the device capabilities and events defined
 #                      in 'libstmm-input-ev' should be compiled with the tests.
+#                      This should only be true if the target library can't depend on
+#                      'libstmm-input-ev' but the tests might use its stuff.
+#                      If true the compiler definition STMI_TESTING_ADD_EVS is defined.
 # STMMI_FAKE_IFACE     bool that tells whether the compiler definition STMI_TESTING_IFACE
 #                      is defined for each test. This can be used to conditionally declare 
 #                      a class method virtual to create mock or fake subclasses.
@@ -26,7 +30,7 @@
 # Implicit paramters (all the project's libraries have to define them):
 # STMMI_HEADERS_DIR    The directory of public headers of the to be tested library
 # STMMI_INCLUDE_DIR    The directory containing STMMI_HEADERS_DIR
-# STMMI_SOURCES_DIR    The directory of private headers of the to be tested library
+# STMMI_SOURCES_DIR    The directory of private headers and sources of the to be tested library
 #
 function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  STMMI_ADD_FAKES  STMMI_ADD_EVS  STMMI_FAKE_IFACE)
 
@@ -136,7 +140,7 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  ST
             if (STMMI_ADD_EVS)
                 target_compile_definitions(${STMMI_TEST_CUR_TGT} PUBLIC STMI_TESTING_ADD_EVS)
             endif (STMMI_ADD_EVS)
-            DefineTargetPublicCompileOptions(${STMMI_TEST_CUR_TGT})
+            DefineTestTargetPublicCompileOptions(${STMMI_TEST_CUR_TGT})
 
             target_link_libraries(${STMMI_TEST_CUR_TGT} gtest gtest_main) # link against gtest libs
             target_link_libraries(${STMMI_TEST_CUR_TGT}  ${STMMI_LINKED_LIBS})
