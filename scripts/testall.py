@@ -135,7 +135,7 @@ def main():
 						, default="Both", dest="sLinkType")
 	oParser.add_argument("--sanitize", help="execute tests with llvm address sanitize checks (Debug+Static only)", action="store_true"\
 						, default=False, dest="bSanitize")
-	oParser.add_argument("--tidy", help="apply clang-tidy to source code", action="store_true"\
+	oParser.add_argument("--tidy", help="apply clang-tidy to sources (only for CXX=clang++)", action="store_true"\
 						, default=False, dest="bTidy")
 	oArgs = oParser.parse_args()
 

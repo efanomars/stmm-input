@@ -63,19 +63,13 @@ def main():
 	#
 	sBuildTests = "-t " + oArgs.sBuildTests
 	#print("sBuildTests:" + sBuildTests)
-	sBuildFakeTests = sBuildTests
 	if oArgs.bOmitGtk:
 		oArgs.bOmitX11 = True
-	#if not oArgs.bOmitGtk:
-		#sBuildFakeTests = sBuildTests
-	#else:
-		#sBuildFakeTests = "-t Off"
-		#oArgs.bOmitX11 = True
-	#print("sBuildFakeTests:" + sBuildFakeTests)
 	if oArgs.bOmitX11:
 		sOmitX11 = "--omit-x11"
 	else:
 		sOmitX11 = ""
+	#print("sOmitX11:" + sOmitX11)
 	#
 	sBuildDocs = "-d " + oArgs.sBuildDocs
 	#print("sBuildDocs:" + sBuildDocs)
@@ -126,7 +120,7 @@ def main():
 	print("== install libstmm-input-fake ========" + sInfo + "==")
 	os.chdir("libstmm-input-fake/scripts")
 	subprocess.check_call("./install_libstmm-input-fake.py {} {} {} {} {} {} {} {}".format(\
-			sBuildStaticLib, sBuildFakeTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize).split())
+			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize).split())
 	os.chdir("../..")
 
 	if not oArgs.bOmitGtk:

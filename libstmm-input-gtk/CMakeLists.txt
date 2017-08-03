@@ -226,7 +226,7 @@ message(STATUS " STMMI_GTK_EXTRA_INCLUDE_DIRS:  ${STMMI_GTK_EXTRA_INCLUDE_DIRS}"
 message(STATUS " STMMI_GTK_EXTRA_LIBS:          ${STMMI_GTK_EXTRA_LIBS}")
 message(STATUS " STMMI_HEADERS:                 ${STMMI_HEADERS}")
 message(STATUS " STMMI_SOURCES:                 ${STMMI_SOURCES}")
-message(STATUS " install prefix:                ${prefix}")
+message(STATUS " install prefix:                ${STMMI_GTK_INSTALL_PREFIX}")
 message(STATUS " BUILD_DOCS:                    ${BUILD_DOCS}")
 message(STATUS " BUILD_TESTING:                 ${BUILD_TESTING}")
 message(STATUS " OMIT_X11:                      ${OMIT_X11}")
