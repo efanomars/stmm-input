@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,11 +24,10 @@
 /* This file includes all headers of the stmm-input-gtk library. */
 
 #include "gtkaccessor.h"
-#include "gtkdevicemanager.h"
-#include "gdkkeyconverterevdev.h"
+
 #include "stmm-input-gtk-config.h"
 
-#include <stmm-input-ev/stmm-input-ev.h>
+#include <stmm-input/stmm-input.h>
 
-#endif	/* _STMI_STMM_INPUT_GTK_H_ */
+#endif /* _STMI_STMM_INPUT_GTK_H_ */
 

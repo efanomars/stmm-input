@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
-#  Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
-# 
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Lesser General Public
-#  License as published by the Free Software Foundation; either
-#  version 3 of the License, or (at your option) any later version.
-# 
-#  This library is distributed in the hope that it will be useful,
+#  Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  Lesser General Public License for more details.
-# 
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
 #  You should have received a copy of the GNU Lesser General Public
 #  License along with this library; if not, see <http://www.gnu.org/licenses/>
 
@@ -37,8 +37,6 @@ def main():
 						, default="Cache", dest="sBuildDocs")
 	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true"\
 						, default=False, dest="bDocsWarningsToLog")
-	oParser.add_argument("--omit-x11", help="do not compile x11 dependant projects", action="store_true"\
-						, default=False, dest="bOmitX11")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
 						, default="/usr/local", dest="sDestDir")
 	oParser.add_argument("--no-sudo", help="don't use sudo to install", action="store_true"\
@@ -88,13 +86,6 @@ def main():
 		sDocsWarningsToLog += "OFF"
 	#print("sDocsWarningsToLog:" + sDocsWarningsToLog)
 	#
-	sOmitX11 = "-D OMIT_X11="
-	if oArgs.bOmitX11:
-		sOmitX11 += "ON"
-	else:
-		sOmitX11 += "OFF"
-	#print("sOmitX11:" + sOmitX11)
-	#
 	sDestDir = "-D CMAKE_INSTALL_PREFIX=" + sDestDir
 	#print("sDestDir:" + sDestDir)
 	#
@@ -119,8 +110,9 @@ def main():
 
 	os.chdir("build")
 
-	subprocess.check_call("cmake {} {} {} {} {} {} {} {} ..".format(\
-			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sOmitX11, sDestDir, sSanitize).split())
+	subprocess.check_call("cmake {} {} {} {} {} {} {} ..".format(\
+			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType\
+			, sDestDir, sSanitize).split())
 	subprocess.check_call("make".split())
 	subprocess.check_call("{} make install".format(sSudo).split())
 

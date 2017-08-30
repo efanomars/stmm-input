@@ -6,11 +6,11 @@ libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
 Name: stmm-input-gtk
-Description: C++ Device Input Framework - Gtk main loop devices
+Description: C++ Device Input Framework - Gtk window accessor
 Version: @STMM_INPUT_GTK_VERSION@
 URL: https://github.com/efanomars/stmm-input
 # Beware! The space between the library name and the comparison (>=) is necessary!
-Requires: stmm-input-ev >= @STMM_INPUT_EV_VERSION_REQ@  gtkmm-3.0 >= @GTKMM_VERSION_REQ@  @STMMI_GTK_X11_DEPENDENCIES@
+Requires: stmm-input >= @STMM_INPUT_VERSION_REQ@  gtkmm-3.0 >= @GTKMM_VERSION_REQ@
 Conflicts:
 Libs: -L${libdir} -lstmm-input-gtk
 Cflags: -I${includedir}/stmm-input-gtk -I${includedir}

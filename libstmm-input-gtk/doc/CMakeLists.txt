@@ -11,4 +11,6 @@ if (DOXYGEN_FOUND)
 
     include(CommonDoxy)
     CreateLibDoxy(stmm-input-gtk  ${STMM_INPUT_GTK_VERSION}  "stmm-input-ev;stmm-input-base;stmm-input")
+else(DOXYGEN_FOUND)
+    add_custom_target(doc "Doxygen not found")
 endif(DOXYGEN_FOUND)
