@@ -46,7 +46,10 @@ class NamedTypes
 {
 public:
 	/* * Construct empty instance. */
-	NamedTypes() {}
+	NamedTypes()
+	{
+//std::cout << "NamedTypes: adr: " << reinterpret_cast<int64_t>(this) << '\n';
+	}
 	/* *
 	 * @param oType The type
 	 * @param oData [out] The data associated with the type.
@@ -82,7 +85,8 @@ public:
 	{
 		auto itFind = m_oTypeData.find(std::type_index(oType));
 		const bool bFound = (itFind != m_oTypeData.end());
-//std::cout << "NamedTypes::hasType()  type_info=" << oType.name() << " addr=" << (int64_t)&oType << "  ->" << bFound << std::endl;
+//std::cout << "NamedTypes::hasType()  adr: " << reinterpret_cast<int64_t>(this) << '\n';
+//std::cout << "NamedTypes::hasType()  type_info=" << oType.name() << " addr=" << (int64_t)&oType << "  ->" << bFound << '\n';
 		return bFound;
 	}
 	bool hasStringId(const char* const &oStringId) const
@@ -126,7 +130,7 @@ public:
 		m_oStringIdType.erase(oTypeData.m_p0StringId);
 		m_oTypeData.erase(itFind);
 	}
-#ifndef NDEBUG
+	#ifndef NDEBUG
 	void dump() const
 	{
 		std::cout << "NamedTypes::dump()  size=" << m_oStringIdType.size() << std::endl;
@@ -138,7 +142,7 @@ public:
 						<< "   stringId=" << oPair.second.m_p0StringId << "   size(m_oData)=" << sizeof(oPair.second.m_oData) << std::endl;
 		}
 	}
-#endif
+	#endif //NDEBUG
 private:
 	struct TypeData final
 	{
@@ -178,4 +182,4 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_PRIVATE_NAMED_TYPES_H_ */
+#endif /* _STMI_PRIVATE_NAMED_TYPES_H_ */

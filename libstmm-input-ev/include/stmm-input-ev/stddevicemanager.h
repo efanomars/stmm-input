@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,20 +43,22 @@ public:
 	shared_ptr<Capability> getCapability(int32_t nCapabilityId) const override;
 
 	// from DeviceMgmtCapability
+	std::vector<shared_ptr<Capability>> getNodeDeviceManagerCapabilities(const Capability::Class& oClass) const override;
+	shared_ptr<DeviceManager> getRootDeviceManager() const override;
+	// from DeviceManagerCapability
 	shared_ptr<DeviceManager> getDeviceManager() const override;
-	shared_ptr<DeviceManager> getDeviceManager() override;
 protected:
 	/** Constructor.
-	 * If bEnableEventClasses is `true` then all event classes in aEnDisableEventClass are enabled, all others disabled,
-	 * if `false` then all event classes supported by this instance are enabled except those in aEnDisableEventClass.
+	 * If bEnableEventClasses is `true` then all event classes in aEnDisableEventClasses are enabled, all others disabled,
+	 * if `false` then all event classes supported by this instance are enabled except those in aEnDisableEventClasses.
 	 * StdDeviceManager doesn't allow disabling event classes once constructed, only enabling.
 	 * Example: To enable all the event classes supported by this instance pass
 	 *
-	 *     bEnableEventClasses = false,  aEnDisableEventClass = {}
+	 *     bEnableEventClasses = false,  aEnDisableEventClasses = {}
 	 *
 	 * @param aDeviceCapabitityClasses Vector of registered (device) capability classes supported by this manager.
 	 * @param aEventClasses Vector of registered event classes supported by this manager.
-	 * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventType.
+	 * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventClasses.
 	 * @param aEnDisableEventClasses The event classes to be enabled or disabled according to bEnableEventClasses.
 	 */
 	StdDeviceManager(const std::vector<Capability::Class>& aDeviceCapabitityClasses
@@ -69,6 +71,8 @@ protected:
 	 * @param refDevice The device involved. Cannot be null.
 	 */
 	void sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_MGMT_TYPE& eMgmtType, const shared_ptr<Device>& refDevice);
+private:
+	void getPriNodeDeviceManagerCapabilities(const shared_ptr<ChildDeviceManager>& ref, std::vector<shared_ptr<Capability>>& aCapas, const Capability::Class& oClass) const;
 private:
 	////
 	//class ReDeviceMgmtEvent :public DeviceMgmtEvent
@@ -99,4 +103,4 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_STD_DEVICE_MANAGER_H_ */
+#endif /* _STMI_STD_DEVICE_MANAGER_H_ */

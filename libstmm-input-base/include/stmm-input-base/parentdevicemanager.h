@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -83,27 +83,30 @@ public:
 	/** Calls removeEventListener of children.
 	 */
 	bool removeEventListener(const shared_ptr<EventListener>& refEventListener) override;
+	/** The child device managers.
+	 * @return The child device managers.
+	 */
+	inline std::vector< shared_ptr<ChildDeviceManager> > getChildren() const
+	{
+		return m_aChildDeviceManagers;
+	}
 protected:
-	ParentDeviceManager() = default;
+	ParentDeviceManager();
 	/** Initialization.
 	 * Cannot be called twice.
 	 * @param aChildDeviceManager The child device managers. Cannot be empty.
 	 */
 	void init(const std::vector< shared_ptr<ChildDeviceManager> >& aChildDeviceManager);
 
-	/** 
-	 * @return The child device managers.
+	/** Removes all children.
+	 * This can be useful to call from the destructor of a subclass.
 	 */
-	// The children of a parent cannot be removed before the parent is removed,
-	// this ensures that it's always the root that has to be removed first
-	// which can be detected through ChildDeviceManager::m_refWeakRoot being null.
-	inline std::vector< shared_ptr<ChildDeviceManager> > getChildren() const
+	void removeChildren()
 	{
-		return m_aChildDeviceManager;
+		m_aChildDeviceManagers.clear();
 	}
-
 private:
-	std::vector< shared_ptr<ChildDeviceManager> > m_aChildDeviceManager;
+	std::vector< shared_ptr<ChildDeviceManager> > m_aChildDeviceManagers;
 private:
 	ParentDeviceManager(const ParentDeviceManager& oSource) = delete;
 	ParentDeviceManager& operator=(const ParentDeviceManager& oSource) = delete;
@@ -111,5 +114,5 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_PARENT_DEVICE_MANAGER_H_ */
+#endif /* _STMI_PARENT_DEVICE_MANAGER_H_ */
 

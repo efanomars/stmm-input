@@ -7,7 +7,7 @@ keyboard and pointer devices managed by X11 (XI2). It provides a subset of the
 'xinput float' command.
 
 Multiple floating keyboards, alongside with the master keyboard, can be used
-independently by multiple players in games using the stmm-input-gtk library.
+independently by multiple players in games using the stmm-input-gtk-dm library.
 
 To float a device plug it in while the device-floater is in acquiring mode.
 To unfloat a device unplug and replug it while it is not in acquiring mode,

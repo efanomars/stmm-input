@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -88,4 +88,4 @@ public:
 
 } // namespace stmi
 
-#endif	/* _STMI_TESTING_FIXTURE_FAKE_DM_H_ */
+#endif /* _STMI_TESTING_FIXTURE_FAKE_DM_H_ */

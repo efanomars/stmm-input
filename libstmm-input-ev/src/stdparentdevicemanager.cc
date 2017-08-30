@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -63,9 +63,35 @@ std::vector<Capability::Class> StdParentDeviceManager::getCapabilityClasses() co
 }
 shared_ptr<DeviceManager> StdParentDeviceManager::getDeviceManager() const
 {
-	return getRoot();
+	shared_ptr<ChildDeviceManager> refChildThis = std::const_pointer_cast<ChildDeviceManager>(shared_from_this());
+	shared_ptr<StdParentDeviceManager> refThis = std::static_pointer_cast<StdParentDeviceManager>(refChildThis);
+	return refThis;
 }
-shared_ptr<DeviceManager> StdParentDeviceManager::getDeviceManager()
+
+std::vector<shared_ptr<Capability>> StdParentDeviceManager::getNodeDeviceManagerCapabilities(const Capability::Class& oClass) const
+{
+	std::vector<shared_ptr<Capability>> aCapas;
+	shared_ptr<ChildDeviceManager> refChildThis = std::const_pointer_cast<ChildDeviceManager>(shared_from_this());
+	getPriNodeDeviceManagerCapabilities(refChildThis, aCapas, oClass);
+	return aCapas;
+}
+void StdParentDeviceManager::getPriNodeDeviceManagerCapabilities(const shared_ptr<ChildDeviceManager>& refCur
+															, std::vector<shared_ptr<Capability>>& aCapas
+															, const Capability::Class& oClass) const
+{
+	if (refCur->isParent()) {
+		auto refParent = refCur->getAsParent();
+		auto aChildren = refParent->getChildren();
+		for (auto& refChild : aChildren) {
+			getPriNodeDeviceManagerCapabilities(refChild, aCapas, oClass);
+		}
+	}
+	auto refCapa = refCur->getCapability(oClass);
+	if (refCapa) {
+		aCapas.push_back(refCapa);
+	}
+}
+shared_ptr<DeviceManager> StdParentDeviceManager::getRootDeviceManager() const
 {
 	return getRoot();
 }

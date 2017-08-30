@@ -336,8 +336,10 @@ protected:
 			static_assert(!std::is_same<XYEvent,T>::value, "Wrong type.");
 			assert(p0EventClassId != nullptr);
 			assert((*p0EventClassId) != static_cast<char>(0));
-			assert(!getNamedTypes().hasType(typeid(T)));
-			getNamedTypes().addType(typeid(T), p0EventClassId, std::is_base_of<XYEvent,T>::value);
+			//assert(!getNamedTypes().hasType(typeid(T)));
+			if (!getNamedTypes().hasType(typeid(T))) {
+				getNamedTypes().addType(typeid(T), p0EventClassId, std::is_base_of<XYEvent,T>::value);
+			}
 			m_oFirstInstanceClass = Class(typeid(T));
 		}
 		~RegisterClass()
@@ -416,4 +418,4 @@ namespace std {
 	};
 } // namespace std
 
-#endif	/* _STMI_EVENT_H_ */
+#endif /* _STMI_EVENT_H_ */

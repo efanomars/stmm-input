@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,7 +32,7 @@ namespace stmi
  * This class provides an interface (that is independent from the actual
  * registered event class) for grabbing a pointer (mouse, touch finger, etc.).
  * It also allows to change the coordinates of the event.
- * 
+ *
  * If a subclass of XYEvent has, in addition to (fX,fY), more coordinates (fX2,fY2), (fX3,fY3), ...
  * it should keep (fX,fY) as the main coordinates, and override translateXY(double fDX, double fDY)
  * and scaleXY(double fSX, double fSY) to change the additional coordinates and call
@@ -176,4 +176,4 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_XY_EVENT_H_ */
+#endif /* _STMI_XY_EVENT_H_ */

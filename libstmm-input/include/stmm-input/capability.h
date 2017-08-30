@@ -57,11 +57,6 @@ public:
 	 * It also can be null if the device was deleted.
 	 */
 	virtual shared_ptr<Device> getDevice() const = 0;
-	/** Returns the device owning this capability, if any.
-	 * If it's a device manager capability this might return null.
-	 * It also can be null if the device was deleted.
-	 */
-	virtual shared_ptr<Device> getDevice() = 0;
 
 	/** The representation of a registered capability class.
 	 */
@@ -230,22 +225,14 @@ protected:
 			static_assert(!std::is_same<DeviceManagerCapability,T>::value, "Wrong type.");
 			assert(p0CapabilityClassId != nullptr);
 			assert((*p0CapabilityClassId) != static_cast<char>(0));
-			assert(!getNamedTypes().hasType(typeid(T)));
-			getNamedTypes().addType(typeid(T), p0CapabilityClassId, std::is_base_of<DeviceManagerCapability,T>::value);
+			//assert(!getNamedTypes().hasType(typeid(T)));
+			if (!getNamedTypes().hasType(typeid(T))) {
+				getNamedTypes().addType(typeid(T), p0CapabilityClassId, std::is_base_of<DeviceManagerCapability,T>::value);
+			}
 			m_oFirstInstanceClass = Class(typeid(T));
 		}
 		~RegisterClass()
 		{
-			// The following would be good in a run-time loaded shared object situation
-			// but is bad because at least g++ doesn't unload (destroy static objects)
-			// in the reverse order of the loading so that it can occur that
-			// stmm-input is unloaded before stmm-input-ev !!!
-			//if (m_oFirstInstanceClass) {
-			//	const std::type_info& oTypeInfo = m_oFirstInstanceClass.getTypeInfo();
-			//	if (getNamedTypes().hasType(oTypeInfo)) {
-			//		getNamedTypes().removeType(oTypeInfo);
-			//	}
-			//}
 		}
 		/** Get the class of the registered type.
 		 * @return A non-empty class.
@@ -300,12 +287,8 @@ class DeviceManagerCapability : public Capability
 public:
 	/** Returns null. */
 	shared_ptr<Device> getDevice() const override { return shared_ptr<Device>(); }
-	/** Returns null. */
-	shared_ptr<Device> getDevice() override { return shared_ptr<Device>(); }
 	/** Returns the device manager owning this capability, if any. */
 	virtual shared_ptr<DeviceManager> getDeviceManager() const = 0;
-	/** Returns the device manager owning this capability, if any. */
-	virtual shared_ptr<DeviceManager> getDeviceManager() = 0;
 
 protected:
 	/** @see Capability::Capability(const Class&) */
@@ -330,5 +313,5 @@ namespace std {
 	};
 } // namespace std
 
-#endif	/* _STMI_CAPABILITY_H_ */
+#endif /* _STMI_CAPABILITY_H_ */
 

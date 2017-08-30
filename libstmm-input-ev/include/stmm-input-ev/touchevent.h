@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,7 +34,7 @@ namespace stmi
 using std::weak_ptr;
 
 /** Event generated when the state of a touch is changed.
- * 
+ *
  * Note that the reference to the capability that generated this event is weak.
  */
 class TouchEvent : public XYEvent
@@ -117,4 +117,4 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_TOUCH_EVENT_H_ */
+#endif /* _STMI_TOUCH_EVENT_H_ */

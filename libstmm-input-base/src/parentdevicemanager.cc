@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,15 +25,19 @@
 namespace stmi
 {
 
+ParentDeviceManager::ParentDeviceManager()
+: ChildDeviceManager(true)
+{
+}
 void ParentDeviceManager::init(const std::vector< shared_ptr<ChildDeviceManager> >& aChildDeviceManager)
 {
 	assert(!aChildDeviceManager.empty());
 	// Reinitialization is not allowed because ChildDeviceManager caches the root
-	if (!m_aChildDeviceManager.empty()) {
+	if (!m_aChildDeviceManagers.empty()) {
 		assert(false);
 		return;
 	}
-	m_aChildDeviceManager = aChildDeviceManager;
+	m_aChildDeviceManagers = aChildDeviceManager;
 	auto refChildThis = ChildDeviceManager::shared_from_this();
 	auto refParentThis = std::static_pointer_cast<ParentDeviceManager>(refChildThis);
 	for (auto& refCDM : aChildDeviceManager) {
@@ -45,7 +49,7 @@ void ParentDeviceManager::init(const std::vector< shared_ptr<ChildDeviceManager>
 shared_ptr<Device> ParentDeviceManager::getDevice(int32_t nDeviceId) const
 {
 	shared_ptr<Device> refDevice;
-	for (auto& refCDM : m_aChildDeviceManager) {
+	for (auto& refCDM : m_aChildDeviceManagers) {
 		refDevice = refCDM->getDevice(nDeviceId);
 		if (refDevice) {
 			break; // for
@@ -56,46 +60,46 @@ shared_ptr<Device> ParentDeviceManager::getDevice(int32_t nDeviceId) const
 std::vector<Capability::Class> ParentDeviceManager::getCapabilityClasses() const
 {
 	std::vector<Capability::Class> aSet;
-	for (auto& refCDM : m_aChildDeviceManager) {
-		addToVectorSet(aSet, refCDM->getCapabilityClasses());
+	for (auto& refCDM : m_aChildDeviceManagers) {
+		Util::addToVectorSet(aSet, refCDM->getCapabilityClasses());
 	}
 	return aSet;
 }
 std::vector<Capability::Class> ParentDeviceManager::getDeviceCapabilityClasses() const
 {
 	std::vector<Capability::Class> aSet;
-	for (auto& refCDM : m_aChildDeviceManager) {
-		addToVectorSet(aSet, refCDM->getDeviceCapabilityClasses());
+	for (auto& refCDM : m_aChildDeviceManagers) {
+		Util::addToVectorSet(aSet, refCDM->getDeviceCapabilityClasses());
 	}
 	return aSet;
 }
 std::vector<Event::Class> ParentDeviceManager::getEventClasses() const
 {
 	std::vector<Event::Class> aSet;
-	for (auto& refCDM : m_aChildDeviceManager) {
-		addToVectorSet(aSet, refCDM->getEventClasses());
+	for (auto& refCDM : m_aChildDeviceManagers) {
+		Util::addToVectorSet(aSet, refCDM->getEventClasses());
 	}
 	return aSet;
 }
 std::vector<int32_t> ParentDeviceManager::getDevicesWithCapabilityClass(const Capability::Class& oCapabilityClass) const
 {
 	std::vector<int32_t> aSet;
-	for (auto& refCDM : m_aChildDeviceManager) {
-		addToVectorSet(aSet, refCDM->getDevicesWithCapabilityClass(oCapabilityClass));
+	for (auto& refCDM : m_aChildDeviceManagers) {
+		Util::addToVectorSet(aSet, refCDM->getDevicesWithCapabilityClass(oCapabilityClass));
 	}
 	return aSet;
 }
 std::vector<int32_t> ParentDeviceManager::getDevices() const
 {
 	std::vector<int32_t> aSet;
-	for (auto& refCDM : m_aChildDeviceManager) {
-		addToVectorSet(aSet, refCDM->getDevices());
+	for (auto& refCDM : m_aChildDeviceManagers) {
+		Util::addToVectorSet(aSet, refCDM->getDevices());
 	}
 	return aSet;
 }
 bool ParentDeviceManager::isEventClassEnabled(const Event::Class& oEventClass) const
 {
-	for (auto& refCDM : m_aChildDeviceManager) {
+	for (auto& refCDM : m_aChildDeviceManagers) {
 		const bool bChildEnabled = refCDM->isEventClassEnabled(oEventClass);
 		if (bChildEnabled) {
 			return true;
@@ -105,14 +109,14 @@ bool ParentDeviceManager::isEventClassEnabled(const Event::Class& oEventClass) c
 }
 void ParentDeviceManager::enableEventClass(const Event::Class& oEventClass)
 {
-	for (auto& refCDM : m_aChildDeviceManager) {
+	for (auto& refCDM : m_aChildDeviceManagers) {
 		refCDM->enableEventClass(oEventClass);
 	}
 }
 bool ParentDeviceManager::addAccessor(const shared_ptr<Accessor>& refAccessor)
 {
 	bool bAdded = false;
-	for (auto& refCDM : m_aChildDeviceManager) {
+	for (auto& refCDM : m_aChildDeviceManagers) {
 		const bool bChildAdded = refCDM->addAccessor(refAccessor);
 		bAdded = bAdded || bChildAdded;
 	}
@@ -121,7 +125,7 @@ bool ParentDeviceManager::addAccessor(const shared_ptr<Accessor>& refAccessor)
 bool ParentDeviceManager::removeAccessor(const shared_ptr<Accessor>& refAccessor)
 {
 	bool bRemoved = false;
-	for (auto& refCDM : m_aChildDeviceManager) {
+	for (auto& refCDM : m_aChildDeviceManagers) {
 		const bool bChildRemoved = refCDM->removeAccessor(refAccessor);
 		bRemoved = bRemoved || bChildRemoved;
 	}
@@ -129,7 +133,7 @@ bool ParentDeviceManager::removeAccessor(const shared_ptr<Accessor>& refAccessor
 }
 bool ParentDeviceManager::hasAccessor(const shared_ptr<Accessor>& refAccessor)
 {
-	for (auto& refCDM : m_aChildDeviceManager) {
+	for (auto& refCDM : m_aChildDeviceManagers) {
 		const bool bChildHasIt = refCDM->hasAccessor(refAccessor);
 		if (bChildHasIt) {
 			return true;
@@ -140,7 +144,7 @@ bool ParentDeviceManager::hasAccessor(const shared_ptr<Accessor>& refAccessor)
 bool ParentDeviceManager::addEventListener(const shared_ptr<EventListener>& refEventListener, const shared_ptr<CallIf>& refCallIf)
 {
 	bool bAdded = false;
-	for (auto& refCDM : m_aChildDeviceManager) {
+	for (auto& refCDM : m_aChildDeviceManagers) {
 		const bool bChildAdded = refCDM->addEventListener(refEventListener, refCallIf);
 		bAdded = bAdded || bChildAdded;
 	}
@@ -149,7 +153,7 @@ bool ParentDeviceManager::addEventListener(const shared_ptr<EventListener>& refE
 bool ParentDeviceManager::addEventListener(const shared_ptr<EventListener>& refEventListener)
 {
 	bool bAdded = false;
-	for (auto& refCDM : m_aChildDeviceManager) {
+	for (auto& refCDM : m_aChildDeviceManagers) {
 		const bool bChildAdded = refCDM->addEventListener(refEventListener);
 		bAdded = bAdded || bChildAdded;
 	}
@@ -158,7 +162,7 @@ bool ParentDeviceManager::addEventListener(const shared_ptr<EventListener>& refE
 bool ParentDeviceManager::removeEventListener(const shared_ptr<EventListener>& refEventListener, bool bFinalize)
 {
 	bool bRemoved = false;
-	for (auto& refCDM : m_aChildDeviceManager) {
+	for (auto& refCDM : m_aChildDeviceManagers) {
 		const bool bChildRemoved = refCDM->removeEventListener(refEventListener, bFinalize);
 		bRemoved = bRemoved || bChildRemoved;
 	}

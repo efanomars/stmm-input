@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,10 +67,6 @@ public:
 	{
 		return m_refDeviceManager.lock();
 	}
-	shared_ptr<DeviceManager> getDeviceManager() override
-	{
-		return m_refDeviceManager.lock();
-	}
 	shared_ptr<Capability> getCapability(const Capability::Class& oClass) const override
 	{
 		if (oClass != m_refCapability->getCapabilityClass()) {
@@ -105,4 +101,4 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_TESTING_FAKE_DEVICE_H_ */
+#endif /* _STMI_TESTING_FAKE_DEVICE_H_ */

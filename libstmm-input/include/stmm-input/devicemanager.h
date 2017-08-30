@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -87,16 +87,17 @@ public:
 	 */
 	virtual std::vector<Capability::Class> getDeviceCapabilityClasses() const = 0;
 	/** Request a registered device manager capability.
-	 * @param refCapa [out] The registered DeviceCapability subclass or null if not supported by device manager).
+	 * @param refCapa [out] The registered DeviceManagerCapability subclass or null if not supported by device manager.
 	 * @return Whether the device manager has the requested capability.
 	 */
 	template < typename TCapa >
 	bool getCapability(shared_ptr<TCapa>& refCapa) const
 	{
-		static_assert(std::is_base_of<Capability, TCapa>::value && !std::is_base_of<TCapa, DeviceManagerCapability>::value
-						, "TCapa must be subclass of Capability");
+		static_assert(std::is_base_of<DeviceManagerCapability, TCapa>::value && !std::is_base_of<TCapa, DeviceManagerCapability>::value
+						, "TCapa must be subclass of DeviceManagerCapability");
 		shared_ptr<Capability> refSubCapa = getCapability(typeid(TCapa));
 		if (!refSubCapa) {
+			refCapa.reset();
 			return false; //----------------------------------------------------
 		}
 		assert(refSubCapa->getCapabilityClass().isDeviceManagerCapability());
@@ -105,7 +106,7 @@ public:
 	}
 	/** Requests the instance of a capability class.
 	 * If the device manager doesn't have the capability null is returned.
-	 * @param oClass The requested registered device manager class.
+	 * @param oClass The requested registered device manager capability class.
 	 * @return The capability or null.
 	 */
 	virtual shared_ptr<Capability> getCapability(const Capability::Class& oClass) const = 0;
@@ -262,5 +263,5 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_DEVICE_MANAGER_H_ */
+#endif /* _STMI_DEVICE_MANAGER_H_ */
 

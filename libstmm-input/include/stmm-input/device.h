@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,11 +57,6 @@ public:
 	 * @return The device manager or null if the device is no longer attached to its manager.
 	 */
 	virtual shared_ptr<DeviceManager> getDeviceManager() const = 0;
-	/** The device manager that manages the device.
-	 * As a convention Device instances should hold a weak_ptr to their manager to avoid reference cycles.
-	 * @return The device manager or null if the device is no longer attached to its manager.
-	 */
-	virtual shared_ptr<DeviceManager> getDeviceManager() = 0;
 
 	/** Request a registered capability from this device.
 	 * @param refCapa [out] The registered Capability subclass or null if not supported by device.
@@ -74,6 +69,7 @@ public:
 						, "TCapa must be subclass of Capability");
 		shared_ptr<Capability> refSubCapa = getCapability(typeid(TCapa));
 		if (!refSubCapa) {
+			refCapa.reset();
 			return false; //----------------------------------------------------
 		}
 		assert(! refSubCapa->getCapabilityClass().isDeviceManagerCapability());
@@ -112,5 +108,5 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_DEVICE_H_ */
+#endif /* _STMI_DEVICE_H_ */
 

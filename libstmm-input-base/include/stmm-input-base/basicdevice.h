@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,10 +41,8 @@ public:
 	std::string getName() const override { return m_sName; }
 	//
 	shared_ptr<DeviceManager> getDeviceManager() const override;
-	shared_ptr<DeviceManager> getDeviceManager() override;
 	//
 	shared_ptr<ODM> getOwnerDeviceManager() const { return m_refOwner.lock(); }
-	shared_ptr<ODM> getOwnerDeviceManager() { return m_refOwner.lock(); }
 protected:
 	/** Device template constructor.
 	 * The instances of this class keep a weak reference to their owner
@@ -83,16 +81,6 @@ shared_ptr<DeviceManager> BasicDevice<ODM>::getDeviceManager() const
 	return refOwner->getRoot();
 }
 
-template<class ODM>
-shared_ptr<DeviceManager> BasicDevice<ODM>::getDeviceManager()
-{
-	auto refOwner = m_refOwner.lock();
-	if (!refOwner) {
-		return refOwner;
-	}
-	return refOwner->getRoot();
-}
-
 } // namespace stmi
 
-#endif	/* _STMI_BASIC_DEVICE_H_ */
+#endif /* _STMI_BASIC_DEVICE_H_ */

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,8 @@
  */
 
 #include "stddevicemanager.h"
+
+#include <stmm-input-base/parentdevicemanager.h>
 
 #ifndef NDEBUG
 #include <iostream>
@@ -61,11 +63,36 @@ shared_ptr<Capability> StdDeviceManager::getCapability(int32_t nCapabilityId) co
 	shared_ptr<StdDeviceManager> refThis = std::static_pointer_cast<StdDeviceManager>(refChildThis);
 	return refThis;
 }
-shared_ptr<DeviceManager> StdDeviceManager::getDeviceManager() const
+shared_ptr<DeviceManager> StdDeviceManager::getRootDeviceManager() const
 {
-	return getRoot();
+	shared_ptr<ChildDeviceManager> refChildThis = std::const_pointer_cast<ChildDeviceManager>(shared_from_this());
+	shared_ptr<StdDeviceManager> refThis = std::static_pointer_cast<StdDeviceManager>(refChildThis);
+	return refThis;
 }
-shared_ptr<DeviceManager> StdDeviceManager::getDeviceManager()
+std::vector<shared_ptr<Capability>> StdDeviceManager::getNodeDeviceManagerCapabilities(const Capability::Class& oClass) const
+{
+	std::vector<shared_ptr<Capability>> aCapas;
+	shared_ptr<ChildDeviceManager> refChildThis = std::const_pointer_cast<ChildDeviceManager>(shared_from_this());
+	getPriNodeDeviceManagerCapabilities(refChildThis, aCapas, oClass);
+	return aCapas;
+}
+void StdDeviceManager::getPriNodeDeviceManagerCapabilities(const shared_ptr<ChildDeviceManager>& refCur
+														, std::vector<shared_ptr<Capability>>& aCapas
+														, const Capability::Class& oClass) const
+{
+	if (refCur->isParent()) {
+		auto refParent = refCur->getAsParent();
+		auto aChildren = refParent->getChildren();
+		for (auto& refChild : aChildren) {
+			getPriNodeDeviceManagerCapabilities(refChild, aCapas, oClass);
+		}
+	}
+	auto refCapa = refCur->getCapability(oClass);
+	if (refCapa) {
+		aCapas.push_back(refCapa);
+	}
+}
+shared_ptr<DeviceManager> StdDeviceManager::getDeviceManager() const
 {
 	return getRoot();
 }
@@ -74,18 +101,12 @@ void StdDeviceManager::sendDeviceMgmtToListeners(const DeviceMgmtEvent::DEVICE_M
 	if (!isEventClassEnabled(typeid(DeviceMgmtEvent))) {
 		return;
 	}
-	shared_ptr<Capability> refCapa = getRoot()->getCapability(DeviceMgmtCapability::getClass());
-	if (!refCapa) {
-		// While it is possible to compose diverse device managers the root should
-		// implement all the device manager capabilities of the children.
-		// Since the root of this one doesn't, can't send the event.
-		return; //--------------------------------------------------------------
-	}
+	shared_ptr<Capability> refCapa = getCapability(DeviceMgmtCapability::getClass());
 	auto refMgmtCapa = std::static_pointer_cast<DeviceMgmtCapability>(refCapa);
+	assert(refMgmtCapa);
 	//
 	const int64_t nTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	//
-	//shared_ptr<DeviceMgmtEvent> refEvent = m_oDeviceMgmtRecycler.create(nTimeUsec, refCapa, eMgmtType, refDevice);
 	shared_ptr<DeviceMgmtEvent> refEvent = std::make_shared<DeviceMgmtEvent>(nTimeUsec, refMgmtCapa, eMgmtType, refDevice);
 	auto refListeners = getListeners();
 	for (auto& p0ListenerData : *refListeners) {

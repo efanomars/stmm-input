@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,15 +62,15 @@ class FakeDeviceManager : public StdDeviceManager
 public:
 	/** Constructor.
 	 * Only the given event classes are enabled.
-	 * @param bEnableEventClasses
-	 * @param aEnDisableEventClass
+	 * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventClasses.
+	 * @param aEnDisableEventClasses The event classes to be enabled or disabled according to bEnableEventClasses.
 	 */
-	FakeDeviceManager(bool bEnableEventClasses, const std::vector< Event::Class > &aEnDisableEventClass)
+	FakeDeviceManager(bool bEnableEventClasses, const std::vector< Event::Class > &aEnDisableEventClasses)
 	: StdDeviceManager({KeyCapability::getClass(), PointerCapability::getClass()
 							, TouchCapability::getClass(), JoystickCapability::getClass()}
 						, {DeviceMgmtEvent::getClass(), KeyEvent::getClass(), PointerEvent::getClass(), PointerScrollEvent::getClass()
 							, TouchEvent::getClass(), JoystickButtonEvent::getClass(), JoystickHatEvent::getClass(), JoystickAxisEvent::getClass()}
-						, bEnableEventClasses, aEnDisableEventClass)
+						, bEnableEventClasses, aEnDisableEventClasses)
 	{
 	}
 	/** Default constructor.
@@ -364,5 +364,5 @@ private:
 
 } // namespace stmi
 
-#endif	/* _ZIMTRIS_TESTING_FAKE_DEVICE_MANAGER_H_ */
+#endif /* _ZIMTRIS_TESTING_FAKE_DEVICE_MANAGER_H_ */
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,11 +51,15 @@ public:
 	shared_ptr<Capability> getCapability(int32_t nCapabilityId) const override;
 
 	// from DeviceMgmtCapability
+	std::vector<shared_ptr<Capability>> getNodeDeviceManagerCapabilities(const Capability::Class& oClass) const override;
+	shared_ptr<DeviceManager> getRootDeviceManager() const override;
+	// from DeviceManagerCapability
 	shared_ptr<DeviceManager> getDeviceManager() const override;
-	shared_ptr<DeviceManager> getDeviceManager() override;
 protected:
 	StdParentDeviceManager() = default;
 
+private:
+	void getPriNodeDeviceManagerCapabilities(const shared_ptr<ChildDeviceManager>& ref, std::vector<shared_ptr<Capability>>& aCapas, const Capability::Class& oClass) const;
 private:
 	StdParentDeviceManager(const StdParentDeviceManager& oSource) = delete;
 	StdParentDeviceManager& operator=(const StdParentDeviceManager& oSource) = delete;
@@ -63,5 +67,5 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_STD_PARENT_DEVICE_MANAGER_H_ */
+#endif /* _STMI_STD_PARENT_DEVICE_MANAGER_H_ */
 

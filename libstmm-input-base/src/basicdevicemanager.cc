@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -111,7 +111,7 @@ std::vector<int32_t> BasicDeviceManager::getDevicesWithCapabilityClass(const Cap
 		const shared_ptr<Device>& refDevice = oPair.second;
 		shared_ptr<Capability> refCapability = refDevice->getCapability(oCapabilityClass);
 		if (refCapability) {
-			addToVectorSet(aSet, nDeviceId);
+			Util::addToVectorSet(aSet, nDeviceId);
 		}
 	}
 	return aSet;
@@ -120,7 +120,7 @@ std::vector<int32_t> BasicDeviceManager::getDevices() const
 {
 	std::vector<int32_t> aSet;
 	for (auto& oPair : m_oDevices) {
-		addToVectorSet(aSet, oPair.first);
+		Util::addToVectorSet(aSet, oPair.first);
 	}
 	return aSet;
 }
@@ -311,11 +311,12 @@ int32_t BasicDeviceManager::getEventClassIndex(const Event::Class& oEventClass) 
 }
 bool BasicDeviceManager::isEventClassEnabled(const Event::Class& oEventClass) const
 {
-//std::cout << "isEventClassEnabled=" << oEventClass.name() << " m_aEventClasses.size()=" << m_aEventClasses.size() << std::endl;
 	const int32_t nIdx = getEventClassIndex(oEventClass);
+//std::cout << "isEventClassEnabled=" << oEventClass.getId() << " nIdx=" << nIdx << " m_aEventClasses.size()=" << m_aEventClasses.size() << '\n';
 	if (nIdx < 0) {
 		return false;
 	}
+//std::cout << "            enabled=" << m_aEventClassEnabled[nIdx] << '\n';
 	return m_aEventClassEnabled[nIdx];
 }
 void BasicDeviceManager::enableEventClass(const Event::Class& oEventClass)

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -71,17 +71,17 @@ public:
 
 protected:
 	/** Constructor.
-	 * If bEnableEventClasses is `true` then all event classes in aEnDisableEventClass are enabled, all others disabled,
-	 * if `false` then all event classes supported by this instance are enabled except those in aEnDisableEventClass.
+	 * If bEnableEventClasses is `true` then all event classes in aEnDisableEventClasses are enabled, all others disabled,
+	 * if `false` then all event classes supported by this instance are enabled except those in aEnDisableEventClasses.
 	 * BasicDeviceManager doesn't allow disabling event classes once constructed, only enabling.
 	 * Example: To enable all the event classes supported by this instance pass
 	 *
-	 *     bEnableEventClasses = false,  aEnDisableEventClass = {}
+	 *     bEnableEventClasses = false,  aEnDisableEventClasses = {}
 	 *
 	 * @param aCapabitityClasses Vector of registered device manager capability classes supported by this manager.
 	 * @param aDeviceCapabitityClasses Vector of registered device capability classes supported by this manager.
 	 * @param aEventClasses Vector of registered event classes supported by this manager.
-	 * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventType.
+	 * @param bEnableEventClasses Whether to enable or disable all but aEnDisableEventClasses.
 	 * @param aEnDisableEventClasses The event classes to be enabled or disabled according to bEnableEventClasses.
 	 */
 	BasicDeviceManager(const std::vector<Capability::Class>& aCapabitityClasses
@@ -291,4 +291,4 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_BASIC_DEVICE_MANAGER_H_ */
+#endif /* _STMI_BASIC_DEVICE_MANAGER_H_ */

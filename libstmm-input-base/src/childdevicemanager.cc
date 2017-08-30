@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,8 +31,30 @@ namespace stmi
 
 ChildDeviceManager::ChildDeviceManager()
 : m_bImRoot(true)
+, m_bImParent(false)
 {
 }
+ChildDeviceManager::ChildDeviceManager(bool bIsParent)
+: m_bImRoot(true)
+, m_bImParent(bIsParent)
+{
+}
+shared_ptr<ParentDeviceManager> ChildDeviceManager::getAsParent() const
+{
+	if (!m_bImParent) {
+		return shared_ptr<ParentDeviceManager>{};
+	}
+	ChildDeviceManager* p0This = const_cast<ChildDeviceManager*>(this);
+	return p0This->getAsParent();
+}
+shared_ptr<ParentDeviceManager> ChildDeviceManager::getAsParent()
+{
+	if (!m_bImParent) {
+		return shared_ptr<ParentDeviceManager>{};
+	}
+	return std::dynamic_pointer_cast<ParentDeviceManager>(shared_from_this());
+}
+
 shared_ptr<ParentDeviceManager> ChildDeviceManager::getParent() const
 {
 	ChildDeviceManager* p0This = const_cast<ChildDeviceManager*>(this);

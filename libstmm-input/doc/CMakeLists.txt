@@ -11,4 +11,6 @@ if (DOXYGEN_FOUND)
 
     include(CommonDoxy)
     CreateLibDoxy(stmm-input  ${STMM_INPUT_VERSION}  "")
+else(DOXYGEN_FOUND)
+    add_custom_target(doc "Doxygen not found")
 endif(DOXYGEN_FOUND)

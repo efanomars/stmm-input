@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,6 +56,7 @@ std::atomic<int32_t> Capability::s_nNewIdCounter(0);
 
 int32_t Capability::getNewCapabilityId()
 {
+//std::cout << "Capability::getNewCapabilityId adr " << reinterpret_cast<int64_t>(&s_nNewIdCounter) << " = " << s_nNewIdCounter << '\n';
 	const int32_t nNewId = ++s_nNewIdCounter;
 	return nNewId;
 }

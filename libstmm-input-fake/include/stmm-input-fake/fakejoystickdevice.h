@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -61,10 +61,6 @@ public:
 	{
 		return m_p0Device->shared_from_this();
 	}
-	shared_ptr<Device> getDevice() override
-	{
-		return m_p0Device->shared_from_this();
-	}
 	/** Not implemented. */
 	bool getHasButton(JoystickCapability::BUTTON /*eButton*/) const override
 	{
@@ -122,4 +118,4 @@ public:
 
 } // namespace stmi
 
-#endif	/* _STMI_TESTING_FAKE_JOYSTICK_DEVICE_H_ */
+#endif /* _STMI_TESTING_FAKE_JOYSTICK_DEVICE_H_ */

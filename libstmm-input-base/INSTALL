@@ -52,7 +52,7 @@ for a description of all available options.
 Setting up googletest
 ---------------------
 
-There are two ways of setting up googletest.
+There are many ways of setting up googletest.
 
 If you have cloned this project with
 
@@ -63,13 +63,23 @@ From the parent of this directory (containing the '.gitmodules' file):
 
   $ git submodule update --init --recursive
 
-which will download the sources and put them into the 'googletest' subdirectory.
+which will download the sources and put them into the 'googletest' subdirectory
+for all the libraries.
+
 
 Alternatively, if you just downloaded the zip file (without .git folder) and
-you already have your googletest sources somewhere on your computer, you can
+already have your googletest sources somewhere on your computer, you can
 create a symbolic link to them. From this directory:
 
   $ rmdir googletest
   $ ln -s /path/to/googletest/dir  googletest
 
-In both cases cmake will build googletest sources with the library's tests.
+To do the last operation, automatically checking if the directory really contains
+googletest, you can call the following script from the parent of this directory
+
+  $ googletest_create_links.py --google-src-dir=/path/to/googletest/dir
+
+which will create the symbolic link for all the sub-projects with tests.
+
+
+In all cases cmake will build googletest sources with the library's tests.

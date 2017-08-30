@@ -16,10 +16,10 @@ find_package(PkgConfig)
 set(SPINN_VERSION "0.1.0")
 
 # Required libraries
-pkg_check_modules(STMM_INPUT_GTK  REQUIRED  stmm-input-gtk>=0.1.0)
+pkg_check_modules(STMMINPUTGTKDM  REQUIRED  stmm-input-gtk-dm>=0.1.0)
 
-list(APPEND SPINN_EXTRA_INCLUDE_DIRS   ${STMM_INPUT_GTK_INCLUDE_DIRS})
-list(APPEND SPINN_EXTRA_LIBS           ${STMM_INPUT_GTK_LIBRARIES})
+list(APPEND SPINN_EXTRA_INCLUDE_DIRS   ${STMMINPUTGTKDM_INCLUDE_DIRS})
+list(APPEND SPINN_EXTRA_LIBS           ${STMMINPUTGTKDM_LIBRARIES})
 
 # Add include directories of used libraries
 include_directories("${SPINN_EXTRA_INCLUDE_DIRS}")
@@ -48,15 +48,14 @@ add_executable(spinn ${SPINN_SOURCES})
 
 message(STATUS "")
 message(STATUS "spinn was configured with the following options:")
+message(STATUS " SPINN_SOURCES:                  ${SPINN_SOURCES}")
+message(STATUS " SPINN_DATA_FILES                ${SPINN_DATA_FILES}")
+message(STATUS " SPINN_EXTRA_INCLUDE_DIRS:       ${SPINN_EXTRA_INCLUDE_DIRS}")
+message(STATUS " SPINN_EXTRA_LIBS:               ${SPINN_EXTRA_LIBS}")
 message(STATUS " CMAKE_BUILD_TYPE:               ${CMAKE_BUILD_TYPE}")
 message(STATUS " CMAKE_CXX_COMPILER_ID:          ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS " CMAKE_CXX_FLAGS:                ${CMAKE_CXX_FLAGS}")
 message(STATUS " CMAKE_CXX_FLAGS_DEBUG:          ${CMAKE_CXX_FLAGS_DEBUG}")
-message(STATUS " SPINN_EXTRA_INCLUDE_DIRS:       ${SPINN_EXTRA_INCLUDE_DIRS}")
-message(STATUS " SPINN_EXTRA_LIBS:               ${SPINN_EXTRA_LIBS}")
-message(STATUS " SPINN_SOURCES:                  ${SPINN_SOURCES}")
-message(STATUS " SPINN_DATA_FILES                ${SPINN_DATA_FILES}")
-#message(STATUS " install prefix:                 ${CMAKE_INSTALL_PREFIX}")
 message(STATUS " BUILD_TESTING                   ${BUILD_TESTING}")
 
 # Testing

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,11 +57,27 @@ public:
 	 * @return The root. Cannot be null.
 	 */
 	shared_ptr<DeviceManager> getRoot();
+	/** Tells whether this instance is also a ParentDeviceManager.
+	 * 
+	 * @return Whether a ParentDeviceManager.
+	 */
+	bool isParent() const { return m_bImParent; }
+	/** If a parent returns this object as a parent.
+	 * @return This object as ParentDeviceManager or null if not a parent.
+	 */
+	shared_ptr<ParentDeviceManager> getAsParent() const;
+	/** If a parent returns this object as a parent.
+	 * @return This object as ParentDeviceManager or null if not a parent.
+	 */
+	shared_ptr<ParentDeviceManager> getAsParent();
 protected:
+	/** Constructor.
+	 */
 	ChildDeviceManager();
 
 private:
 	friend class ParentDeviceManager;
+	ChildDeviceManager(bool bIsParent);
 	// Sets the parent of the child device manager (called by ParentDeviceManager::init())
 	void setParent(const shared_ptr<ParentDeviceManager>& refParent);
 
@@ -71,6 +87,7 @@ private:
 	weak_ptr<ParentDeviceManager> m_refWeakParent;
 	bool m_bImRoot; // If true m_refWeakRoot and m_refWeakParent are null.
 	weak_ptr<ParentDeviceManager> m_refWeakRoot;
+	bool m_bImParent;
 private:
 	ChildDeviceManager(const ChildDeviceManager& oSource) = delete;
 	ChildDeviceManager& operator=(const ChildDeviceManager& oSource) = delete;
@@ -78,5 +95,5 @@ private:
 
 } // namespace stmi
 
-#endif	/* _STMI_CHILD_DEVICE_MANAGER_H_ */
+#endif /* _STMI_CHILD_DEVICE_MANAGER_H_ */
 

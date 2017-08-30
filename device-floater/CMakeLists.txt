@@ -71,14 +71,14 @@ target_include_directories(device-floater PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
 message(STATUS "")
 message(STATUS "device-floater was configured with the following options:")
+message(STATUS " STMMI_DEVFLO_SOURCES:            ${STMMI_DEVFLO_SOURCES}")
+#message(STATUS " STMMI_DEVFLO_EXTRA_INCLUDE_DIRS: ${STMMI_DEVFLO_EXTRA_INCLUDE_DIRS}")
+message(STATUS " STMMI_DEVFLO_EXTRA_LIBS:         ${STMMI_DEVFLO_EXTRA_LIBS}")
+message(STATUS " STMMI_DEVFLO_DATA_FILES          ${STMMI_DEVFLO_DATA_FILES}")
 message(STATUS " CMAKE_BUILD_TYPE:                ${CMAKE_BUILD_TYPE}")
 message(STATUS " CMAKE_CXX_COMPILER_ID:           ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS " CMAKE_CXX_COMPILER_VERSION:      ${CMAKE_CXX_COMPILER_VERSION}")
 #message(STATUS " CMAKE_CXX_FLAGS:                 $<TARGET_PROPERTY:device-floater,COMPILE_OPTIONS>")
-#message(STATUS " STMMI_DEVFLO_EXTRA_INCLUDE_DIRS: ${STMMI_DEVFLO_EXTRA_INCLUDE_DIRS}")
-message(STATUS " STMMI_DEVFLO_EXTRA_LIBS:         ${STMMI_DEVFLO_EXTRA_LIBS}")
-message(STATUS " STMMI_DEVFLO_SOURCES:            ${STMMI_DEVFLO_SOURCES}")
-message(STATUS " STMMI_DEVFLO_DATA_FILES          ${STMMI_DEVFLO_DATA_FILES}")
 message(STATUS " install prefix:                  ${CMAKE_INSTALL_PREFIX}")
 
 target_link_libraries(device-floater ${STMMI_DEVFLO_EXTRA_LIBS}) # ${STMMI_DEVFLO_EXTRA_LDFLAGS}
