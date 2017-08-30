@@ -1,0 +1,17 @@
+# stmm-input-dl pkg-config source file
+
+prefix=@STMMI_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: stmm-input-dl
+Description: C++ Device Input Framework - Runtime plugin device managers loader
+Version: @STMM_INPUT_DL_VERSION@
+URL: https://github.com/efanomars/stmm-input
+# Beware! The space between the library name and the comparison (>=) is necessary!
+Requires: stmm-input-base >= @STMM_INPUT_BASE_VERSION_REQ@
+Conflicts:
+Libs: -L${libdir} -lstmm-input-dl
+Cflags: -I${includedir}/stmm-input-dl -I${includedir}
+
