@@ -13,16 +13,24 @@ This source package contains:
     library of helper classes to ease the implementation and composition of
     device managers.
 
+- libstmm-input-dl:
+    library that implemens a plugin device manager which loads other device managers
+    at run-time as children.
+
 - libstmm-input-ev:
     library that defines a set of event types suitable for games.
 
 - libstmm-input-gtk:
+    library that defines a Gtk::Window accessor for device managers.
+
+- libstmm-input-gtk-dm:
     library that implements a device manager that integrates into Gtk's
     main event loop sending events defined by libstmm-input-ev to listeners.
     It supports the following devices:
     + master keyboard and pointer.
     + floating keyboards (readied with device-floater)
     + joysticks (calibrated with jstest-gtk, jscal, jscal-store)
+    + any device supported by plug in device managers
 
 - libstmm-input-fake:
     header-only library for developers that need to simulate a device manager
@@ -32,9 +40,10 @@ This source package contains:
     simple gui application to safely float keyboard and pointer devices
     managed by X11 (XI2). It provides a subset of the 'xinput float' command.
 
+
 Read the INSTALL file for installation instructions.
 
-Examples can be found in the libstmm-input-gtk subfolder.
+Examples can be found in the libstmm-input-gtk-dm and libstmm-input-fake subfolders.
 
 
 Warning

@@ -35,6 +35,10 @@ and make sure needed bash environment variables are set before the call
   # to find executable
   export PATH=/home/myname/usr/bin:$PATH
 
+Beware: installing in a non sytem directory might cause plugins to not be
+found by the libstmm-input-dl library.
+
+
 Uninstallation
 ==============
 
@@ -60,6 +64,10 @@ Dependencies
 - libstmm-input-base depends on
     + libstmm-input
 
+- libstmm-input-dl   depends on
+    + libstmm-input-base
+    + libdl (the linux dynamic loader)
+
 - libstmm-input-ev   depends on
     + libstmm-input-base
 
@@ -67,10 +75,15 @@ Dependencies
     + libstmm-input-ev
 
 - libstmm-input-gtk  depends on
-    + libstmm-input-ev
-    + libxi-dev
-    + libx11-dev
+    + libstmm-input
     + libgtkmm-3.0-dev
+
+- libstmm-input-gtk-dm  depends on
+    + libstmm-input-gtk
+    + libstmm-input-ev
+    + libstmm-input-dl (optionally)
+    + libxi-dev (optionally)
+    + libx11-dev (optionally)
     + uses exceptions
 
 - device-floater     depends on
@@ -79,12 +92,12 @@ Dependencies
     + libx11-dev
 
 Note: in some linux distributions the packages might be named slightly
-differently (the trailing '-dev' might not be needed).
+differently (the trailing '-dev' might be '-devel' or not needed at all).
 
 
 Needed packages
 ===============
-To build the source files you need a c++14 compiler and cmake.
+To build the source files you need a g++ compatible c++14 compiler and cmake.
 To build the documentation you need doxygen and graphviz.
 To build the tests you need googletest (it is downloaded as a git submodule).
 To run the scripts you need python3.

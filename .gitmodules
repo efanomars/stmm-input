@@ -4,6 +4,9 @@
 [submodule "googletest_stmm-input-base"]
 	path = libstmm-input-base/googletest
 	url = https://github.com/google/googletest.git
+[submodule "googletest_stmm-input-dl"]
+	path = libstmm-input-dl/googletest
+	url = https://github.com/google/googletest.git
 [submodule "googletest_stmm-input-ev"]
 	path = libstmm-input-ev/googletest
 	url = https://github.com/google/googletest.git
@@ -12,4 +15,7 @@
 	url = https://github.com/google/googletest.git
 [submodule "googletest_stmm-input-gtk"]
 	path = libstmm-input-gtk/googletest
+	url = https://github.com/google/googletest.git
+[submodule "googletest_stmm-input-gtk-dm"]
+	path = libstmm-input-gtk-dm/googletest
 	url = https://github.com/google/googletest.git
