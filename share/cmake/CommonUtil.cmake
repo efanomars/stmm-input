@@ -88,23 +88,18 @@ function(DefineTargetCompileOptionsType STMMI_TARGET STMMI_INTERFACE_TYPE STMMI_
     set(STMMI_COMPILE_WARNINGS "${CMAKE_CXX_FLAGS}")
     set(STMMI_PRIVATE_COMPILE_WARNINGS "")
     if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
-        set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -Wall -Wextra -Werror \
+        set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -Wall -Wextra \
 -pedantic-errors -Wmissing-include-dirs -Winit-self \
--Woverloaded-virtual -Wsign-promo") # "-Wsuggest-override -Wpedantic -Wredundant-decls -Wsign-conversion  -Wold-style-cast"
-        #if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") AND NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6))
-        #    set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -Wno-potentially-evaluated-expression")
-        #endif()
-        if (NOT STMMI_USES_GTEST)
-            if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") AND NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.4))
-                set(STMMI_PRIVATE_COMPILE_WARNINGS "${STMMI_PRIVATE_COMPILE_WARNINGS} -Wsuggest-override")
-            endif()
-        endif()
+-Woverloaded-virtual -Wsign-promo")
         if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
             set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} -ggdb")
         endif()
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         # no idea if this really works
         set(STMMI_COMPILE_WARNINGS "${STMMI_COMPILE_WARNINGS} /W2 /EHsc") # /WX warnings as errors
+    endif()
+    if (NOT STMMI_USES_GTEST)
+        set(STMMI_PRIVATE_COMPILE_WARNINGS "${STMMI_PRIVATE_COMPILE_WARNINGS} $ENV{STMM_CPP_OPTIONS}")
     endif()
     #
     string(STRIP "${STMMI_COMPILE_WARNINGS}" STMMI_COMPILE_WARNINGS)

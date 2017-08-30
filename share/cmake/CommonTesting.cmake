@@ -8,7 +8,12 @@
 # STMMI_TEST_SOURCES   list of test source files for each of which a test executable
 #                      is created.
 # STMMI_WITH_SOURCES   list of sources that are compiled with each of the tests in 
-#                      STMMI_TEST_SOURCES
+#                      STMMI_TEST_SOURCES. This function adds the additional source
+#                      "${PROJECT_BINARY_DIR}/test/testconfig.cc" if it finds a
+#                      file "${PROJECT_SOURCE_DIR}/test/testconfig.cc.in" to
+#                      configure_file from (@ONLY). The following variables are defined:
+#                        STMI_TESTING_SOURCE_DIR = "${PROJECT_SOURCE_DIR}/test"
+#                        STMI_TESTING_EXE_PATH   = executable path
 # STMMI_LINKED_LIBS    list of libraries that have to be linked to each test.
 #                      One of them might be the to be tested library target name
 #                      (cmake will recognize and link the freshly created one instead of 
@@ -73,12 +78,15 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  ST
             set(DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE "THIS FILE WAS AUTOMATICALLY GENERATED! DO NOT MODIFY!")
             set(STMMI_EVS_HEADERS_DIR "${PROJECT_SOURCE_DIR}/../libstmm-input-ev/include/stmm-input-ev")
             set(STMMI_EVS_HEADERS
+                    "${PROJECT_BINARY_DIR}/devicemgmtcapability.h"
+                    "${PROJECT_BINARY_DIR}/devicemgmtevent.h"
                     "${PROJECT_BINARY_DIR}/joystickcapability.h"
                     "${PROJECT_BINARY_DIR}/joystickevent.h"
                     "${PROJECT_BINARY_DIR}/keycapability.h"
                     "${PROJECT_BINARY_DIR}/keyevent.h"
                     "${PROJECT_BINARY_DIR}/pointercapability.h"
                     "${PROJECT_BINARY_DIR}/pointerevent.h"
+                    "${PROJECT_BINARY_DIR}/stddevicemanager.h"
                     "${PROJECT_BINARY_DIR}/touchcapability.h"
                     "${PROJECT_BINARY_DIR}/touchevent.h"
                  )
@@ -90,12 +98,15 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  ST
             endforeach (STMMI_TEST_CUR_EVS_HEADER  ${STMMI_EVS_HEADERS})
             set(STMMI_EVS_SOURCES_DIR "${PROJECT_SOURCE_DIR}/../libstmm-input-ev/src")
             set(STMMI_EVS_SOURCES
+                    "${PROJECT_BINARY_DIR}/devicemgmtcapability.cc"
+                    "${PROJECT_BINARY_DIR}/devicemgmtevent.cc"
                     "${PROJECT_BINARY_DIR}/joystickcapability.cc"
                     "${PROJECT_BINARY_DIR}/joystickevent.cc"
                     "${PROJECT_BINARY_DIR}/keycapability.cc"
                     "${PROJECT_BINARY_DIR}/keyevent.cc"
                     "${PROJECT_BINARY_DIR}/pointercapability.cc"
                     "${PROJECT_BINARY_DIR}/pointerevent.cc"
+                    "${PROJECT_BINARY_DIR}/stddevicemanager.cc"
                     "${PROJECT_BINARY_DIR}/touchcapability.cc"
                     "${PROJECT_BINARY_DIR}/touchevent.cc"
                  )
@@ -114,6 +125,13 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  ST
         #  endif (STMMI_WITH_SOURCES_LEN GREATER 0)
         #   ^ need to target_compile_definitions target_include_directories !!!
         #
+        if (EXISTS "${PROJECT_SOURCE_DIR}/test/testconfig.cc.in")
+            if (EXISTS "${PROJECT_SOURCE_DIR}/test/testconfig.h")
+                file(COPY "${PROJECT_SOURCE_DIR}/test/testconfig.h" DESTINATION "${PROJECT_BINARY_DIR}/test")
+            endif()
+            set(STMI_TESTING_SOURCE_DIR "${PROJECT_SOURCE_DIR}/test")
+            list(APPEND STMMI_WITH_SOURCES "${PROJECT_BINARY_DIR}/test/testconfig.cc")
+        endif()
         # Iterate over all tests found. For each, declare an executable and add it to the tests list.
         foreach (STMMI_TEST_CUR_FILE  ${STMMI_TEST_SOURCES})
 
@@ -122,11 +140,20 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  ST
 
             string(REGEX REPLACE "[./]" "_" STMMI_TEST_CUR_TGT ${STMMI_TEST_CUR_REL_FILE})
 
-            add_executable(${STMMI_TEST_CUR_TGT} ${STMMI_TEST_CUR_FILE} ${STMMI_WITH_SOURCES} ${STMMI_EVS_SOURCES})
+            if (EXISTS "${PROJECT_SOURCE_DIR}/test/testconfig.cc.in")
+                set(STMI_TESTING_EXE_PATH   "${PROJECT_BINARY_DIR}/test/${STMMI_TEST_CUR_TGT}")
+                configure_file("${PROJECT_SOURCE_DIR}/test/testconfig.cc.in"
+                               "${PROJECT_BINARY_DIR}/test/testconfig.cc" @ONLY)
+            endif()
+
+            add_executable(${STMMI_TEST_CUR_TGT} ${STMMI_TEST_CUR_FILE}
+                           ${STMMI_WITH_SOURCES} ${STMMI_EVS_SOURCES})
             #if (STMMI_WITH_SOURCES_LEN GREATER 0)
             #    target_link_libraries(${STMMI_TEST_CUR_TGT} stmmiwithsourcesobjlib) # link precompiled object files
             #endif (STMMI_WITH_SOURCES_LEN GREATER 0)
-
+            # for auxiliary files
+            target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${PROJECT_SOURCE_DIR}/test)
+            # the library files
             target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_INCLUDE_DIR})
             if (STMMI_ADD_FAKES  OR  STMMI_ADD_EVS)
                 target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${PROJECT_BINARY_DIR})

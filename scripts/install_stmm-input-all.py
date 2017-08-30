@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
 #  Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
-# 
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Lesser General Public
-#  License as published by the Free Software Foundation; either
-#  version 3 of the License, or (at your option) any later version.
-# 
-#  This library is distributed in the hope that it will be useful,
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  Lesser General Public License for more details.
-# 
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
 #  You should have received a copy of the GNU Lesser General Public
 #  License along with this library; if not, see <http://www.gnu.org/licenses/>
 
@@ -38,10 +38,12 @@ def main():
 						, default="Cache", dest="sBuildDocs")
 	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true"\
 						, default=False, dest="bDocsWarningsToLog")
-	oParser.add_argument("--omit-gtk", help="do not compile gtk dependant projects", action="store_true"\
+	oParser.add_argument("--omit-gtk", help="do not build gtk dependant projects", action="store_true"\
 						, default=False, dest="bOmitGtk")
-	oParser.add_argument("--omit-x11", help="do not compile x11 dependant projects", action="store_true"\
+	oParser.add_argument("--omit-x11", help="do not build x11 dependant projects", action="store_true"\
 						, default=False, dest="bOmitX11")
+	oParser.add_argument("--omit-plugins", help="do not build plugins (dl, g++ only)", action="store_true"\
+						, default=False, dest="bOmitPlugins")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
 						, default="/usr/local", dest="sDestDir")
 	oParser.add_argument("--no-sudo", help="don't use sudo to install", action="store_true"\
@@ -69,6 +71,12 @@ def main():
 		sOmitX11 = "--omit-x11"
 	else:
 		sOmitX11 = ""
+	#print("sOmitX11:" + sOmitX11)
+	#
+	if oArgs.bOmitPlugins:
+		sOmitPlugins = "--omit-plugins"
+	else:
+		sOmitPlugins = ""
 	#print("sOmitX11:" + sOmitX11)
 	#
 	sBuildDocs = "-d " + oArgs.sBuildDocs
@@ -111,7 +119,14 @@ def main():
 			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize).split())
 	os.chdir("../..")
 
-	print("== install libstmm-input-ev ==========" + sInfo + "==")
+	if not oArgs.bOmitPlugins:
+		print("== install libstmm-input-dl ==========" + sInfo + "==")
+		os.chdir("libstmm-input-dl/scripts")
+		subprocess.check_call("./install_libstmm-input-dl.py {} {} {} {} {} {} {} {}".format(\
+				sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize).split())
+		os.chdir("../..")
+
+	print("== install libstmm-input-ev ========" + sInfo + "==")
 	os.chdir("libstmm-input-ev/scripts")
 	subprocess.check_call("./install_libstmm-input-ev.py {} {} {} {} {} {} {} {}".format(\
 			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize).split())
@@ -126,8 +141,16 @@ def main():
 	if not oArgs.bOmitGtk:
 		print("== install libstmm-input-gtk =======" + sInfo + "==")
 		os.chdir("libstmm-input-gtk/scripts")
-		subprocess.check_call("./install_libstmm-input-gtk.py {} {} {} {} {} {} {} {} {}".format(\
-				sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize, sOmitX11).split())
+		subprocess.check_call("./install_libstmm-input-gtk.py {} {} {} {} {} {} {} {}".format(\
+				sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize\
+				).split())
+		os.chdir("../..")
+
+		print("== install libstmm-input-gtk-dm =======" + sInfo + "==")
+		os.chdir("libstmm-input-gtk-dm/scripts")
+		subprocess.check_call("./install_libstmm-input-gtk-dm.py {} {} {} {} {} {} {} {} {} {}".format(\
+				sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize\
+				, sOmitX11, sOmitPlugins).split())
 		os.chdir("../..")
 
 		if not oArgs.bOmitX11:
