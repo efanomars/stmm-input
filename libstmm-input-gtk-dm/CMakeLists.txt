@@ -254,6 +254,7 @@ set(STMMI_GTK_DM_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 configure_file("${PROJECT_SOURCE_DIR}/stmm-input-gtk-dm.pc.in"
                "${PROJECT_BINARY_DIR}/stmm-input-gtk-dm.pc" @ONLY)
 
+if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "stmm-input-gtk-dm was configured with the following options:")
 message(STATUS " STMMI_HEADERS:                   ${STMMI_HEADERS}")
@@ -269,6 +270,7 @@ message(STATUS " BUILD_DOCS:                      ${BUILD_DOCS}")
 message(STATUS " BUILD_TESTING:                   ${BUILD_TESTING}")
 message(STATUS " OMIT_X11:                        ${OMIT_X11}")
 message(STATUS " OMIT_PLUGINS:                    ${OMIT_PLUGINS}")
+endif()
 
 # Documentation
 add_subdirectory(doc)

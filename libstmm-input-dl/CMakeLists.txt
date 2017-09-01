@@ -100,6 +100,7 @@ if (PKG_CONFIG_FOUND)
                    "${PROJECT_BINARY_DIR}/stmm-input-dl.pc" @ONLY)
 endif()
 
+if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "stmm-input-dl was configured with the following options:")
 message(STATUS " STMMI_HEADERS:                 ${STMMI_HEADERS}")
@@ -115,6 +116,7 @@ message(STATUS " BUILD_DOCS:                    ${BUILD_DOCS}")
 message(STATUS " BUILD_TESTING:                 ${BUILD_TESTING}")
 message(STATUS " STMMI_PLUGINS_DATA_DIR:        ${STMMI_PLUGINS_DATA_DIR}")
 message(STATUS " STMMI_PLUGINS_USER_DATA_DIR:   ${STMMI_PLUGINS_USER_DATA_DIR}")
+endif()
 
 # Documentation
 add_subdirectory(doc)

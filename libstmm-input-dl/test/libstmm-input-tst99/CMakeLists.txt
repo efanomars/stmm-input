@@ -65,6 +65,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_compile_options(stmm-input-tst99 PUBLIC "-Wl,-E")
 endif()
 
+if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "stmm-input-tst99 was configured with the following options:")
 message(STATUS " STMMI_TST99_HEADERS:             ${STMMI_TST99_HEADERS}")
@@ -77,6 +78,7 @@ message(STATUS " CMAKE_CXX_COMPILER_ID:           ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS " CMAKE_CXX_COMPILER_VERSION:      ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS " CMAKE_CXX_FLAGS:                 ${CMAKE_CXX_FLAGS}")
 message(STATUS " install prefix:                  ${CMAKE_INSTALL_PREFIX}")
+endif()
 
 # Set library versions
 set_target_properties(stmm-input-tst99   PROPERTIES

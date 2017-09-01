@@ -41,6 +41,7 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  ST
 
     if (BUILD_TESTING)
 
+        if ($ENV{STMM_CMAKE_COMMENTS})
         #message(STATUS "CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}")
         #message(STATUS "PROJECT_SOURCE_DIR       ${PROJECT_SOURCE_DIR}")
         message(STATUS "STMMI_TEST_SOURCES   ${STMMI_TEST_SOURCES}")
@@ -55,6 +56,7 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_LIBS  ST
         #message(STATUS "ARGN                 ${ARGN}")
         #message(STATUS "ARGV                 ${ARGV}")
         #message(STATUS "ARGV0                ${ARGV0}")
+        endif()
 
         if (STMMI_ADD_FAKES)
             set(DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE "THIS FILE WAS AUTOMATICALLY GENERATED! DO NOT MODIFY!")

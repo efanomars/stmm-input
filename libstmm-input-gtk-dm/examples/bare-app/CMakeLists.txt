@@ -43,6 +43,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STMM_COMPILE_WARNINGS}")
 # Define executable
 add_executable(bare-app ${BARE_APP_SOURCES})
 
+if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "bare-app was configured with the following options:")
 message(STATUS " BARE_APP_SOURCES:                ${BARE_APP_SOURCES}")
@@ -54,6 +55,7 @@ message(STATUS " CMAKE_CXX_COMPILER_ID:           ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS " CMAKE_CXX_FLAGS:                 ${CMAKE_CXX_FLAGS}")
 message(STATUS " CMAKE_CXX_FLAGS_DEBUG:           ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS " install prefix:                  ${CMAKE_INSTALL_PREFIX}")
+endif()
 
 target_link_libraries(bare-app ${BARE_APP_EXTRA_LIBS})
 

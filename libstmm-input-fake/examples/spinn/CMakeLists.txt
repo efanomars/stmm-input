@@ -46,6 +46,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Define executable
 add_executable(spinn ${SPINN_SOURCES})
 
+if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "spinn was configured with the following options:")
 message(STATUS " SPINN_SOURCES:                  ${SPINN_SOURCES}")
@@ -57,6 +58,7 @@ message(STATUS " CMAKE_CXX_COMPILER_ID:          ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS " CMAKE_CXX_FLAGS:                ${CMAKE_CXX_FLAGS}")
 message(STATUS " CMAKE_CXX_FLAGS_DEBUG:          ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS " BUILD_TESTING                   ${BUILD_TESTING}")
+endif()
 
 # Testing
 enable_testing()

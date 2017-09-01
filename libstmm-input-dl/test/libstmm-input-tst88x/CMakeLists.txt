@@ -90,6 +90,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_compile_options(stmm-input-tst88x PUBLIC "-Wl,-E")
 endif()
 
+if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "stmm-input-tst88x was configured with the following options:")
 message(STATUS " STMMI_TST88X_HEADERS:            ${STMMI_TST88X_HEADERS}")
@@ -102,6 +103,7 @@ message(STATUS " CMAKE_CXX_COMPILER_ID:           ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS " CMAKE_CXX_COMPILER_VERSION:      ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS " CMAKE_CXX_FLAGS:                 ${CMAKE_CXX_FLAGS}")
 message(STATUS " install prefix:                  ${CMAKE_INSTALL_PREFIX}")
+endif()
 
 # Set library versions
 set_target_properties(stmm-input-tst88x   PROPERTIES

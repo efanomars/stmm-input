@@ -87,6 +87,7 @@ DefineTargetPublicCompileOptions(stmm-input-tst88a)
 #configure_file("${PROJECT_SOURCE_DIR}/test/libstmm-input-tst88a/stmm-input-tst88a.pc.in"
 #               "${PROJECT_BINARY_DIR}/stmm-input-tst88a.pc" @ONLY)
 
+if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "stmm-input-tst88a was configured with the following options:")
 message(STATUS " STMMI_TST88A_HEADERS:            ${STMMI_TST88A_HEADERS}")
@@ -98,6 +99,7 @@ message(STATUS " CMAKE_CXX_LINK_EXECUTABLE        ${CMAKE_CXX_LINK_EXECUTABLE}")
 message(STATUS " CMAKE_CXX_COMPILER_ID:           ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS " CMAKE_CXX_COMPILER_VERSION:      ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS " CMAKE_CXX_FLAGS:                 ${CMAKE_CXX_FLAGS}")
+endif()
 
 # # Documentation
 # add_subdirectory(doc)

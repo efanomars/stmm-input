@@ -110,6 +110,7 @@ if (PKG_CONFIG_FOUND)
                    "${PROJECT_BINARY_DIR}/stmm-input-ev.pc" @ONLY)
 endif()
 
+if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "stmm-input-ev was configured with the following options:")
 message(STATUS " STMMI_HEADERS:                 ${STMMI_HEADERS}")
@@ -123,6 +124,7 @@ message(STATUS " CMAKE_CXX_FLAGS:               ${CMAKE_CXX_FLAGS}")
 message(STATUS " install prefix:                ${CMAKE_INSTALL_PREFIX}")
 message(STATUS " BUILD_DOCS:                    ${BUILD_DOCS}")
 message(STATUS " BUILD_TESTING:                 ${BUILD_TESTING}")
+endif()
 
 # Documentation
 add_subdirectory(doc)

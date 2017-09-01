@@ -24,11 +24,13 @@ if (BUILD_TESTING)
     list(APPEND SPINN_TEST_EXTRA_INCLUDE_DIRS   ${STMM_INPUT_FAKE_INCLUDE_DIRS} ${SIGCPP_INCLUDE_DIRS})
     list(APPEND SPINN_TEST_EXTRA_LIBS           ${STMM_INPUT_FAKE_LIBRARIES}    ${SIGCPP_LIBRARIES})
 
+    if ($ENV{STMM_CMAKE_COMMENTS})
     message(STATUS "")
     message(STATUS "spinn-test was configured with the following options:")
     message(STATUS " SPINN_TEST_EXTRA_INCLUDE_DIRS:       ${SPINN_TEST_EXTRA_INCLUDE_DIRS}")
     message(STATUS " SPINN_TEST_EXTRA_LIBS:               ${SPINN_TEST_EXTRA_LIBS}")
     message(STATUS " SPINN_TEST_WITH_SOURCES:             ${SPINN_TEST_WITH_SOURCES}")
+    endif()
 
     target_include_directories(spinn-test BEFORE PRIVATE ${SPINN_TEST_EXTRA_INCLUDE_DIRS})
     target_include_directories(spinn-test BEFORE PRIVATE ${PROJECT_SOURCE_DIR}/src)
