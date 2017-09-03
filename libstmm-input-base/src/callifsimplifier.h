@@ -18,8 +18,8 @@
  * File:   callifsimplifier.h
  */
 
-#ifndef _STMI_CALLIF_SIMPLIFIER_H_
-#define _STMI_CALLIF_SIMPLIFIER_H_
+#ifndef STMI_CALLIF_SIMPLIFIER_H
+#define STMI_CALLIF_SIMPLIFIER_H
 
 #include <stmm-input/callifs.h>
 
@@ -38,5 +38,5 @@ const shared_ptr<CallIf> simplify(
 
 } // namespace stmi
 
-#endif /* _STMI_CALLIF_SIMPLIFIER_H_ */
+#endif /* STMI_CALLIF_SIMPLIFIER_H */
 

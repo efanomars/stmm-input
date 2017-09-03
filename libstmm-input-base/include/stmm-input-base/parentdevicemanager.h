@@ -18,8 +18,8 @@
  * File:   parentdevicemanager.h
  */
 
-#ifndef _STMI_PARENT_DEVICE_MANAGER_H_
-#define _STMI_PARENT_DEVICE_MANAGER_H_
+#ifndef STMI_PARENT_DEVICE_MANAGER_H
+#define STMI_PARENT_DEVICE_MANAGER_H
 
 #include "childdevicemanager.h"
 
@@ -114,5 +114,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_PARENT_DEVICE_MANAGER_H_ */
+#endif /* STMI_PARENT_DEVICE_MANAGER_H */
 

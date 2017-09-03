@@ -18,8 +18,8 @@
  * File:   capability.h
  */
 
-#ifndef _STMI_CAPABILITY_H_
-#define _STMI_CAPABILITY_H_
+#ifndef STMI_CAPABILITY_H
+#define STMI_CAPABILITY_H
 
 #include "private-namedtypes.h"
 
@@ -313,5 +313,5 @@ namespace std {
 	};
 } // namespace std
 
-#endif /* _STMI_CAPABILITY_H_ */
+#endif /* STMI_CAPABILITY_H */
 

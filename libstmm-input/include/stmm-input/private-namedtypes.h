@@ -18,8 +18,8 @@
  * File:   private-namedtypes.h
  */
 
-#ifndef _STMI_PRIVATE_NAMED_TYPES_H_
-#define _STMI_PRIVATE_NAMED_TYPES_H_
+#ifndef STMI_PRIVATE_NAMED_TYPES_H
+#define STMI_PRIVATE_NAMED_TYPES_H
 
 #include <unordered_map>
 #include <typeinfo>
@@ -182,4 +182,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_PRIVATE_NAMED_TYPES_H_ */
+#endif /* STMI_PRIVATE_NAMED_TYPES_H */

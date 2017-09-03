@@ -18,8 +18,8 @@
  * File:   devicemanager.h
  */
 
-#ifndef _STMI_DEVICE_MANAGER_H_
-#define _STMI_DEVICE_MANAGER_H_
+#ifndef STMI_DEVICE_MANAGER_H
+#define STMI_DEVICE_MANAGER_H
 
 #include "device.h"
 #include "event.h"
@@ -263,5 +263,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_DEVICE_MANAGER_H_ */
+#endif /* STMI_DEVICE_MANAGER_H */
 

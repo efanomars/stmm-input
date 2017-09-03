@@ -18,8 +18,8 @@
  * File:   flogtkbackend.h
  */
 
-#ifndef _STMI_FLO_GTK_BACKEND_H_
-#define _STMI_FLO_GTK_BACKEND_H_
+#ifndef STMI_FLO_GTK_BACKEND_H
+#define STMI_FLO_GTK_BACKEND_H
 
 #include <stmm-input-gtk/gtkaccessor.h>
 
@@ -130,4 +130,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_FLO_GTK_BACKEND_H_ */
+#endif /* STMI_FLO_GTK_BACKEND_H */

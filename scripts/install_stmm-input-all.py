@@ -26,8 +26,12 @@ import subprocess
 
 def main():
 	import argparse
-	oParser = argparse.ArgumentParser()
-	oParser.add_argument("-s", "--staticlib", help="build static library (instead of shared)", choices=['On', 'Off', 'Cache']\
+	oParser = argparse.ArgumentParser(description="Install all stmm-input projects.\n"
+						"  Option -s=On implies --omit-plugins,\n"
+						"  option --omit-gtk implies --omit-x11.\n"
+						"  Currently only CXX=g++ can build plugins."
+						, formatter_class=argparse.RawDescriptionHelpFormatter)
+	oParser.add_argument("-s", "--staticlib", help="build static libraries (instead of shared)", choices=['On', 'Off', 'Cache']\
 						, default="Cache", dest="sBuildStaticLib")
 	oParser.add_argument("-b", "--buildtype", help="build type (default=Release)"\
 						, choices=['Debug', 'Release', 'MinSizeRel', 'RelWithDebInfo']\
@@ -42,7 +46,7 @@ def main():
 						, default=False, dest="bOmitGtk")
 	oParser.add_argument("--omit-x11", help="do not build x11 dependant projects", action="store_true"\
 						, default=False, dest="bOmitX11")
-	oParser.add_argument("--omit-plugins", help="do not build plugins (dl, g++ only)", action="store_true"\
+	oParser.add_argument("--omit-plugins", help="do not build stmm-input-dl project", action="store_true"\
 						, default=False, dest="bOmitPlugins")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
 						, default="/usr/local", dest="sDestDir")
@@ -61,6 +65,8 @@ def main():
 
 	#
 	sBuildStaticLib = "-s " + oArgs.sBuildStaticLib
+	if (oArgs.sBuildStaticLib == "On"):
+		oArgs.bOmitPlugins = True
 	#print("sBuildStaticLib:" + sBuildStaticLib)
 	#
 	sBuildTests = "-t " + oArgs.sBuildTests
@@ -77,7 +83,7 @@ def main():
 		sOmitPlugins = "--omit-plugins"
 	else:
 		sOmitPlugins = ""
-	#print("sOmitX11:" + sOmitX11)
+	#print("sOmitPlugins:" + sOmitPlugins)
 	#
 	sBuildDocs = "-d " + oArgs.sBuildDocs
 	#print("sBuildDocs:" + sBuildDocs)

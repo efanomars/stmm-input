@@ -18,8 +18,8 @@
  * File:   flogtkdevicemanager.h
  */
 
-#ifndef _STMI_FLO_GTK_DEVICE_MANAGER_H_
-#define _STMI_FLO_GTK_DEVICE_MANAGER_H_
+#ifndef STMI_FLO_GTK_DEVICE_MANAGER_H
+#define STMI_FLO_GTK_DEVICE_MANAGER_H
 
 #include "gdkkeyconverter.h"
 #include "keyrepeatmode.h"
@@ -201,4 +201,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_FLO_GTK_DEVICE_MANAGER_H_ */
+#endif /* STMI_FLO_GTK_DEVICE_MANAGER_H */

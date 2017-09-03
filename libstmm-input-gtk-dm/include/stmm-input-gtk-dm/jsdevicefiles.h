@@ -21,8 +21,8 @@
 #include <vector>
 #include <string>
 
-#ifndef _STMI_JS_DEVICE_FILES_H_
-#define _STMI_JS_DEVICE_FILES_H_
+#ifndef STMI_JS_DEVICE_FILES_H
+#define STMI_JS_DEVICE_FILES_H
 
 namespace stmi
 {
@@ -68,4 +68,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_JS_DEVICE_FILES_H_ */
+#endif /* STMI_JS_DEVICE_FILES_H */

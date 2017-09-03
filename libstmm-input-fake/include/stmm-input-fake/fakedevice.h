@@ -19,8 +19,8 @@
  */
 /*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
-#ifndef _STMI_TESTING_FAKE_DEVICE_H_
-#define _STMI_TESTING_FAKE_DEVICE_H_
+#ifndef STMI_TESTING_FAKE_DEVICE_H
+#define STMI_TESTING_FAKE_DEVICE_H
 
 #include <stmm-input/devicemanager.h>
 
@@ -101,4 +101,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_TESTING_FAKE_DEVICE_H_ */
+#endif /* STMI_TESTING_FAKE_DEVICE_H */

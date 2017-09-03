@@ -18,8 +18,8 @@
  * File:   callifs.h
  */
 
-#ifndef _STMI_CALLIFS_H_
-#define _STMI_CALLIFS_H_
+#ifndef STMI_CALLIFS_H
+#define STMI_CALLIFS_H
 
 #include "devicemanager.h"
 
@@ -379,5 +379,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_CALLIFS_H_ */
+#endif /* STMI_CALLIFS_H */
 

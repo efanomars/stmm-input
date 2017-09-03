@@ -18,8 +18,8 @@
  * File:   event.h
  */
 
-#ifndef _STMI_EVENT_H_
-#define _STMI_EVENT_H_
+#ifndef STMI_EVENT_H
+#define STMI_EVENT_H
 
 #include "hardwarekey.h"
 #include "private-namedtypes.h"
@@ -418,4 +418,4 @@ namespace std {
 	};
 } // namespace std
 
-#endif /* _STMI_EVENT_H_ */
+#endif /* STMI_EVENT_H */

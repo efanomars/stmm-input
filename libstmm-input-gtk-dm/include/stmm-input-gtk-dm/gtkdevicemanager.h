@@ -18,8 +18,8 @@
  * File:   gtkdevicemanager.h
  */
 
-#ifndef _STMI_GTK_DEVICE_MANAGER_H_
-#define _STMI_GTK_DEVICE_MANAGER_H_
+#ifndef STMI_GTK_DEVICE_MANAGER_H
+#define STMI_GTK_DEVICE_MANAGER_H
 
 #include "keyrepeatmode.h"
 #include "gdkkeyconverter.h"
@@ -116,4 +116,4 @@ public:
 
 } // namespace stmi
 
-#endif /* _STMI_GTK_DEVICE_MANAGER_H_ */
+#endif /* STMI_GTK_DEVICE_MANAGER_H */

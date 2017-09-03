@@ -18,8 +18,8 @@
  * File:   xyevent.h
  */
 
-#ifndef _STMI_XY_EVENT_H_
-#define _STMI_XY_EVENT_H_
+#ifndef STMI_XY_EVENT_H
+#define STMI_XY_EVENT_H
 
 #include "event.h"
 
@@ -176,4 +176,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_XY_EVENT_H_ */
+#endif /* STMI_XY_EVENT_H */

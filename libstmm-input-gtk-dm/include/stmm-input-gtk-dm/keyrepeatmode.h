@@ -18,8 +18,8 @@
  * File:   keyrepeatmode.h
  */
 
-#ifndef _STMI_KEY_REPEAT_MODE_H_
-#define _STMI_KEY_REPEAT_MODE_H_
+#ifndef STMI_KEY_REPEAT_MODE_H
+#define STMI_KEY_REPEAT_MODE_H
 
 namespace stmi
 {
@@ -52,4 +52,4 @@ enum KEY_REPEAT_MODE {
 
 } // namespace stmi
 
-#endif /* _STMI_KEY_REPEAT_MODE_H_ */
+#endif /* STMI_KEY_REPEAT_MODE_H */

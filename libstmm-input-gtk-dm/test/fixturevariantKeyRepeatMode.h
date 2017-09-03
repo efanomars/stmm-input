@@ -18,8 +18,8 @@
  * File:   fixturevariantKeyRepeatMode.h
  */
 
-#ifndef _STMI_TESTING_FIXTURE_VARIANT_KEY_REPEAT_MODE_H_
-#define _STMI_TESTING_FIXTURE_VARIANT_KEY_REPEAT_MODE_H_
+#ifndef STMI_TESTING_FIXTURE_VARIANT_KEY_REPEAT_MODE_H
+#define STMI_TESTING_FIXTURE_VARIANT_KEY_REPEAT_MODE_H
 
 #include "keyrepeatmode.h"
 
@@ -64,4 +64,4 @@ protected:
 
 } // namespace stmi
 
-#endif /* _STMI_TESTING_FIXTURE_VARIANT_KEY_REPEAT_MODE_H_ */
+#endif /* STMI_TESTING_FIXTURE_VARIANT_KEY_REPEAT_MODE_H */

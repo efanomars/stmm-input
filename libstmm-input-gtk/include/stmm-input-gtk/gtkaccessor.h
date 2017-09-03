@@ -18,8 +18,8 @@
  * File:   gtkaccesor.h
  */
 
-#ifndef _STMI_GTK_ACCESSOR_H_
-#define _STMI_GTK_ACCESSOR_H_
+#ifndef STMI_GTK_ACCESSOR_H
+#define STMI_GTK_ACCESSOR_H
 
 #include <stmm-input/accessor.h>
 
@@ -92,5 +92,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_GTK_ACCESSOR_H_ */
+#endif /* STMI_GTK_ACCESSOR_H */
 

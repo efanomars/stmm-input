@@ -18,8 +18,8 @@
  * File:   xideviceswindow.h
  */
 
-#ifndef _STMI_XI_DEVICES_WINDOW_
-#define _STMI_XI_DEVICES_WINDOW_
+#ifndef STMI_XI_DEVICES_WINDOW_H
+#define STMI_XI_DEVICES_WINDOW_H
 
 #include "devicefloater.h"
 
@@ -94,5 +94,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_XI_DEVICES_WINDOW_ */
+#endif /* STMI_XI_DEVICES_WINDOW_H */
 

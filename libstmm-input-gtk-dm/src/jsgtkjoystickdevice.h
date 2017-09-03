@@ -18,8 +18,8 @@
  * File:   jsgtkjoystickdevice.h
  */
 
-#ifndef _STMI_JS_GTK_JOYSTICK_DEVICE_H_
-#define _STMI_JS_GTK_JOYSTICK_DEVICE_H_
+#ifndef STMI_JS_GTK_JOYSTICK_DEVICE_H
+#define STMI_JS_GTK_JOYSTICK_DEVICE_H
 
 #include "jsgtkdevicemanager.h"
 
@@ -224,4 +224,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_JS_GTK_JOYSTICK_DEVICE_H_ */
+#endif /* STMI_JS_GTK_JOYSTICK_DEVICE_H */

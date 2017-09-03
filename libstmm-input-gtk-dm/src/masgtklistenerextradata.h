@@ -18,8 +18,8 @@
  * File:   masgtklistenerextradata.h
  */
 
-#ifndef _STMI_MAS_GTK_LISTENER_EXTRA_DATA_H_
-#define _STMI_MAS_GTK_LISTENER_EXTRA_DATA_H_
+#ifndef STMI_MAS_GTK_LISTENER_EXTRA_DATA_H
+#define STMI_MAS_GTK_LISTENER_EXTRA_DATA_H
 
 #include "masgtkdevicemanager.h"
 
@@ -75,4 +75,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_MAS_GTK_LISTENER_EXTRA_DATA_H_ */
+#endif /* STMI_MAS_GTK_LISTENER_EXTRA_DATA_H */

@@ -18,8 +18,8 @@
  * File:   pluginsdevicemanager.h
  */
 
-#ifndef _STMI_PLUGINS_DEVICE_MANAGER_H_
-#define _STMI_PLUGINS_DEVICE_MANAGER_H_
+#ifndef STMI_PLUGINS_DEVICE_MANAGER_H
+#define STMI_PLUGINS_DEVICE_MANAGER_H
 
 #include <stmm-input-base/parentdevicemanager.h>
 
@@ -154,5 +154,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_PLUGINS_DEVICE_MANAGER_H_ */
+#endif /* STMI_PLUGINS_DEVICE_MANAGER_H */
 

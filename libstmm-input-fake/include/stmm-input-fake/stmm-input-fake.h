@@ -18,8 +18,8 @@
  * File:   stmm-input-fake.h
  */
 
-#ifndef _STMI_STMM_INPUT_FAKE_H_
-#define _STMI_STMM_INPUT_FAKE_H_
+#ifndef STMI_STMM_INPUT_FAKE_H
+#define STMI_STMM_INPUT_FAKE_H
 
 /* This file includes all headers of the stmm-input-fake library. */
 
@@ -33,5 +33,5 @@
 
 #include <stmm-input-ev/stmm-input-ev.h>
 
-#endif /* _STMI_STMM_INPUT_FAKE_H_ */
+#endif /* STMI_STMM_INPUT_FAKE_H */
 

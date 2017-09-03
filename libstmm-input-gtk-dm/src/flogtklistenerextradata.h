@@ -18,8 +18,8 @@
  * File:   flogtklistenerextradata.h
  */
 
-#ifndef _STMI_FLO_GTK_LISTENER_EXTRA_DATA_H_
-#define _STMI_FLO_GTK_LISTENER_EXTRA_DATA_H_
+#ifndef STMI_FLO_GTK_LISTENER_EXTRA_DATA_H
+#define STMI_FLO_GTK_LISTENER_EXTRA_DATA_H
 
 #include "flogtkdevicemanager.h"
 
@@ -55,4 +55,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_FLO_GTK_LISTENER_EXTRA_DATA_H_ */
+#endif /* STMI_FLO_GTK_LISTENER_EXTRA_DATA_H */

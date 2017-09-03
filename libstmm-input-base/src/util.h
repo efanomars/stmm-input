@@ -18,8 +18,8 @@
  * File:   util.h
  */
 
-#ifndef _STMI_UTIL_H_
-#define _STMI_UTIL_H_
+#ifndef STMI_UTIL_H
+#define STMI_UTIL_H
 
 #include <vector>
 #include <algorithm>
@@ -55,5 +55,5 @@ void addToVectorSet(std::vector<T>& aSet, const T& oValue)
 
 } // namespace stmi
 
-#endif /* _STMI_UTIL_H_ */
+#endif /* STMI_UTIL_H */
 

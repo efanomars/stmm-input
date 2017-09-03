@@ -18,8 +18,8 @@
  * File:   joysticksources.h
  */
 
-#ifndef _STMI_JOYSTICK_SOURCES_H_
-#define _STMI_JOYSTICK_SOURCES_H_
+#ifndef STMI_JOYSTICK_SOURCES_H
+#define STMI_JOYSTICK_SOURCES_H
 
 #include <glibmm.h>
 
@@ -151,4 +151,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_JOYSTICK_SOURCES_H_ */
+#endif /* STMI_JOYSTICK_SOURCES_H */

@@ -18,8 +18,8 @@
  * File:   masgtkbackend.h
  */
 
-#ifndef _STMI_MAS_GTK_BACKEND_H_
-#define _STMI_MAS_GTK_BACKEND_H_
+#ifndef STMI_MAS_GTK_BACKEND_H
+#define STMI_MAS_GTK_BACKEND_H
 
 #include <stmm-input-gtk/gtkaccessor.h>
 
@@ -108,4 +108,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_MAS_GTK_BACKEND_H_ */
+#endif /* STMI_MAS_GTK_BACKEND_H */

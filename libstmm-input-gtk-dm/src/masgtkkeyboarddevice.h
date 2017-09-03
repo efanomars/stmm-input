@@ -18,8 +18,8 @@
  * File:   masgtkkeyboarddevice.h
  */
 
-#ifndef _STMI_MAS_GTK_KEYBOARD_DEVICE_H_
-#define _STMI_MAS_GTK_KEYBOARD_DEVICE_H_
+#ifndef STMI_MAS_GTK_KEYBOARD_DEVICE_H
+#define STMI_MAS_GTK_KEYBOARD_DEVICE_H
 
 #include "masgtkdevicemanager.h"
 
@@ -106,4 +106,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_MAS_GTK_KEYBOARD_DEVICE_H_ */
+#endif /* STMI_MAS_GTK_KEYBOARD_DEVICE_H */

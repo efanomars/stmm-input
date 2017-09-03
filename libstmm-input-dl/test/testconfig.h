@@ -18,8 +18,8 @@
  * File:   testconfig.h
  */
 
-#ifndef _STMI_TEST_CONFIG_
-#define _STMI_TEST_CONFIG_
+#ifndef STMI_TEST_CONFIG_H
+#define STMI_TEST_CONFIG_H
 
 namespace stmi
 {
@@ -46,5 +46,5 @@ const char* getTestExePath();
 
 } // namespace stmi
 
-#endif /* _STMI_TEST_CONFIG_ */
+#endif /* STMI_TEST_CONFIG_H */
 

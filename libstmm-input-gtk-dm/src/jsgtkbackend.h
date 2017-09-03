@@ -18,8 +18,8 @@
  * File:   jsgtkbackend.h
  */
 
-#ifndef _STMI_JS_GTK_BACKEND_H_
-#define _STMI_JS_GTK_BACKEND_H_
+#ifndef STMI_JS_GTK_BACKEND_H
+#define STMI_JS_GTK_BACKEND_H
 
 #include "jsgtkdevicemanager.h"
 
@@ -107,4 +107,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_JS_GTK_BACKEND_H_ */
+#endif /* STMI_JS_GTK_BACKEND_H */

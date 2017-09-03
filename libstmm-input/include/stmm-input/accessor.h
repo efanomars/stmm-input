@@ -18,8 +18,8 @@
  * File:   accessor.h
  */
 
-#ifndef _STMI_ACCESSOR_H_
-#define _STMI_ACCESSOR_H_
+#ifndef STMI_ACCESSOR_H
+#define STMI_ACCESSOR_H
 
 #include <memory>
 
@@ -58,5 +58,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_ACCESSOR_H_ */
+#endif /* STMI_ACCESSOR_H */
 

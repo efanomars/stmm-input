@@ -6,6 +6,10 @@ include(CommonTesting)
 
 option(BUILD_TESTING "Build tests" OFF)
 
+if (NOT BUILD_SHARED_LIBS)
+    set(BUILD_TESTING OFF)
+endif()
+
 if (BUILD_TESTING)
     # Test dirs
     set(STMMI_TEST_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/test")

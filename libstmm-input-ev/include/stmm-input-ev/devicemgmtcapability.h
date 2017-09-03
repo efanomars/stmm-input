@@ -18,8 +18,8 @@
  * File:   devicemgmtcapability.h
  */
 
-#ifndef _STMI_DEVICE_MGMT_CAPABILITY_H_
-#define _STMI_DEVICE_MGMT_CAPABILITY_H_
+#ifndef STMI_DEVICE_MGMT_CAPABILITY_H
+#define STMI_DEVICE_MGMT_CAPABILITY_H
 
 #include <stmm-input/capability.h>
 
@@ -95,4 +95,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_DEVICE_MGMT_CAPABILITY_H_ */
+#endif /* STMI_DEVICE_MGMT_CAPABILITY_H */

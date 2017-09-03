@@ -18,8 +18,8 @@
  * File:   stmm-input-base.h
  */
 
-#ifndef _STMI_STMM_INPUT_BASE_H_
-#define _STMI_STMM_INPUT_BASE_H_
+#ifndef STMI_STMM_INPUT_BASE_H
+#define STMI_STMM_INPUT_BASE_H
 
 /* This file includes all headers of the stmm-input-base library. */
 
@@ -31,5 +31,5 @@
 
 #include <stmm-input/stmm-input.h>
 
-#endif /* _STMI_STMM_INPUT_BASE_H_ */
+#endif /* STMI_STMM_INPUT_BASE_H */
 

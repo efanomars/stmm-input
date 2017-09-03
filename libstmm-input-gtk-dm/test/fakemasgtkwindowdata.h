@@ -18,8 +18,8 @@
  * File:   fakemasgtkwindowdata.h
  */
 
-#ifndef _STMI_TESTING_FAKE_MAS_GTK_WINDOW_DATA_H_
-#define _STMI_TESTING_FAKE_MAS_GTK_WINDOW_DATA_H_
+#ifndef STMI_TESTING_FAKE_MAS_GTK_WINDOW_DATA_H
+#define STMI_TESTING_FAKE_MAS_GTK_WINDOW_DATA_H
 
 #include "masgtkwindowdata.h"
 
@@ -344,4 +344,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_TESTING_FAKE_MAS_GTK_WINDOW_DATA_H_ */
+#endif /* STMI_TESTING_FAKE_MAS_GTK_WINDOW_DATA_H */

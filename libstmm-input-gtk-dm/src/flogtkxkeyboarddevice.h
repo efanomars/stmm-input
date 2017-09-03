@@ -18,8 +18,8 @@
  * File:   flogtkxkeyboarddevice.h
  */
 
-#ifndef _STMI_FLO_GTK_X_KEYBOARD_DEVICE_H_
-#define _STMI_FLO_GTK_X_KEYBOARD_DEVICE_H_
+#ifndef STMI_FLO_GTK_X_KEYBOARD_DEVICE_H
+#define STMI_FLO_GTK_X_KEYBOARD_DEVICE_H
 
 #include "flogtkdevicemanager.h"
 
@@ -104,4 +104,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_FLO_GTK_X_KEYBOARD_DEVICE_H_ */
+#endif /* STMI_FLO_GTK_X_KEYBOARD_DEVICE_H */

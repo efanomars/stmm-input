@@ -142,14 +142,18 @@ def checkTidy(sOmitGtk, sOmitX11, sOmitPlugins):
 def main():
 
 	import argparse
-	oParser = argparse.ArgumentParser(description="Uninstall, compile, document, reinstall and test all projects")
+	oParser = argparse.ArgumentParser(description="Uninstall, compile, document, reinstall and test all projects\n"
+									"  Option -s=On implies --omit-plugins,\n"
+									"  option --omit-gtk implies --omit-x11.\n"
+									"Currently only CXX=g++ can build plugins."
+									, formatter_class=argparse.RawDescriptionHelpFormatter)
 	oParser.add_argument("-y", "--no-prompt", help="no prompt comfirmation", action="store_true"\
 						, default=False, dest="bNoPrompt")
 	oParser.add_argument("--omit-gtk", help="do not build gtk dependant projects", action="store_true"\
 						, default=False, dest="bOmitGtk")
 	oParser.add_argument("--omit-x11", help="do not build x11 dependant projects", action="store_true"\
 						, default=False, dest="bOmitX11")
-	oParser.add_argument("--omit-plugins", help="do not build plugins project (CXX=g++ only)", action="store_true"\
+	oParser.add_argument("--omit-plugins", help="do not build stmm-input-dl project", action="store_true"\
 						, default=False, dest="bOmitPlugins")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
 						, default="/usr/local", dest="sDestDir")

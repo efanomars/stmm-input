@@ -18,8 +18,8 @@
  * File:   fakemasgtkbackend.h
  */
 
-#ifndef _STMI_TESTING_FAKE_MAS_GTK_BACKEND_H_
-#define _STMI_TESTING_FAKE_MAS_GTK_BACKEND_H_
+#ifndef STMI_TESTING_FAKE_MAS_GTK_BACKEND_H
+#define STMI_TESTING_FAKE_MAS_GTK_BACKEND_H
 
 #include "masgtkbackend.h"
 
@@ -111,4 +111,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_TESTING_FAKE_MAS_GTK_BACKEND_H_ */
+#endif /* STMI_TESTING_FAKE_MAS_GTK_BACKEND_H */

@@ -18,8 +18,8 @@
  * File:   gdkkeyconverter.h
  */
 
-#ifndef _STMI_GDK_KEY_CONVERTER_H_
-#define _STMI_GDK_KEY_CONVERTER_H_
+#ifndef STMI_GDK_KEY_CONVERTER_H
+#define STMI_GDK_KEY_CONVERTER_H
 
 #include <stmm-input/hardwarekey.h>
 
@@ -52,4 +52,4 @@ public:
 
 } // namespace stmi
 
-#endif /* _STMI_GDK_KEY_CONVERTER_H_ */
+#endif /* STMI_GDK_KEY_CONVERTER_H */

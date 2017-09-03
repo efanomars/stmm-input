@@ -18,8 +18,8 @@
  * File:   tst99event.h
  */
 
-#ifndef _STMI_TST_99_EVENT_H_
-#define _STMI_TST_99_EVENT_H_
+#ifndef STMI_TST_99_EVENT_H
+#define STMI_TST_99_EVENT_H
 
 #include "tst99capability.h"
 
@@ -63,5 +63,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_TST_99_EVENT_H_ */
+#endif /* STMI_TST_99_EVENT_H */
 

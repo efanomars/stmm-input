@@ -18,8 +18,8 @@
  * File:   stmm-input-dl-config.h
  */
 
-#ifndef _STMI_STMM_INPUT_DL_LIB_CONFIG_
-#define _STMI_STMM_INPUT_DL_LIB_CONFIG_
+#ifndef STMI_STMM_INPUT_DL_LIB_CONFIG_H
+#define STMI_STMM_INPUT_DL_LIB_CONFIG_H
 
 namespace stmi
 {
@@ -54,5 +54,5 @@ const char* getUserDataDir();
 
 } // namespace stmi
 
-#endif /* _STMI_STMM_INPUT_DL_LIB_CONFIG_ */
+#endif /* STMI_STMM_INPUT_DL_LIB_CONFIG_H */
 

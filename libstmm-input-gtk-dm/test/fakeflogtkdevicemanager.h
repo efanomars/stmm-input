@@ -18,8 +18,8 @@
  * File:   fakeflomasgtkdevicemanager.h
  */
 
-#ifndef _STMI_TESTING_FAKE_FLO_GTK_DEVICE_MANAGER_H_
-#define _STMI_TESTING_FAKE_FLO_GTK_DEVICE_MANAGER_H_
+#ifndef STMI_TESTING_FAKE_FLO_GTK_DEVICE_MANAGER_H
+#define STMI_TESTING_FAKE_FLO_GTK_DEVICE_MANAGER_H
 
 #include "flogtkdevicemanager.h"
 
@@ -110,4 +110,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_TESTING_FAKE_FLO_GTK_DEVICE_MANAGER_H_ */
+#endif /* STMI_TESTING_FAKE_FLO_GTK_DEVICE_MANAGER_H */

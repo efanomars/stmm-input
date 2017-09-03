@@ -18,8 +18,8 @@
  * File:   basicdevice.h
  */
 
-#ifndef _STMI_BASIC_DEVICE_H_
-#define _STMI_BASIC_DEVICE_H_
+#ifndef STMI_BASIC_DEVICE_H
+#define STMI_BASIC_DEVICE_H
 
 #include "childdevicemanager.h"
 
@@ -83,4 +83,4 @@ shared_ptr<DeviceManager> BasicDevice<ODM>::getDeviceManager() const
 
 } // namespace stmi
 
-#endif /* _STMI_BASIC_DEVICE_H_ */
+#endif /* STMI_BASIC_DEVICE_H */

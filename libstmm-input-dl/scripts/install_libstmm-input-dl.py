@@ -52,13 +52,15 @@ def main():
 	os.chdir(sScriptDir)
 	os.chdir("..")
 	#
-	sBuildStaticLib = "-D BUILD_SHARED_LIBS="
+	sBuildSharedLib = "-D BUILD_SHARED_LIBS="
 	if oArgs.sBuildStaticLib == "On":
-		sBuildStaticLib += "OFF"
+		sBuildSharedLib += "OFF"
+		oArgs.sBuildTests = "Off"
 	elif oArgs.sBuildStaticLib == "Off":
-		sBuildStaticLib += "ON"
+		sBuildSharedLib += "ON"
 	else:
-		sBuildStaticLib = ""
+		sBuildSharedLib = ""
+		oArgs.sBuildTests = "Off"
 	#print("sBuildStaticLib:" + sBuildStaticLib)
 	#
 	sBuildTests = "-D BUILD_TESTING="
@@ -111,7 +113,7 @@ def main():
 	os.chdir("build")
 
 	subprocess.check_call("cmake {} {} {} {} {} {} {} ..".format(\
-			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSanitize).split())
+			sBuildSharedLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSanitize).split())
 	subprocess.check_call("make".split())
 	subprocess.check_call("{} make install".format(sSudo).split())
 

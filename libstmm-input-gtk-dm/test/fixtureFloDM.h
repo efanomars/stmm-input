@@ -18,8 +18,8 @@
  * File:   fixtureFloDM.h
  */
 
-#ifndef _STMI_TESTING_FIXTURE_FLO_DM_H_
-#define _STMI_TESTING_FIXTURE_FLO_DM_H_
+#ifndef STMI_TESTING_FIXTURE_FLO_DM_H
+#define STMI_TESTING_FIXTURE_FLO_DM_H
 
 #include "fixtureGlibApp.h"
 
@@ -165,4 +165,4 @@ public:
 
 } // namespace stmi
 
-#endif /* _STMI_TESTING_FIXTURE_FLO_DM_H_ */
+#endif /* STMI_TESTING_FIXTURE_FLO_DM_H */

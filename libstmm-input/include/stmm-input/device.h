@@ -18,8 +18,8 @@
  * File:   device.h
  */
 
-#ifndef _STMI_DEVICE_H_
-#define _STMI_DEVICE_H_
+#ifndef STMI_DEVICE_H
+#define STMI_DEVICE_H
 
 #include "capability.h"
 #include "private-namedtypes.h"
@@ -108,5 +108,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_DEVICE_H_ */
+#endif /* STMI_DEVICE_H */
 

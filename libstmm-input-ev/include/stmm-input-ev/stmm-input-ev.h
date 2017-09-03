@@ -18,8 +18,8 @@
  * File:   stmm-input-ev.h
  */
 
-#ifndef _STMI_STMM_INPUT_EV_H_
-#define _STMI_STMM_INPUT_EV_H_
+#ifndef STMI_STMM_INPUT_EV_H
+#define STMI_STMM_INPUT_EV_H
 
 /* This file includes all headers of the stmm-input-ev library. */
 
@@ -34,5 +34,5 @@
 
 #include <stmm-input-base/stmm-input-base.h>
 
-#endif /* _STMI_STMM_INPUT_EV_H_ */
+#endif /* STMI_STMM_INPUT_EV_H */
 

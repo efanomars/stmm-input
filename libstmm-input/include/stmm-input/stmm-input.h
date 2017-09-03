@@ -18,8 +18,8 @@
  * File:   stmm-input.h
  */
 
-#ifndef _STMI_STMM_INPUT_H_
-#define _STMI_STMM_INPUT_H_
+#ifndef STMI_STMM_INPUT_H
+#define STMI_STMM_INPUT_H
 
 /* This file includes all headers of the stmm-input library. */
 
@@ -27,5 +27,5 @@
 #include "xyevent.h"
 #include "stmm-input-config.h"
 
-#endif /* _STMI_STMM_INPUT_H_ */
+#endif /* STMI_STMM_INPUT_H */
 

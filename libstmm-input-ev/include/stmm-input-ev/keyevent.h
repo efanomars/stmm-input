@@ -19,8 +19,8 @@
  */
 /*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
-#ifndef _STMI_KEY_EVENT_H_
-#define _STMI_KEY_EVENT_H_
+#ifndef STMI_KEY_EVENT_H
+#define STMI_KEY_EVENT_H
 
 #include "keycapability.h"
 
@@ -116,4 +116,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_KEY_EVENT_H_ */
+#endif /* STMI_KEY_EVENT_H */

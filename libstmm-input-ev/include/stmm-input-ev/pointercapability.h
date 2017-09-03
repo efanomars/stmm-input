@@ -19,8 +19,8 @@
  */
 /*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
 
-#ifndef _STMI_POINTER_CAPABILITY_H_
-#define _STMI_POINTER_CAPABILITY_H_
+#ifndef STMI_POINTER_CAPABILITY_H
+#define STMI_POINTER_CAPABILITY_H
 
 #include <stmm-input/capability.h>
 
@@ -44,4 +44,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_POINTER_CAPABILITY_H_ */
+#endif /* STMI_POINTER_CAPABILITY_H */

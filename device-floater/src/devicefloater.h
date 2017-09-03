@@ -18,8 +18,8 @@
  * File:   devicefloater.h
  */
 
-#ifndef _STMI_DEVICE_FLOATER_
-#define _STMI_DEVICE_FLOATER_
+#ifndef STMI_DEVICE_FLOATER_H
+#define STMI_DEVICE_FLOATER_H
 
 #include <gtkmm.h>
 
@@ -98,5 +98,5 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_DEVICE_FLOATER_ */
+#endif /* STMI_DEVICE_FLOATER_H */
 

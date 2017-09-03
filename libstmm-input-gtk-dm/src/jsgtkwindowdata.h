@@ -18,8 +18,8 @@
  * File:   jsgtkwindowdata.h
  */
 
-#ifndef _STMI_JS_GTK_WINDOW_DATA_H_
-#define _STMI_JS_GTK_WINDOW_DATA_H_
+#ifndef STMI_JS_GTK_WINDOW_DATA_H
+#define STMI_JS_GTK_WINDOW_DATA_H
 
 #include "jsgtkdevicemanager.h"
 
@@ -146,4 +146,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_JS_GTK_WINDOW_DATA_H_ */
+#endif /* STMI_JS_GTK_WINDOW_DATA_H */

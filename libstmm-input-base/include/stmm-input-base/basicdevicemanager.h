@@ -18,8 +18,8 @@
  * File:   basicdevicemanager.h
  */
 
-#ifndef _STMI_BASIC_DEVICE_MANAGER_H_
-#define _STMI_BASIC_DEVICE_MANAGER_H_
+#ifndef STMI_BASIC_DEVICE_MANAGER_H
+#define STMI_BASIC_DEVICE_MANAGER_H
 
 #include "childdevicemanager.h"
 
@@ -291,4 +291,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_BASIC_DEVICE_MANAGER_H_ */
+#endif /* STMI_BASIC_DEVICE_MANAGER_H */

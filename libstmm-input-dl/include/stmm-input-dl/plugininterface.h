@@ -18,8 +18,8 @@
  * File:   plugininterface.h
  */
 
-#ifndef _STMI_PLUGIN_INTERFACE_H_
-#define _STMI_PLUGIN_INTERFACE_H_
+#ifndef STMI_PLUGIN_INTERFACE_H
+#define STMI_PLUGIN_INTERFACE_H
 
 #include <stmm-input-base/childdevicemanager.h>
 
@@ -63,5 +63,5 @@ typedef shared_ptr<ChildDeviceManager> createPlugin_t(const std::string& sAppNam
 
 } // namespace stmi
 
-#endif /* _STMI_PLUGIN_INTERFACE_H_ */
+#endif /* STMI_PLUGIN_INTERFACE_H */
 

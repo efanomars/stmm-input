@@ -18,8 +18,8 @@
  * File:   gdkkeyconverterevdev.h
  */
 
-#ifndef _STMI_GDK_KEY_CONVERTER_EVDEV_H_
-#define _STMI_GDK_KEY_CONVERTER_EVDEV_H_
+#ifndef STMI_GDK_KEY_CONVERTER_EVDEV_H
+#define STMI_GDK_KEY_CONVERTER_EVDEV_H
 
 #include "gdkkeyconverter.h"
 
@@ -49,4 +49,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_GDK_KEY_CONVERTER_EVDEV_H_ */
+#endif /* STMI_GDK_KEY_CONVERTER_EVDEV_H */

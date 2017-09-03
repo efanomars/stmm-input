@@ -18,8 +18,8 @@
  * File:   tst99capability.h
  */
 
-#ifndef _STMI_TST_99_CAPABILITY_H_
-#define _STMI_TST_99_CAPABILITY_H_
+#ifndef STMI_TST_99_CAPABILITY_H
+#define STMI_TST_99_CAPABILITY_H
 
 #include <stmm-input/capability.h>
 
@@ -42,4 +42,4 @@ private:
 
 } // namespace stmi
 
-#endif /* _STMI_TST_99_CAPABILITY_H_ */
+#endif /* STMI_TST_99_CAPABILITY_H */
