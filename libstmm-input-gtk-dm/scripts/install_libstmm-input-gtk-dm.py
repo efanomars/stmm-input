@@ -130,7 +130,7 @@ def main():
 	subprocess.check_call("cmake {} {} {} {} {} {} {} {} {} ..".format(\
 			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sOmitX11, sOmitPlugins\
 			, sDestDir, sSanitize).split())
-	subprocess.check_call("make".split())
+	subprocess.check_call("make $STMM_MAKE_OPTIONS", shell=True)
 	subprocess.check_call("{} make install".format(sSudo).split())
 
 	if oArgs.sBuildStaticLib == "Cache":
