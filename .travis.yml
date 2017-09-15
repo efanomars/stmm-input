@@ -1,0 +1,19 @@
+dist: trusty
+sudo: true
+language: cpp
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-5
+      - python3
+      - doxygen
+      - graphviz
+
+script:
+  - export CXX=/usr/bin/g++-5
+  - export CC=/usr/bin/gcc-5
+  - ./scripts/install_stmm-input-all.py -b=Debug -s=Off -d=On -t=On
+
