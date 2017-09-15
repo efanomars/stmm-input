@@ -11,6 +11,9 @@ addons:
       - python3
       - doxygen
       - graphviz
+      - libgtkmm-3.0-dev
+      - libxi-dev
+      - libx11-dev
 
 script:
   - export CXX=/usr/bin/g++-5
