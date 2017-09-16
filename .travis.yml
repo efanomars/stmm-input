@@ -18,5 +18,5 @@ addons:
 script:
   - export CXX=/usr/bin/g++
   - export CC=/usr/bin/gcc
-  - ./scripts/install_stmm-input-all.py  -b=Debug -s=Off -d=On -t=On
+  - ./scripts/install_stmm-input-all.py  -b=Debug -s=Off -d=Off -t=On
 
