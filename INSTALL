@@ -107,14 +107,7 @@ Dependencies
     + libstmm-input-gtk
     + libstmm-input-ev
     + libstmm-input-dl (optionally)
-    + libxi-dev (optionally)
-    + libx11-dev (optionally)
     + uses exceptions
-
-- device-floater     depends on
-    + libgtkmm-3.0-dev
-    + libxi-dev
-    + libx11-dev
 
 Note: in some linux distributions the packages might be named slightly
 differently (the trailing '-dev' might be '-devel' or not needed at all).
