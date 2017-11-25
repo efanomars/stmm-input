@@ -37,8 +37,6 @@ def main():
 						, default="Cache", dest="sBuildDocs")
 	oParser.add_argument("--docs-to-log", help="--docs warnings to log file", action="store_true"\
 						, default=False, dest="bDocsWarningsToLog")
-	oParser.add_argument("--omit-x11", help="do not build x11 dependant projects", action="store_true"\
-						, default=False, dest="bOmitX11")
 	oParser.add_argument("--omit-plugins", help="do not build plugin project (only CXX=g++)", action="store_true"\
 						, default=False, dest="bOmitPlugins")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
@@ -90,12 +88,6 @@ def main():
 		sDocsWarningsToLog += "OFF"
 	#print("sDocsWarningsToLog:" + sDocsWarningsToLog)
 	#
-	sOmitX11 = "-D OMIT_X11="
-	if oArgs.bOmitX11:
-		sOmitX11 += "ON"
-	else:
-		sOmitX11 += "OFF"
-	#print("sOmitX11:" + sOmitX11)
 	#
 	sOmitPlugins = "-D OMIT_PLUGINS="
 	if oArgs.bOmitPlugins:
@@ -127,8 +119,8 @@ def main():
 
 	os.chdir("build")
 
-	subprocess.check_call("cmake {} {} {} {} {} {} {} {} {} ..".format(\
-			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sOmitX11, sOmitPlugins\
+	subprocess.check_call("cmake {} {} {} {} {} {} {} {} ..".format(\
+			sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sOmitPlugins\
 			, sDestDir, sSanitize).split())
 	subprocess.check_call("make $STMM_MAKE_OPTIONS", shell=True)
 	subprocess.check_call("{} make install".format(sSudo).split())

@@ -10,7 +10,7 @@ Description: C++ Device Input Framework - Gtk main loop device manager
 Version: @STMM_INPUT_GTK_DM_VERSION@
 URL: https://github.com/efanomars/stmm-input
 # Beware! The space between the library name and the comparison (>=) is necessary!
-Requires: stmm-input-gtk >= @STMM_INPUT_GTK_VERSION_REQ@  stmm-input-ev >= @STMM_INPUT_EV_VERSION_REQ@  @STMMI_GTK_DM_DL_DEPENDENCIES@  @STMMI_GTK_DM_X11_DEPENDENCIES@
+Requires: stmm-input-gtk >= @STMM_INPUT_GTK_VERSION_REQ@  stmm-input-ev >= @STMM_INPUT_EV_VERSION_REQ@  @STMMI_GTK_DM_DL_DEPENDENCIES@
 Conflicts:
 Libs: -L${libdir} -lstmm-input-gtk-dm
 Cflags: -I${includedir}/stmm-input-gtk-dm -I${includedir}

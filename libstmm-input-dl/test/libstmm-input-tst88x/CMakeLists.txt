@@ -111,6 +111,10 @@ set_target_properties(stmm-input-tst88x   PROPERTIES
         SOVERSION ${STMM_INPUT_TST88X_MAJOR_VERSION}
 #        OUTPUT_NAME "stmm-input-tst88x-${STMM_INPUT_TST88X_VERSION}"
         )
+set_target_properties(stmm-input-tst88x   PROPERTIES
+        DEBUG_POSTFIX ""
+        RELEASE_POSTFIX ""
+        )
 
 # Determine header installation dir
 target_include_directories(stmm-input-tst88x   BEFORE PUBLIC

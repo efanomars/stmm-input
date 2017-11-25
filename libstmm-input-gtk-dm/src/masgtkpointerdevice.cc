@@ -341,7 +341,8 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 			const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
 			for (auto& p0ListenerData : *refListeners) {
 				sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, nSequenceStartTimeStamp
-										, fLastX, fLastY, TouchEvent::TOUCH_CANCEL, (int64_t)p0Sequence
+										, fLastX, fLastY, TouchEvent::TOUCH_CANCEL
+										, reinterpret_cast<int64_t>(p0Sequence)
 										, refSaveAccessor, p0Owner, refEvent);
 			}
 			if (!refWindowData->isEnabled()) {
@@ -370,7 +371,7 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 	shared_ptr<Event> refEvent;
 	const int64_t nEventTimeUsec = DeviceManager::getNowTimeMicroseconds();
 	for (auto& p0ListenerData : *refListeners) {
-		sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, nSequenceStartTimeStamp, fLastX, fLastY, eType, (int64_t)p0Sequence
+		sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, nSequenceStartTimeStamp, fLastX, fLastY, eType, reinterpret_cast<int64_t>(p0Sequence)
 								, refSaveAccessor, p0Owner, refEvent);
 		if ( ((eType == TouchEvent::TOUCH_UPDATE) || (eType == TouchEvent::TOUCH_BEGIN))
 					&& (m_oSequences.find(p0Sequence) == m_oSequences.end())) {
@@ -462,7 +463,7 @@ void GtkPointerDevice::finalizeListenerTouch(MasGtkDeviceManager::ListenerData& 
 		p0ExtraData->setSequenceCanceled(p0Sequence);
 		shared_ptr<Event> refEvent;
 		sendTouchEventToListener(oListenerData, nEventTimeUsec, oSequenceData.m_nTouchStartTimeStamp
-								, fLastX, fLastY, TouchEvent::TOUCH_CANCEL, (int64_t)p0Sequence
+								, fLastX, fLastY, TouchEvent::TOUCH_CANCEL, reinterpret_cast<int64_t>(p0Sequence)
 								, refSelectedAccessor, p0Owner, refEvent);
 	}
 }
@@ -550,7 +551,7 @@ void GtkPointerDevice::cancelSelectedAccessorSequences(const shared_ptr< const s
 			}
 			p0ExtraData->setSequenceCanceled(p0Sequence);
 			sendTouchEventToListener(*p0ListenerData, nEventTimeUsec, oSeqData.m_nTouchStartTimeStamp
-									, 0, 0, TouchEvent::TOUCH_CANCEL, (int64_t)p0Sequence
+									, 0, 0, TouchEvent::TOUCH_CANCEL, reinterpret_cast<int64_t>(p0Sequence)
 									, refSelectedAccessor, p0Owner, refEvent);
 		}
 	}

@@ -23,10 +23,14 @@
 
 #include <stmm-input/hardwarekey.h>
 
+#include <memory>
+
 #include <gdk/gdk.h>
 
 namespace stmi
 {
+
+using std::shared_ptr;
 
 /** Gdk key event (keycode) to hardware key conversion class.
  */
@@ -48,6 +52,33 @@ public:
 	 * @return Whether the conversion was successful.
 	 */
 	virtual bool convertEventKeyToHardwareKey(GdkEventKey const* p0GdkEvent, HARDWARE_KEY& eHardwareKey) const = 0;
+	/** Get the key converter instance (creating the default if not set).
+	 * If the converter was not set with setConverter() the default one is created.
+	 *
+	 * This global singleton converter can be used as an implicit parameter
+	 * to device managers that are loaded as plugins by PluginsDeviceManager
+	 * (libstmm-input-dl).
+	 *
+	 * After this function is called, the global singleton converter can no longer
+	 * be changed.
+	 * @return The converter. Cannot be null.
+	 */
+	static const shared_ptr<GdkKeyConverter>& getConverter();
+	/** Whether the singleton converter was already set.
+	 * @return Whether the converter was yet set.
+	 */
+	static bool isConverterSet();
+	/** Set the key converter instance.
+	 * If the converter was already set by calling getConverter() or this very function,
+	 * the setting fails and false is returned. This means that this function should be
+	 * called very early in your program before getConverter() has a chance to be
+	 * called (that is the plugins get loaded).
+	 * @param refConverter Cannot be null.
+	 * @return Whether the converter was set.
+	 */
+	static bool setConverter(const shared_ptr<GdkKeyConverter>& refConverter);
+private:
+	static shared_ptr<GdkKeyConverter> s_refKeyConverter;
 };
 
 } // namespace stmi

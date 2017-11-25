@@ -50,7 +50,7 @@ TEST_F(MasGtkDMPressPressSuppressedFixture, PressPress)
 
 	refWinData1->simulateKeyPress(GDK_KEY_F1, 67);
 
-	// m_refAllEvDM is created with mode KEY_REPEAT_MODE_SUPPRESS
+	// m_refAllEvDM is created with mode KeyRepeat::MODE_SUPPRESS
 	EXPECT_TRUE(m_aReceivedEvents1.size() == 1);
 
 	const shared_ptr<stmi::Event>& refEvent = m_aReceivedEvents1[0];

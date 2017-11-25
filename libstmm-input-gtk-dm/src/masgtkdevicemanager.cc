@@ -19,7 +19,7 @@
  */
 
 #include "masgtkdevicemanager.h"
-#include "gdkkeyconverter.h"
+#include <stmm-input-gtk/gdkkeyconverter.h>
 #include "masgtkwindowdata.h"
 #include "masgtkkeyboarddevice.h"
 #include "masgtkpointerdevice.h"
@@ -42,7 +42,7 @@ using Private::Mas::GtkPointerDevice;
 using Private::Mas::MasGtkListenerExtraData;
 
 shared_ptr<MasGtkDeviceManager> MasGtkDeviceManager::create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses
-															, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+															, KeyRepeat::MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
 															, const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager)
 {
 	shared_ptr<MasGtkDeviceManager> refInstance(new MasGtkDeviceManager(bEnableEventClasses, aEnDisableEventClasses
@@ -54,21 +54,21 @@ shared_ptr<MasGtkDeviceManager> MasGtkDeviceManager::create(bool bEnableEventCla
 }
 
 MasGtkDeviceManager::MasGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses
-										, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
+										, KeyRepeat::MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
 : StdDeviceManager({typeid(KeyCapability), typeid(PointerCapability), typeid(TouchCapability)}
 					, {typeid(DeviceMgmtEvent), typeid(KeyEvent), typeid(PointerEvent), typeid(PointerScrollEvent), typeid(TouchEvent)}
 					, bEnableEventClasses, aEnDisableEventClasses)
 , m_nCancelingNestedDepth(0)
-, m_eKeyRepeatMode(eKeyRepeatMode)
-, m_refGdkConverter(refGdkConverter)
+, m_eKeyRepeatMode((eKeyRepeatMode == KeyRepeat::MODE_NOT_SET) ? KeyRepeat::getMode() : eKeyRepeatMode)
+, m_refGdkConverter(refGdkConverter ? refGdkConverter : GdkKeyConverter::getConverter())
 , m_oConverter(*m_refGdkConverter)
 , m_nClassIdxKeyEvent(getEventClassIndex(typeid(KeyEvent)))
 , m_nClassIdxPointerEvent(getEventClassIndex(typeid(PointerEvent)))
 , m_nClassIdxPointerScrollEvent(getEventClassIndex(typeid(PointerScrollEvent)))
 , m_nClassIdxTouchEvent(getEventClassIndex(typeid(TouchEvent)))
 {
-	assert(refGdkConverter);
-	assert((eKeyRepeatMode >= KEY_REPEAT_MODE_SUPPRESS) && (eKeyRepeatMode <= KEY_REPEAT_MODE_ADD_RELEASE_CANCEL));
+	assert(m_refGdkConverter);
+	assert((m_eKeyRepeatMode >= KeyRepeat::MODE_SUPPRESS) && (m_eKeyRepeatMode <= KeyRepeat::MODE_ADD_RELEASE_CANCEL));
 	// The whole implementation of this class is based on this assumption
 	static_assert(sizeof(int) <= sizeof(int32_t), "");
 }

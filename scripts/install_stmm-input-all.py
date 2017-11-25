@@ -27,8 +27,7 @@ import subprocess
 def main():
 	import argparse
 	oParser = argparse.ArgumentParser(description="Install all stmm-input projects.\n"
-						"  Option -s=On implies --omit-plugins,\n"
-						"  option --omit-gtk implies --omit-x11.\n"
+						"  Option -s=On implies --omit-plugins.\n"
 						"  Currently only CXX=g++ can build plugins."
 						, formatter_class=argparse.RawDescriptionHelpFormatter)
 	oParser.add_argument("-s", "--staticlib", help="build static libraries (instead of shared)", choices=['On', 'Off', 'Cache']\
@@ -44,8 +43,6 @@ def main():
 						, default=False, dest="bDocsWarningsToLog")
 	oParser.add_argument("--omit-gtk", help="do not build gtk dependant projects", action="store_true"\
 						, default=False, dest="bOmitGtk")
-	oParser.add_argument("--omit-x11", help="do not build x11 dependant projects", action="store_true"\
-						, default=False, dest="bOmitX11")
 	oParser.add_argument("--omit-plugins", help="do not build stmm-input-dl project", action="store_true"\
 						, default=False, dest="bOmitPlugins")
 	oParser.add_argument("--destdir", help="install dir (default=/usr/local)", metavar='DESTDIR'\
@@ -71,13 +68,6 @@ def main():
 	#
 	sBuildTests = "-t " + oArgs.sBuildTests
 	#print("sBuildTests:" + sBuildTests)
-	if oArgs.bOmitGtk:
-		oArgs.bOmitX11 = True
-	if oArgs.bOmitX11:
-		sOmitX11 = "--omit-x11"
-	else:
-		sOmitX11 = ""
-	#print("sOmitX11:" + sOmitX11)
 	#
 	if oArgs.bOmitPlugins:
 		sOmitPlugins = "--omit-plugins"
@@ -154,16 +144,10 @@ def main():
 
 		print("== install libstmm-input-gtk-dm =======" + sInfo + "==")
 		os.chdir("libstmm-input-gtk-dm/scripts")
-		subprocess.check_call("./install_libstmm-input-gtk-dm.py {} {} {} {} {} {} {} {} {} {}".format(\
+		subprocess.check_call("./install_libstmm-input-gtk-dm.py {} {} {} {} {} {} {} {} {}".format(\
 				sBuildStaticLib, sBuildTests, sBuildDocs, sDocsWarningsToLog, sBuildType, sDestDir, sSudo, sSanitize\
-				, sOmitX11, sOmitPlugins).split())
+				, sOmitPlugins).split())
 		os.chdir("../..")
-
-		if not oArgs.bOmitX11:
-			print("== install device-floater ==========" + sInfo + "==")
-			os.chdir("device-floater/scripts")
-			subprocess.check_call("./install_device-floater.py {} {} {}".format(sBuildType, sDestDir, sSudo).split())
-			os.chdir("../..")
 
 
 if __name__ == "__main__":

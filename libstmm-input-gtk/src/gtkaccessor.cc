@@ -33,7 +33,7 @@ void notify_window_destroyed(gpointer p0Data, GObject *p0Window)
 {
 	GtkAccessor* p0GtkAccessor = static_cast<GtkAccessor*>(p0Data);
 	assert(p0GtkAccessor != nullptr);
-	p0GtkAccessor->windowWasDestroyed((GtkWindow*)p0Window);
+	p0GtkAccessor->windowWasDestroyed(reinterpret_cast<GtkWindow*>(p0Window));
 }
 } // namespace GtkAccessorNS
 } // namespace Private
@@ -79,7 +79,8 @@ GtkAccessor::GtkAccessor(Gtk::Window* p0GtkmmWindow)
 	assert(p0GtkmmWindow != nullptr);
 	GtkWindow* p0GtkWindow = p0GtkmmWindow->gobj();
 	assert(p0GtkWindow != nullptr);
-	g_object_weak_ref(G_OBJECT(p0GtkWindow), Private::GtkAccessorNS::notify_window_destroyed, (gpointer)this);
+	g_object_weak_ref(G_OBJECT(p0GtkWindow), Private::GtkAccessorNS::notify_window_destroyed
+						, static_cast<gpointer>(this));
 }
 GtkAccessor::~GtkAccessor()
 {
@@ -88,7 +89,8 @@ GtkAccessor::~GtkAccessor()
 		return;
 	}
 	GtkWindow* p0GtkWindow = m_p0GtkmmWindow->gobj();
-	g_object_weak_unref(G_OBJECT(p0GtkWindow), Private::GtkAccessorNS::notify_window_destroyed, (gpointer)this);
+	g_object_weak_unref(G_OBJECT(p0GtkWindow), Private::GtkAccessorNS::notify_window_destroyed
+						, static_cast<gpointer>(this));
 }
 void GtkAccessor::windowWasDestroyed(GtkWindow* /*p0GtkWindow*/)
 {

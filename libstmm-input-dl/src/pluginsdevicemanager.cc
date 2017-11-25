@@ -36,7 +36,9 @@
 #include <dirent.h>
 #include <errno.h>
 #include <dlfcn.h>
-#include <sys/stat.h> // stat
+#include <sys/stat.h>
+#include <ctype.h>
+#include <ctype.h> // stat
 
 namespace stmi
 {
@@ -52,17 +54,14 @@ static const int32_t s_nDlpCommentLineLen = 1;
 
 static const std::string& s_sDisabledDlpsFile = "disabled-dlps.txt";
 
-shared_ptr<PluginsDeviceManager> PluginsDeviceManager::create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses
-															, const std::string& sAdditionalPluginPath, bool bAdditionalPluginPathOnly
-															, bool bEnablePlugins, const std::vector<std::string>& aEnDisablePlugins
-															, const std::string& sAppName)
+shared_ptr<PluginsDeviceManager> PluginsDeviceManager::create(const Init& oInit)
 {
 //std::cout << "PluginsDeviceManager::create " << sAdditionalPluginPath << " only:" << bAdditionalPluginPathOnly << '\n';
 	std::vector<std::string> aPluginPaths;
-	if (! sAdditionalPluginPath.empty()) {
-		aPluginPaths.push_back(sAdditionalPluginPath);
+	if (! oInit.m_sAdditionalPluginPath.empty()) {
+		aPluginPaths.push_back(oInit.m_sAdditionalPluginPath);
 	}
-	if (!bAdditionalPluginPathOnly) {
+	if (!oInit.m_bAdditionalPluginPathOnly) {
 		makePath(libconfig::dl::getUserDataDir());
 		aPluginPaths.push_back(libconfig::dl::getUserDataDir());
 		if (aPluginPaths.back().empty()) {
@@ -75,7 +74,7 @@ shared_ptr<PluginsDeviceManager> PluginsDeviceManager::create(bool bEnableEventC
 	}
 	std::vector<DlpInfo> aDlps;
 	for (const auto& sDirPath : aPluginPaths) {
-		getDir(bEnablePlugins, aEnDisablePlugins, aDlps, sDirPath);
+		getDir(oInit.m_bEnablePlugins, oInit.m_aEnDisablePlugins, aDlps, sDirPath);
 	}
 
 	if (aDlps.empty()) {
@@ -87,6 +86,20 @@ shared_ptr<PluginsDeviceManager> PluginsDeviceManager::create(bool bEnableEventC
 		// if failed mark as visited so that won't be included when traversing
 		// dependencies
 		oDlp.m_bVisited = !bOk;
+		if (bOk) {
+			for (const auto& sMustGroup : oInit.m_aGroups) {
+				const auto itFindGroup = std::find_if(oDlp.m_aGroups.begin(), oDlp.m_aGroups.end()
+													, [&](const std::string& sGroup)
+					{
+						return (sGroup == sMustGroup);
+					});
+				if (itFindGroup == oDlp.m_aGroups.end()) {
+					// this plugin doesn't belong to all the required groups
+					oDlp.m_bVisited = true;
+					break; // for(sMustGroup ----
+				}
+			}
+		}
 	}
 	for (const auto& sDirPath : aPluginPaths) {
 		parseDisabledNamesFile(sDirPath + "/" + s_sDisabledDlpsFile, aDlps);
@@ -119,13 +132,13 @@ shared_ptr<PluginsDeviceManager> PluginsDeviceManager::create(bool bEnableEventC
 			}
 			continue; // for oDlp ----
 		}
-		createPlugin_t* p0CreatePluginFunc = (createPlugin_t*) dlsym(p0Handle, "createPlugin");
+		createPlugin_t* p0CreatePluginFunc = reinterpret_cast<createPlugin_t*>(dlsym(p0Handle, "createPlugin"));
 		if (p0CreatePluginFunc == nullptr) {
 			std::cout << "PluginsDeviceManager::create error: could not dlsym library " << sLoadLibrary << " " << dlerror() << '\n';
 			dlclose(p0Handle);
 			continue; // for oDlp ----
 		}
-		auto refChildDM = (*p0CreatePluginFunc)(sAppName, bEnableEventClasses, aEnDisableEventClasses);
+		auto refChildDM = (*p0CreatePluginFunc)(oInit.m_sAppName, oInit.m_bEnableEventClasses, oInit.m_aEnDisableEventClasses);
 		if (!refChildDM) {
 			std::cout << "PluginsDeviceManager::create error: library " << sLoadLibrary << " couldn't create a device manager" << '\n';
 			continue; // for oDlp ----
@@ -138,7 +151,7 @@ shared_ptr<PluginsDeviceManager> PluginsDeviceManager::create(bool bEnableEventC
 	}
 
 	auto refPDM = shared_ptr<PluginsDeviceManager>(new PluginsDeviceManager(
-													bEnableEventClasses, aEnDisableEventClasses, std::move(aPluginHandles)));
+													oInit.m_bEnableEventClasses, oInit.m_aEnDisableEventClasses, std::move(aPluginHandles)));
 	refPDM->init(aChildDMs);
 	return refPDM;
 }
@@ -236,6 +249,24 @@ bool PluginsDeviceManager::parseDlpInfo(DlpInfo& oInfo)
 	oInfo.m_aDllPaths = parseBlock(oInFile, true);
 	oInfo.m_aDepends = parseBlock(oInFile, true);
 	oInfo.m_aDllDescriptionLines = parseBlock(oInFile, false);
+	oInfo.m_aGroups = parseBlock(oInFile, true);
+	for (int32_t nIdx = 0; nIdx < static_cast<int32_t>(oInfo.m_aGroups.size()); ++nIdx) {
+		const auto& sGroup = oInfo.m_aGroups[nIdx];
+		const auto nGroupNameSize = static_cast<int32_t>(sGroup.size());
+		assert(nGroupNameSize > 0);
+		const auto c0 = sGroup[0];
+		if (! std::isalpha(c0)) {
+			std::cout << " PluginsDeviceManager::parseDlpInfo: group name must start with alpha! '" << sGroup << "' doesn't" << '\n';
+			return false; //----------------------------------------------------
+		}
+		for (int32_t nGroupIdx = 1; nGroupIdx < nGroupNameSize; ++nGroupIdx) {
+			const auto c = sGroup[nGroupIdx];
+			if (! std::isalnum(c)) {
+				std::cout << " PluginsDeviceManager::parseDlpInfo: group name must contain alphanums! '" << sGroup << "' doesn't" << '\n';
+				return false; //------------------------------------------------
+			}
+		}
+	}
 	return true;
 }
 bool PluginsDeviceManager::parseDisabledNamesFile(const std::string& sFile, std::vector<DlpInfo>& aDlps)
@@ -271,7 +302,7 @@ std::vector<std::string> PluginsDeviceManager::parseBlock(std::ifstream& oInFile
 		if (bSkipComments) {
 			sLine = trimString(sLine);
 
-			if (sLine.empty() || sLine.substr(0,s_nDlpCommentLineLen) == s_sDlpCommentLine) {
+			if (sLine.empty() || sLine.substr(0, s_nDlpCommentLineLen) == s_sDlpCommentLine) {
 				continue; //for ---
 			}
 		}

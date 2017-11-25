@@ -43,7 +43,7 @@ public:
 	}
 	inline std::string getAxisString(stmi::JoystickCapability::AXIS eAxis) const
 	{
-		auto itFind = m_oAxisStringMap.find((int32_t)eAxis);
+		auto itFind = m_oAxisStringMap.find(static_cast<int32_t>(eAxis));
 		if (itFind == m_oAxisStringMap.end()) {
 			return "";
 		}
@@ -60,7 +60,7 @@ public:
 private:
 	inline void addAxis(stmi::JoystickCapability::AXIS eAxis, const std::string& sStr)
 	{
-		m_oAxisStringMap.emplace((int32_t)eAxis, sStr);
+		m_oAxisStringMap.emplace(static_cast<int32_t>(eAxis), sStr);
 	}
 	inline void addKey(stmi::HARDWARE_KEY eKey, const std::string& sStr)
 	{

@@ -49,7 +49,7 @@ protected:
 	{
 		GlibAppFixture::SetUp();
 		//
-		const KEY_REPEAT_MODE eKeyRepeatMode = FixtureVariantKeyRepeatMode::getKeyRepeatMode();
+		const KeyRepeat::MODE eKeyRepeatMode = FixtureVariantKeyRepeatMode::getKeyRepeatMode();
 		const bool bEventClassesEnable = FixtureVariantEventClassesEnable::getEnable();
 		const std::vector<Event::Class> aClasses = FixtureVariantEventClasses::getEventClasses();
 		//

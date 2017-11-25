@@ -21,7 +21,7 @@ list(APPEND SHOWEVS_EXTRA_INCLUDE_DIRS   ${STMMINPUTGTKDM_INCLUDE_DIRS})
 list(APPEND SHOWEVS_EXTRA_LIBS           ${STMMINPUTGTKDM_LIBRARIES})
 
 # Add include directories of used libraries
-include_directories("${SHOWEVS_EXTRA_INCLUDE_DIRS}")
+include_directories(SYSTEM "${SHOWEVS_EXTRA_INCLUDE_DIRS}")
 
 # Source and headers files
 set(SHOWEVS_SOURCES

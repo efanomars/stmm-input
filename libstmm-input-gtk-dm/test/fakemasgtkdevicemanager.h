@@ -23,7 +23,7 @@
 
 #include "masgtkdevicemanager.h"
 
-#include "gdkkeyconverterevdev.h"
+#include <stmm-input-gtk/gdkkeyconverterevdev.h>
 
 #include "fakemasgtkbackend.h"
 #include "fakemasgtkwindowdata.h"
@@ -41,7 +41,7 @@ class FakeMasGtkDeviceManager : public MasGtkDeviceManager
 {
 public:
 	static shared_ptr<FakeMasGtkDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses
-												, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+												, KeyRepeat::MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
 												, const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager)
 	{
 		shared_ptr<FakeMasGtkDeviceManager> refInstance(
@@ -56,7 +56,7 @@ public:
 		return refInstance;
 	}
 	FakeMasGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses
-						, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
+						, KeyRepeat::MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter)
 	: MasGtkDeviceManager(bEnableEventClasses, aEnDisableEventClasses, eKeyRepeatMode, refGdkConverter)
 	, m_p0Factory(nullptr)
 	, m_p0Backend(nullptr)

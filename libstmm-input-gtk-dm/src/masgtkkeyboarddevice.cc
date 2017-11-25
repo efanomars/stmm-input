@@ -101,11 +101,11 @@ bool GtkKeyboardDevice::handleGdkEventKey(GdkEventKey* p0KeyEv, const shared_ptr
 	if (eGdkType == GDK_KEY_PRESS) {
 		if (bHardwareKeyPressed) {
 			// Key repeat
-			if (p0Owner->m_eKeyRepeatMode == KEY_REPEAT_MODE_SUPPRESS) {
+			if (p0Owner->m_eKeyRepeatMode == KeyRepeat::MODE_SUPPRESS) {
 				return bContinue; //--------------------------------------------
 			}
 			KeyEvent::KEY_INPUT_TYPE eAddInputType;
-			if (p0Owner->m_eKeyRepeatMode == KEY_REPEAT_MODE_ADD_RELEASE) {
+			if (p0Owner->m_eKeyRepeatMode == KeyRepeat::MODE_ADD_RELEASE) {
 				eAddInputType = KeyEvent::KEY_RELEASE;
 			} else {
 				eAddInputType = KeyEvent::KEY_RELEASE_CANCEL;

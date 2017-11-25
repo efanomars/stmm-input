@@ -36,7 +36,7 @@ namespace testing
 ////////////////////////////////////////////////////////////////////////////////
 TEST_F(GlibAppFixture, CreateFakeMasGtkDeviceManager)
 {
-	auto refMasDM = FakeMasGtkDeviceManager::create(false, {}, KEY_REPEAT_MODE_SUPPRESS
+	auto refMasDM = FakeMasGtkDeviceManager::create(false, {}, KeyRepeat::MODE_SUPPRESS
 												, shared_ptr<GdkKeyConverter>{}, Glib::RefPtr<Gdk::DeviceManager>{});
 	EXPECT_TRUE(refMasDM.operator bool());
 }

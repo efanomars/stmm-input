@@ -24,7 +24,8 @@
 /* This file includes all headers of the stmm-input-gtk-dm library. */
 
 #include "gtkdevicemanager.h"
-#include "gdkkeyconverterevdev.h"
+#include "jsdevicefiles.h"
+
 #include "stmm-input-gtk-dm-config.h"
 
 #include <stmm-input-ev/stmm-input-ev.h>

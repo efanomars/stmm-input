@@ -22,7 +22,7 @@ list(APPEND SPINN_EXTRA_INCLUDE_DIRS   ${STMMINPUTGTKDM_INCLUDE_DIRS})
 list(APPEND SPINN_EXTRA_LIBS           ${STMMINPUTGTKDM_LIBRARIES})
 
 # Add include directories of used libraries
-include_directories("${SPINN_EXTRA_INCLUDE_DIRS}")
+include_directories(SYSTEM "${SPINN_EXTRA_INCLUDE_DIRS}")
 
 # Source and headers files
 set(SPINN_SOURCES

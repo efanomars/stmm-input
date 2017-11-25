@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,22 +15,39 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
 /*
- * File:   stmm-input-gtk.h
+ * File:   keyrepeatmode.cc
  */
 
-#ifndef STMI_STMM_INPUT_GTK_H
-#define STMI_STMM_INPUT_GTK_H
-
-/* This file includes all headers of the stmm-input-gtk library. */
-
-#include "gdkkeyconverter.h"
-#include "gdkkeyconverterevdev.h"
-#include "gtkaccessor.h"
 #include "keyrepeatmode.h"
 
-#include "stmm-input-gtk-config.h"
+#include <cassert>
 
-#include <stmm-input/stmm-input.h>
+namespace stmi
+{
 
-#endif /* STMI_STMM_INPUT_GTK_H */
+KeyRepeat::MODE KeyRepeat::s_eMode{MODE_NOT_SET};
 
+KeyRepeat::MODE KeyRepeat::getMode()
+{
+	if (s_eMode == MODE_NOT_SET) {
+		// Set default
+		s_eMode = MODE_SUPPRESS;
+	}
+	return s_eMode;
+}
+
+bool KeyRepeat::isModeSet()
+{
+	return (s_eMode != MODE_NOT_SET);
+}
+bool KeyRepeat::setMode(MODE eMode)
+{
+	assert((eMode == MODE_SUPPRESS) || (eMode == MODE_ADD_RELEASE) || (eMode == MODE_ADD_RELEASE_CANCEL));
+	if (isModeSet()) {
+		return false;
+	}
+	s_eMode = eMode;
+	return true;
+}
+
+} // namespace stmi

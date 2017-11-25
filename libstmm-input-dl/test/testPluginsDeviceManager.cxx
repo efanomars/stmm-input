@@ -72,9 +72,10 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 TEST_F(PluginsFixture, CreatePluginsDeviceManager)
 {
-	auto refPluginsDM = PluginsDeviceManager::create(false, {}
-													, std::string(testing::config::getTestSourceDir()) + "/plugins", true
-													, false, {}, "");
+	PluginsDeviceManager::Init oInit;
+	oInit.m_sAdditionalPluginPath = std::string(testing::config::getTestSourceDir()) + "/plugins";
+	oInit.m_bAdditionalPluginPathOnly = true;
+	auto refPluginsDM = PluginsDeviceManager::create(oInit);
 
 	EXPECT_TRUE(refPluginsDM.operator bool());
 	// addAccessor abused to add devices, parameter is ignored
@@ -129,9 +130,12 @@ TEST_F(PluginsFixture, CreatePluginsDeviceManager)
 ////////////////////////////////////////////////////////////////////////////////
 TEST_F(PluginsFixture, CreatePluginsDeviceManagerEnable)
 {
-	auto refPluginsDM = PluginsDeviceManager::create(false, {}
-													, std::string(testing::config::getTestSourceDir()) + "/plugins", true
-													, true, {"tst88xdevicemanager"}, "");
+	PluginsDeviceManager::Init oInit;
+	oInit.m_sAdditionalPluginPath = std::string(testing::config::getTestSourceDir()) + "/plugins";
+	oInit.m_bAdditionalPluginPathOnly = true;
+	oInit.m_bEnablePlugins = true;
+	oInit.m_aEnDisablePlugins.push_back("tst88xdevicemanager");
+	auto refPluginsDM = PluginsDeviceManager::create(oInit);
 	EXPECT_TRUE(refPluginsDM.operator bool());
 	// addAccessor abused to add devices, parameter is ignored
 	refPluginsDM->addAccessor(shared_ptr<Accessor>{});
@@ -154,9 +158,12 @@ TEST_F(PluginsFixture, CreatePluginsDeviceManagerEnable)
 ////////////////////////////////////////////////////////////////////////////////
 TEST_F(PluginsFixture, SendUnknownEventToLister)
 {
-	auto refPluginsDM = PluginsDeviceManager::create(false, {}
-													, std::string(testing::config::getTestSourceDir()) + "/plugins", true
-													, false, {"tst88xdevicemanager"}, "");
+	PluginsDeviceManager::Init oInit;
+	oInit.m_sAdditionalPluginPath = std::string(testing::config::getTestSourceDir()) + "/plugins";
+	oInit.m_bAdditionalPluginPathOnly = true;
+	oInit.m_bEnablePlugins = false;
+	oInit.m_aEnDisablePlugins.push_back("tst88xdevicemanager");
+	auto refPluginsDM = PluginsDeviceManager::create(oInit);
 	EXPECT_TRUE(refPluginsDM.operator bool());
 
 	std::vector<shared_ptr<stmi::Event>> aReceived;

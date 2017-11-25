@@ -46,15 +46,15 @@ class FixtureVariantKeyRepeatMode
 public:
 	virtual ~FixtureVariantKeyRepeatMode() = default;
 protected:
-	KEY_REPEAT_MODE getKeyRepeatMode()
+	KeyRepeat::MODE getKeyRepeatMode()
 	{
-		KEY_REPEAT_MODE eKeyRepeatMode = KEY_REPEAT_MODE_SUPPRESS;
+		KeyRepeat::MODE eKeyRepeatMode = KeyRepeat::MODE_SUPPRESS;
 		if (dynamic_cast<FixtureVariantKeyRepeatMode_Suppress*>(this) != nullptr) {
-			eKeyRepeatMode = KEY_REPEAT_MODE_SUPPRESS;
+			eKeyRepeatMode = KeyRepeat::MODE_SUPPRESS;
 		} else if (dynamic_cast<FixtureVariantKeyRepeatMode_AddRelease*>(this) != nullptr) {
-			eKeyRepeatMode = KEY_REPEAT_MODE_ADD_RELEASE;
+			eKeyRepeatMode = KeyRepeat::MODE_ADD_RELEASE;
 		} else if (dynamic_cast<FixtureVariantKeyRepeatMode_AddReleaseCancel*>(this) != nullptr) {
-			eKeyRepeatMode = KEY_REPEAT_MODE_ADD_RELEASE_CANCEL;
+			eKeyRepeatMode = KeyRepeat::MODE_ADD_RELEASE_CANCEL;
 		}
 		return eKeyRepeatMode;
 	}

@@ -27,7 +27,6 @@
 #include "fixturevariantEventClasses.h"
 
 #include "fakemasgtkdevicemanager.h"
-#include "fakeflogtkdevicemanager.h"
 #include "fakejsgtkdevicemanager.h"
 
 #include "stmm-input-gtk-dm.h"
@@ -52,29 +51,25 @@ protected:
 	{
 		GlibAppFixture::SetUp();
 		//
-		const KEY_REPEAT_MODE eKeyRepeatMode = FixtureVariantKeyRepeatMode::getKeyRepeatMode();
+		const KeyRepeat::MODE eKeyRepeatMode = FixtureVariantKeyRepeatMode::getKeyRepeatMode();
 		const bool bEventClassesEnable = FixtureVariantEventClassesEnable::getEnable();
 		const std::vector<Event::Class> aClasses = FixtureVariantEventClasses::getEventClasses();
 		//
-		m_refFloAllEvDM = FakeFloGtkDeviceManager::create(bEventClassesEnable, aClasses, eKeyRepeatMode
-													, shared_ptr<GdkKeyConverter>{}, Glib::RefPtr<Gdk::Display>{});
 		m_refMasAllEvDM = FakeMasGtkDeviceManager::create(bEventClassesEnable, aClasses, eKeyRepeatMode
 													, shared_ptr<GdkKeyConverter>{}, Glib::RefPtr<Gdk::DeviceManager>{});
 		m_refJsAllEvDM = FakeJsGtkDeviceManager::create(false, {});
-		m_refAllEvDM = StdParentDeviceManager::create({m_refMasAllEvDM, m_refFloAllEvDM, m_refJsAllEvDM});
+		m_refAllEvDM = StdParentDeviceManager::create({m_refMasAllEvDM, m_refJsAllEvDM});
 		assert(m_refAllEvDM.operator bool());
 	}
 	void TearDown() override
 	{
 		m_refJsAllEvDM.reset();
 		m_refMasAllEvDM.reset();
-		m_refFloAllEvDM.reset();
 		m_refAllEvDM.reset();
 		GlibAppFixture::TearDown();
 	}
 public:
 	shared_ptr<DeviceManager> m_refAllEvDM;
-	shared_ptr<FakeFloGtkDeviceManager> m_refFloAllEvDM;
 	shared_ptr<FakeMasGtkDeviceManager> m_refMasAllEvDM;
 	shared_ptr<FakeJsGtkDeviceManager> m_refJsAllEvDM;
 };
@@ -129,10 +124,6 @@ protected:
 	void SetUp() override
 	{
 		AllEvAllDMOneWinOneAccFixture::SetUp();
-		m_p0FakeFloBackend = m_refFloAllEvDM->getBackend();
-		assert(m_p0FakeFloBackend != nullptr);
-		m_nXDeviceId = m_p0FakeFloBackend->simulateNewDevice();
-		assert(m_nXDeviceId >= 0);
 		//
 		m_p0FakeMasBackend = m_refMasAllEvDM->getBackend();
 		assert(m_p0FakeMasBackend != nullptr);
@@ -152,14 +143,9 @@ protected:
 		//
 		m_p0FakeMasBackend = nullptr;
 		//
-		m_nXDeviceId = -1;
-		m_p0FakeFloBackend = nullptr;
 		AllEvAllDMOneWinOneAccFixture::TearDown();
 	}
 public:
-	Flo::FakeGtkBackend* m_p0FakeFloBackend;
-	int32_t m_nXDeviceId;
-	//
 	Mas::FakeGtkBackend* m_p0FakeMasBackend;
 	//
 	Js::FakeGtkBackend* m_p0FakeJsBackend;

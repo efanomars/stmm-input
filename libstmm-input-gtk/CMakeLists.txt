@@ -43,8 +43,8 @@ set(STMM_INPUT_VERSION_REQ "${STMM_INPUT_MAJOR_VERSION_REQ}.${STMM_INPUT_MINOR_V
 set(GTKMM_VERSION_REQ "3.14.0")
 
 # Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
-pkg_check_modules(STMMINPUT      REQUIRED  stmm-input>=${STMM_INPUT_VERSION_REQ})
-pkg_check_modules(GTKMM  REQUIRED  gtkmm-3.0>=${GTKMM_VERSION_REQ})
+pkg_check_modules(STMMINPUT  REQUIRED  stmm-input>=${STMM_INPUT_VERSION_REQ})
+pkg_check_modules(GTKMM      REQUIRED  gtkmm-3.0>=${GTKMM_VERSION_REQ})
 
 list(APPEND STMMI_GTK_EXTRA_INCLUDE_DIRS
     ${STMMINPUT_INCLUDE_DIRS}
@@ -58,7 +58,7 @@ list(APPEND STMMI_GTK_EXTRA_LIBS
 string(STRIP "${STMMI_GTK_EXTRA_LIBS}" STMMI_GTK_EXTRA_LIBS)
 string(STRIP "${STMMI_GTK_EXTRA_INCLUDE_DIRS}" STMMI_GTK_EXTRA_INCLUDE_DIRS)
 
-include_directories("${STMMI_GTK_EXTRA_INCLUDE_DIRS}")
+include_directories(SYSTEM "${STMMI_GTK_EXTRA_INCLUDE_DIRS}")
 
 # Headers dir
 set(STMMI_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/include")
@@ -68,7 +68,10 @@ set(STMMI_HEADERS_DIR  "${STMMI_INCLUDE_DIR}/stmm-input-gtk")
 #   libstmm-input
 #   gtkmm-3.0-dev
 set(STMMI_HEADERS
+        ${STMMI_HEADERS_DIR}/gdkkeyconverter.h
+        ${STMMI_HEADERS_DIR}/gdkkeyconverterevdev.h
         ${STMMI_HEADERS_DIR}/gtkaccessor.h
+        ${STMMI_HEADERS_DIR}/keyrepeatmode.h
         ${STMMI_HEADERS_DIR}/stmm-input-gtk-config.h
         ${STMMI_HEADERS_DIR}/stmm-input-gtk.h
         )
@@ -77,7 +80,10 @@ set(STMMI_HEADERS
 set(STMMI_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/src")
 # Source files (and headers only used for building)
 set(STMMI_SOURCES
+        ${STMMI_SOURCES_DIR}/gdkkeyconverter.cc
+        ${STMMI_SOURCES_DIR}/gdkkeyconverterevdev.cc
         ${STMMI_SOURCES_DIR}/gtkaccessor.cc
+        ${STMMI_SOURCES_DIR}/keyrepeatmode.cc
         )
 
 # Define library
@@ -104,6 +110,7 @@ message(STATUS " STMMI_HEADERS:                 ${STMMI_HEADERS}")
 message(STATUS " STMMI_SOURCES:                 ${STMMI_SOURCES}")
 message(STATUS " STMMI_GTK_EXTRA_INCLUDE_DIRS:  ${STMMI_GTK_EXTRA_INCLUDE_DIRS}")
 message(STATUS " STMMI_GTK_EXTRA_LIBS:          ${STMMI_GTK_EXTRA_LIBS}")
+message(STATUS " BUILD_SHARED:                  ${BUILD_SHARED}")
 message(STATUS " CMAKE_BUILD_TYPE:              ${CMAKE_BUILD_TYPE}")
 message(STATUS " CMAKE_CXX_COMPILER_ID:         ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS " CMAKE_CXX_COMPILER_VERSION:    ${CMAKE_CXX_COMPILER_VERSION}")

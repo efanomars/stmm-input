@@ -41,7 +41,7 @@ void GtkWindowData::enable(const shared_ptr<GtkAccessor>& refAccessor, MasGtkDev
 	assert(!m_oScrollConn.connected());
 	assert(!m_oTouchConn.connected());
 	assert(!m_oIsActiveConn.connected());
-	m_oAddEvMask = (Gdk::EventMask)0;
+	m_oAddEvMask = static_cast<Gdk::EventMask>(0);
 	m_refAccessor = refAccessor;
 	m_p0Owner = p0Owner;
 	m_bIsEnabled = true;

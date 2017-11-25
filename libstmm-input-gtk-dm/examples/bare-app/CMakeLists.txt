@@ -23,7 +23,7 @@ list(APPEND BARE_APP_EXTRA_INCLUDE_DIRS   ${STMMINPUTGTKDM_INCLUDE_DIRS})
 list(APPEND BARE_APP_EXTRA_LIBS           ${STMMINPUTGTKDM_LIBRARIES})
 
 # Add include directories of used libraries
-include_directories("${BARE_APP_EXTRA_INCLUDE_DIRS}")
+include_directories(SYSTEM "${BARE_APP_EXTRA_INCLUDE_DIRS}")
 
 # Source and headers files
 set(BARE_APP_SOURCES

@@ -20,11 +20,8 @@
 
 #include "gtkdevicemanager.h"
 
-#include "gdkkeyconverterevdev.h"
+#include <stmm-input-gtk/gdkkeyconverterevdev.h>
 #include "masgtkdevicemanager.h"
-#ifndef STMI_OMIT_X11
-#include "flogtkdevicemanager.h"
-#endif // STMI_OMIT_X11
 #ifndef STMI_OMIT_PLUGINS
 #include <stmm-input-dl/pluginsdevicemanager.h>
 #endif // STMI_OMIT_PLUGINS
@@ -50,23 +47,18 @@ shared_ptr<GtkDeviceManager> GtkDeviceManager::create(const Init& oInit)
 		std::cerr << "GtkDeviceManager initialization error: " << oErr.what() << std::endl;
 		return refRes;
 	}
-	#ifndef STMI_OMIT_X11
-	try {
-		auto refFDM = FloGtkDeviceManager::create(oInit.m_bEnableEventClasses, oInit.m_aEnDisableEventClasses, oInit.m_eKeyRepeatMode
-												, (oInit.m_refGdkConverter ? oInit.m_refGdkConverter : GdkKeyConverterEvDev::getConverter())
-												, oInit.m_refDisplay);
-		aManagers.push_back(refFDM);
-	} catch (const std::runtime_error& oErr) {
-		std::cerr << "FloGtkDeviceManager initialization error: " << oErr.what() << std::endl;
-		return refRes;
-	}
-	#endif //NOT STMI_OMIT_X11
 	#ifndef STMI_OMIT_PLUGINS
 	try {
-		auto refPIDM = PluginsDeviceManager::create(oInit.m_bEnableEventClasses, oInit.m_aEnDisableEventClasses
-													, oInit.m_sAdditionalPluginPath, oInit.m_bAdditionalPluginPathOnly
-													, oInit.m_bEnablePlugins, oInit.m_aEnDisablePlugins
-													, oInit.m_sAppName);
+		PluginsDeviceManager::Init oPluginInit;
+		oPluginInit.m_bEnableEventClasses = oInit.m_bEnableEventClasses;
+		oPluginInit.m_aEnDisableEventClasses = oInit.m_aEnDisableEventClasses;
+		oPluginInit.m_sAdditionalPluginPath = oInit.m_sAdditionalPluginPath;
+		oPluginInit.m_bAdditionalPluginPathOnly = oInit.m_bAdditionalPluginPathOnly;
+		oPluginInit.m_bEnablePlugins = oInit.m_bEnablePlugins;
+		oPluginInit.m_aEnDisablePlugins = oInit.m_aEnDisablePlugins;
+		oPluginInit.m_aGroups = oInit.m_aGroups;
+		oPluginInit.m_sAppName = oInit.m_sAppName;
+		auto refPIDM = PluginsDeviceManager::create(oPluginInit);
 		if (refPIDM) {
 			aManagers.push_back(refPIDM);
 		}

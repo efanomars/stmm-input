@@ -31,8 +31,7 @@ def main():
 				, "libstmm-input-gtk"
 				, "libstmm-input-gtk-dm"
 				, "libstmm-input-gtk-dm/examples/bare-app"
-				, "libstmm-input-gtk-dm/examples/showevs"
-				, "device-floater"]
+				, "libstmm-input-gtk-dm/examples/showevs"]
 
 	aExclPatterns = ["build*", "configure", "nbproject*", ".project", ".cproject", ".settings"]
 

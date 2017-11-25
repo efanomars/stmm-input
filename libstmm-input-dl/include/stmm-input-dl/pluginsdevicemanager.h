@@ -63,12 +63,18 @@ using std::weak_ptr;
  *     #=#+#=# This line marks the next block ...
  *     # ... which contains the plugins names that the to be loaded plugin depends on.
  *     # This causes them to be loaded with dlopen before this one.
- *     # This names must be present as .dlp files on any of the plugin paths,
+ *     # These names must be present as .dlp files on any of the plugin paths,
  *     # otherwise they are ignored. The loading of myplugin.dlp library is still
  *     # attempted anyway. Note that the dependency doesn't include the ".dlp".
  *     my-other-plugin
  *     #=#+#=# The next block is a description of the plugin.
  *     myplugin creates devices that do this and that.
+ *     #=#+#=# The next block contains a list of groups the plugin belongs to.
+ *     # Groups can be used by PluginsDeviceManager to selectively load only
+ *     # a subset of the enabled plugins. Each line contains a group name.
+ *     # A group name is made of following characters (regex notation):
+ *     #     [a-zA-Z][a-zA-Z0-9]*
+ *     gtk
  *
  * Plugins can be disabled without removing their .dlp file. In each plugin path
  * the optional file "disabled-dlps.txt" defines the disabled plugin names.
@@ -85,30 +91,47 @@ class PluginsDeviceManager : public ParentDeviceManager
 {
 public:
 	virtual ~PluginsDeviceManager();
-	/** Create an instance.
-	 * The bEnableEventClasses and aEnDisableEventClasses parameters to this function are
-	 * also passed to the plug-in device managers, which are stored as children of this class.
-	 * The application name is passed to the child plug ins.
+	/** Initialization data.
+	 * If m_bEnableEventClasses is `true` then all event classes in m_aEnDisableEventClasses are enabled, all others disabled,
+	 * if `false` then all event classes supported by this instance are enabled except those in m_aEnDisableEventClasses.
 	 *
-	 * The plug-in names in aEnDisablePlugins don't include the ".dlp" extension
+	 * Example: To enable just events of type KeyEvent and PointerEvent set parameters
+	 *
+	 *     m_bEnableEventClasses = true,  m_aEnDisableEventClasses = {stmi::KeyEvent::getClass(), stmi::PointerEvent::getClass()}
+	 *
+	 * The m_bEnableEventClasses and m_aEnDisableEventClasses parameters to this function are
+	 * also passed to the plug-in device managers, which are stored as children of this class.
+	 * The application name (m_sAppName) is passed to the child plug ins.
+	 *
+	 * If m_bEnablePlugins is `true` then all plugin names in m_aEnDisablePlugins are enabled, all others disabled,
+	 * if `false` then all plugin names found by this instance are enabled except those in m_aEnDisablePlugins.
+	 *
+	 * Example: to enable all plugins (to be understood as "don't disable any plugin name")
+	 *
+	 *     m_bEnablePlugins = false,  m_aEnDisablePlugins = {}   (which is the default)
+	 *
+	 * The plug-in names in m_aEnDisablePlugins don't include the ".dlp" extension
 	 * of the corresponding plug-in file.
 	 *
-	 * If bAdditionalPluginPathOnly is true only the sAdditionalPluginPath is searched.
-	 * This is used by tests to avoid the loading of installed plug-ins.
-	 *
-	 * @param bEnableEventClasses Whether to enable or disable all (but) aEnDisableEventClasses.
-	 * @param aEnDisableEventClasses The event classes to be enabled or disabled according to bEnableEventClasses.
-	 * @param sAdditionalPluginPath Priority path where to look for plug-ins. Can be empty.
-	 * @param bAdditionalPluginPathOnly Only sAdditionalPluginPath should be used.
-	 * @param bEnablePlugins Whether to enable or disable all (but) aEnDisablePlugins.
-	 * @param aEnDisablePlugins The plug-in names to be enabled or disabled according to bEnablePlugins.
-	 * @param sAppName The application name. Can be empty.
+	 * If m_aGroups is empty plugin's groups are ignored, otherwise the plugin must be part
+	 * of all the groups in m_aGroups to be loaded.
+	 */
+	struct Init
+	{
+		bool m_bEnableEventClasses = false; /**< Whether to enable or disable all (but) aEnDisableEventClasses. */
+		std::vector<Event::Class> m_aEnDisableEventClasses; /**< The event classes to be enabled or disabled according to m_bEnableEventClasses. */
+		std::string m_sAdditionalPluginPath; /**< Priority path where to look for plug-ins. Can be empty. */
+		bool m_bAdditionalPluginPathOnly = false; /**< Only sAdditionalPluginPath should be used. */
+		bool m_bEnablePlugins = false; /**< Whether to enable or disable all (but) aEnDisablePlugins. */
+		std::vector<std::string> m_aEnDisablePlugins; /**< The plug-in names to be enabled or disabled according to bEnablePlugins. */
+		std::vector<std::string> m_aGroups; /**< The group names the plug-in must belong to in order to be loaded. */
+		std::string m_sAppName; /**< The application name. Can be empty. */
+	};
+	/** Create an instance.
+	 * @param oInit The initialization data.
 	 * @return The created device manager or null if creation failed.
 	 */
-	static shared_ptr<PluginsDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses
-													, const std::string& sAdditionalPluginPath, bool bAdditionalPluginPathOnly
-													, bool bEnablePlugins, const std::vector<std::string>& aEnDisablePlugins
-													, const std::string& sAppName);
+	static shared_ptr<PluginsDeviceManager> create(const Init& oInit);
 
 	shared_ptr<Capability> getCapability(const Capability::Class& oClass) const override;
 	shared_ptr<Capability> getCapability(int32_t nCapabilityId) const override;
@@ -130,6 +153,7 @@ private:
 		std::vector<std::string> m_aDllPaths; // The possible paths. The first for which dlopen works is chosen.
 		std::vector<std::string> m_aDepends; // The .dlp names that should be loaded before this.
 		std::vector<std::string> m_aDllDescriptionLines; // The description.
+		std::vector<std::string> m_aGroups; // The groups.
 		bool m_bVisited = false;
 	};
 	static void getDir(bool bEnablePlugins, const std::vector<std::string>& aEnDisablePlugins

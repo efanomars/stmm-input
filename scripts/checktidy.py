@@ -47,8 +47,6 @@ def main():
 	oParser = argparse.ArgumentParser(description="Clang tidy")
 	oParser.add_argument("--omit-gtk", help="do not compile and test gtk dependant projects", action="store_true"\
 						, default=False, dest="bOmitGtk")
-	oParser.add_argument("--omit-x11", help="do not compile and test x11 dependant projects", action="store_true"\
-						, default=False, dest="bOmitX11")
 	oParser.add_argument("--omit-plugins", help="do not compile and test plugins project (dl)", action="store_true"\
 						, default=False, dest="bOmitPlugins")
 	oArgs = oParser.parse_args()
@@ -58,8 +56,6 @@ def main():
 	os.chdir(sScriptDir)
 	os.chdir("..")
 	#
-	if not (oArgs.bOmitGtk or oArgs.bOmitX11):
-		callTidy("device-floater")
 	callTidy("libstmm-input")
 	callTidy("libstmm-input-base")
 	if not oArgs.bOmitPlugins:

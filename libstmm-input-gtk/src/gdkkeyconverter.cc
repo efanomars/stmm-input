@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2017  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,34 +15,40 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
 /*
- * File:   fakeflogtkwindowdata.cc
+ * File:   gdkkeyconverter.cc
  */
 
-#include "fakeflogtkwindowdata.h"
+#include "gdkkeyconverter.h"
+
+#include "gdkkeyconverterevdev.h"
+
+#include <cassert>
 
 namespace stmi
 {
 
-namespace testing
-{
-namespace Flo
-{
+shared_ptr<GdkKeyConverter> GdkKeyConverter::s_refKeyConverter{};
 
-void FakeGtkWindowData::enable(const shared_ptr<GtkAccessor>& refAccessor, FloGtkDeviceManager* p0Owner)
+const shared_ptr<GdkKeyConverter>& GdkKeyConverter::getConverter()
 {
-	assert(refAccessor);
-	assert(p0Owner != nullptr);
-	setOwner(p0Owner);
-	m_refAccessor = refAccessor;
-	assert(m_p0Factory != nullptr);
-	m_bIsRealized = m_p0Factory->m_bRealizedOnEnable;
-	if (m_bIsRealized) {
-		m_nXWinId = getNewWinId();
+	if (!s_refKeyConverter) {
+		s_refKeyConverter = GdkKeyConverterEvDev::getConverter();
 	}
-	m_bIsEnabled= true;
+	return s_refKeyConverter;
 }
 
-} // namespace Flo
-} // namespace Private
+bool GdkKeyConverter::isConverterSet()
+{
+	return s_refKeyConverter.operator bool();
+}
+bool GdkKeyConverter::setConverter(const shared_ptr<GdkKeyConverter>& refConverter)
+{
+	assert(refConverter);
+	if (s_refKeyConverter) {
+		return false;
+	}
+	s_refKeyConverter = refConverter;
+	return true;
+}
 
 } // namespace stmi

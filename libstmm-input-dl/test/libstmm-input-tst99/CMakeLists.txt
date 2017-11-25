@@ -86,6 +86,10 @@ set_target_properties(stmm-input-tst99   PROPERTIES
         SOVERSION ${STMM_INPUT_TST99_MAJOR_VERSION}
 #        OUTPUT_NAME "stmm-input-tst99-${STMM_INPUT_TST99_VERSION}"
         )
+set_target_properties(stmm-input-tst99   PROPERTIES
+        DEBUG_POSTFIX ""
+        RELEASE_POSTFIX ""
+        )
 
 # Determine header installation dir
 target_include_directories(stmm-input-tst99   BEFORE PUBLIC

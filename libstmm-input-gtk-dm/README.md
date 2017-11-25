@@ -1,15 +1,15 @@
 stmm-input-gtk-dm                                                  {#mainpage}
 =================
 
-Implementation of the stmm-input library for Gtkmm and Linux with X11 (XI2).
+Implementation of the stmm-input library for Gtkmm and Linux.
 
 The device manager provided by this library sends events defined in the
 stmm-input-ev library.
 
 The events are generated for the following devices:
 - master keyboard and pointer
-- multiple independent keyboards (use device-floater to ready them)
 - joysticks (use jstest-gtk to calibrate them)
+- any device supported by plugin device managers
 
 The device manager attaches itself to the Gtk event loop, so that its
 events can easily be processed within a gtkmm application, while allowing

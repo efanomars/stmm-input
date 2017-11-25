@@ -21,8 +21,8 @@
 #ifndef STMI_GTK_DEVICE_MANAGER_H
 #define STMI_GTK_DEVICE_MANAGER_H
 
-#include "keyrepeatmode.h"
-#include "gdkkeyconverter.h"
+#include <stmm-input-gtk/keyrepeatmode.h>
+#include <stmm-input-gtk/gdkkeyconverter.h>
 
 #include <stmm-input-ev/stdparentdevicemanager.h>
 
@@ -46,8 +46,8 @@ using std::weak_ptr;
  *
  * Currently the following devices are supported:
  *    - master keyboard, pointer and touch.
- *    - floating (xinput) devices with keys.
  *    - joysticks mapped to files "/dev/input/jsN".
+ *    - any device from as a loaded plugin device manager.
  *
  * The supported events types are:
  *    - stmi::KeyEvent
@@ -72,9 +72,9 @@ public:
 	 *
 	 *     m_bEnableEventClasses = true,  m_aEnDisableEventClasses = {stmi::KeyEvent::getClass(), stmi::PointerEvent::getClass()}
 	 *
-	 * If `refGdkConverter` is null, the stmi::GdkKeyConverterEvDev converter is used.
+	 * If m_refGdkConverter is null, the stmi::GdkKeyConverterEvDev converter is used.
 	 *
-	 * If the gdk display `refDisplay` is null, the system default is used.
+	 * If the gdk display m_refDisplay is null, the system default is used.
 	 *
 	 * If m_bEnablePlugins is `true` then all plugin names in m_aEnDisablePlugins are enabled, all others disabled,
 	 * if `false` then all plugin names found by this instance are enabled except those in m_aEnDisablePlugins.
@@ -83,6 +83,9 @@ public:
 	 *
 	 *     m_bEnablePlugins = false,  m_aEnDisablePlugins = {}   (which is the default)
 	 *
+	 * m_aGroups contains the groups the plugin must belong to in order to be loaded.
+	 * The groups are listed in the plugin .dlp file (see PluginsDeviceManager::PluginsDeviceManager)
+	 *
 	 * Note: the plugins device manager might have been excluded for the build
 	 * (libstmm-input-dl is not present) in which case these fields are unused.
 	 */
@@ -90,13 +93,14 @@ public:
 	{
 		bool m_bEnableEventClasses = false; /**< Whether to enable or disable all (but) aEnDisableEventClasses. */
 		std::vector<Event::Class> m_aEnDisableEventClasses; /**< The event classes to be enabled or disabled according to m_bEnableEventClasses. */
-		KEY_REPEAT_MODE m_eKeyRepeatMode = KEY_REPEAT_MODE_SUPPRESS; /**< How key (press) repeat is handled. */
+		KeyRepeat::MODE m_eKeyRepeatMode = KeyRepeat::MODE_NOT_SET; /**< How key (press) repeat is handled. If not set default is used. */
 		shared_ptr<GdkKeyConverter> m_refGdkConverter; /**< The gdk key event to hardware key converter. If null default is used. */
 		Glib::RefPtr<Gdk::Display> m_refDisplay; /**< The gdk display. If null default is used. */
 		std::string m_sAdditionalPluginPath; /**< Additional directory where to look for plugin (.dlp) files. Can be empty. */
 		bool m_bAdditionalPluginPathOnly = false; /**< Only additional directory should be used. */
 		bool m_bEnablePlugins = false; /**< Whether to enable or disable all (but) m_aEnDisablePlugins. */
 		std::vector<std::string> m_aEnDisablePlugins; /**< The plugins to be enabled or disabled according to m_bEnablePlugins. */
+		std::vector<std::string> m_aGroups; /**< The group names the plug-ins must belong to in order to be loaded. */
 		std::string m_sAppName; /**< The application name. Can be empty. */
 	};
 	/** Creates a device manager.

@@ -61,9 +61,6 @@ def main():
 	else:
 		sSudo = ""
 
-	subprocess.check_call("./device-floater/scripts/uninstall_device-floater.py -y {} --destdir {}  {}"\
-						.format(sRemoveBuilds, sDestDir, sSudo).split())
-
 	subprocess.check_call("./libstmm-input/scripts/uninstall_libstmm-input.py -y {} --destdir {}  {}"\
 						.format(sRemoveBuilds, sDestDir, sSudo).split())
 

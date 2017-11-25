@@ -371,7 +371,7 @@ void ShowEvsWindow::printJoystickHatEvent(const std::string& sPre, const shared_
 	const auto nHat = refEvent->getHat();
 	const stmi::JoystickCapability::HAT_VALUE eValue = refEvent->getValue();
 	std::string sHat;
-	const int32_t nValue = (int32_t)eValue;
+	const int32_t nValue = static_cast<int32_t>(eValue);
 	if ((nValue & stmi::JoystickCapability::HAT_LEFT) != 0) {
 		sHat = "LEFT";
 	} else if ((nValue & stmi::JoystickCapability::HAT_RIGHT) != 0) {
@@ -399,7 +399,7 @@ void ShowEvsWindow::printJoystickButtonEvent(const std::string& sPre, const shar
 {
 	const auto sEventStr = getEventString(sPre, refEvent);
 	const stmi::JoystickCapability::BUTTON eButton = refEvent->getButton();
-	std::string sButton = m_oInputStrings.getKeyString((stmi::HARDWARE_KEY)eButton);
+	std::string sButton = m_oInputStrings.getKeyString(static_cast<stmi::HARDWARE_KEY>(eButton));
 	if (sButton.empty()) {
 		sButton = "???";
 	}

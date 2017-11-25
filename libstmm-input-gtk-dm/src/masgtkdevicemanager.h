@@ -21,8 +21,8 @@
 #ifndef STMI_MAS_GTK_DEVICE_MANAGER_H
 #define STMI_MAS_GTK_DEVICE_MANAGER_H
 
-#include "gdkkeyconverter.h"
-#include "keyrepeatmode.h"
+#include <stmm-input-gtk/gdkkeyconverter.h>
+#include <stmm-input-gtk/keyrepeatmode.h>
 #include "masgtkbackend.h"
 
 #include <stmm-input-gtk/gtkaccessor.h>
@@ -99,7 +99,7 @@ public:
 	 * @throws std::runtime_error If an initialization error occurred.
 	 */
 	static shared_ptr<MasGtkDeviceManager> create(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses
-											, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
+											, KeyRepeat::MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter
 											, const Glib::RefPtr<Gdk::DeviceManager>& refGdkDeviceManager);
 
 	virtual ~MasGtkDeviceManager();
@@ -135,7 +135,7 @@ protected:
 	void finalizeListener(ListenerData& oListenerData) override;
 	/** Constructor. */
 	MasGtkDeviceManager(bool bEnableEventClasses, const std::vector<Event::Class>& aEnDisableEventClasses
-						, KEY_REPEAT_MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter);
+						, KeyRepeat::MODE eKeyRepeatMode, const shared_ptr<GdkKeyConverter>& refGdkConverter);
 	/** Initializes the device manager. */
 	void init(std::unique_ptr<Private::Mas::GtkWindowDataFactory>& refFactory
 			, std::unique_ptr<Private::Mas::GtkBackend>& refBackend);
@@ -193,7 +193,7 @@ private:
 	// Main master keyboard + pointer
 	shared_ptr<Private::Mas::GtkKeyboardDevice> m_refKeyboardDevice;
 	shared_ptr<Private::Mas::GtkPointerDevice> m_refPointerDevice;
-	KEY_REPEAT_MODE m_eKeyRepeatMode;
+	KeyRepeat::MODE m_eKeyRepeatMode;
 
 	const shared_ptr<GdkKeyConverter> m_refGdkConverter;
 	// Fast access reference to converter
