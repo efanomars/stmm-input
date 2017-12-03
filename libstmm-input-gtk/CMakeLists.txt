@@ -103,6 +103,8 @@ set(STMMI_GTK_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 configure_file("${PROJECT_SOURCE_DIR}/stmm-input-gtk.pc.in"
                "${PROJECT_BINARY_DIR}/stmm-input-gtk.pc" @ONLY)
 
+set_target_properties(stmm-input-gtk PROPERTIES  ${STMMI_BUILD_TYPE}_POSTFIX "")
+
 if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "stmm-input-gtk was configured with the following options:")

@@ -103,6 +103,8 @@ if (PKG_CONFIG_FOUND)
                    "${PROJECT_BINARY_DIR}/stmm-input-fake.pc" @ONLY)
 endif()
 
+set_target_properties(stmm-input-fake PROPERTIES  ${STMMI_BUILD_TYPE}_POSTFIX "")
+
 if ($ENV{STMM_CMAKE_COMMENTS})
 message(STATUS "")
 message(STATUS "stmm-input-fake was configured with the following options:")

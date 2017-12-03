@@ -37,8 +37,6 @@
 #include <errno.h>
 #include <dlfcn.h>
 #include <sys/stat.h>
-#include <ctype.h>
-#include <ctype.h> // stat
 
 namespace stmi
 {
