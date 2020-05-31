@@ -1,0 +1,108 @@
+stmm-input (0.13) unstable; urgency=low
+
+  * Fix doxy comments
+  * Improve build scripts
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 01 Jun 2020 19:29:39 +0100
+
+stmm-input (0.12) unstable; urgency=low
+
+  * Use snapctl to warn user if joystick not permitted
+  * Make joystick support optional
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Thu, 30 Apr 2020 19:29:39 +0100
+
+stmm-input (0.11) unstable; urgency=low
+
+  * Website section
+  * SNAP folder
+  * Fix plugins path related bugs
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Sat, 25 Apr 2020 19:29:39 +0100
+
+stmm-input (0.10) unstable; urgency=low
+
+  * Fix cmake add_custom_target bug
+  * Add pylint3 to checkcode test
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Fri, 10 Apr 2020 19:29:39 +0100
+
+stmm-input (0.10) unstable; urgency=low
+
+  * Fix cmake add_custom_target bug
+  * Add pylint3 to checkcode test
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Fri, 10 Apr 2020 19:29:39 +0100
+
+stmm-input (0.9) unstable; urgency=low
+
+  * improve ChildDeviceManager and ParentDeviceManager interfaces
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 09 Mar 2020 19:29:39 +0100
+
+stmm-input (0.8) unstable; urgency=low
+
+  * stmm-input-plugins accepts unique abbreviations
+  * Change libstmm-input-dl group handling
+  * Fix shoevs example bug
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 02 Mar 2020 19:29:39 +0100
+
+stmm-input (0.7) unstable; urgency=low
+
+  * Add watch file to deb packaging
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Sat, 16 Nov 2019 19:29:39 +0100
+
+stmm-input (0.6) unstable; urgency=low
+
+  * Apply iwyu
+  * Adapt build script to tarball deployment
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Thu, 24 Oct 2019 19:29:39 +0100
+
+stmm-input (0.5) unstable; urgency=low
+
+  * Reduce code bloat by adding noexpect to methods
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Thu, 04 Jul 2019 19:29:39 +0100
+
+stmm-input (0.4) unstable; urgency=low
+
+  * Add man page to source build
+  * Improve build scripts
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 25 Mar 2019 19:29:39 +0100
+
+stmm-input (0.3) unstable; urgency=low
+
+  * Add arch PKGBUILD
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Wed, 13 Mar 2019 19:29:39 +0100
+
+stmm-input (0.2) unstable; urgency=low
+
+  * Jason Turner, C++ Weekly Ep.154, eliminate empty destructors
+  * Improve deb package creation script
+  * Add --path to stmm-input-plugins man page
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Tue, 12 Feb 2019 19:29:39 +0100
+
+stmm-input (0.1) unstable; urgency=low
+
+  * Initial release
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Fri, 09 Nov 2018 18:28:38 +0100

@@ -1,0 +1,4 @@
+usr/include/stmm-input-fake
+usr/lib/libstmm-input-fake.so.*
+usr/lib/libstmm-input-fake.so
+usr/lib/pkgconfig/stmm-input-fake.pc

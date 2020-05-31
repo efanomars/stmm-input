@@ -1,0 +1,88 @@
+.TH STMM-INPUT-PLUGINS 1
+.SH NAME
+stmm-input-plugins \- Manage plugins for the stmm-input framework
+.SH SYNOPSIS
+.TP 5
+\fBstmm-input-plugins\fR [\fIOPTION\fR]
+.RI 
+.br
+
+.SH OPTIONS
+.PP
+.br
+\fB-l --list\fR           List installed plugins.
+.br
+.br
+\fB-s --status\fR         With --list also shows enabled status of the plugin.
+.br
+.br
+\fB-f --file\fR           With --list also shows full path of the plugin.
+.br
+.br
+\fB-a --all\fR            Same as passing --status --file.
+.br
+.br
+\fB-e --enable  NAME\fR   Enables a plugin.
+.br
+.br
+\fB-d --disable NAME\fR   Disables a plugin.
+.br
+.br
+\fB-i --info    NAME\fR   Show information about a plugin.
+.br
+.br
+\fB   --paths\fR          Prints plugin paths.
+.br
+.br
+\fB-v --version\fR        Prints version.
+.br
+.br
+\fB-h --help\fR           Prints this message.
+
+.SH DESCRIPTION
+.PP
+Command line utility that manages the plugin device managers loaded by 
+the libstmm-input-dl library (stmm-input).
+
+.PP
+To disable a plugin it adds a line containing the plugin name in the
+file "@STMMI_PLUGINS_USER_DATA_DIR@/disabled-dlps.txt".
+.br
+To enable a plugin it comments out all the lines containing the plugin
+name in '@STMMI_PLUGINS_USER_DATA_DIR@/disabled-dlps.txt' and
+"@STMMI_PLUGINS_DATA_DIR1@/disabled-dlps.txt" if the command is called
+with sudo.
+
+.PP
+The plugin can be identified by the ending of its name, provided it is
+unique among the available plugins and it is at least two letters long.
+
+Example: command
+
+    $ stmm-input-plugins -d stmm-input-xi
+
+can be abbreviated as
+
+    $ stmm-input-plugins -d xi
+
+provided no other plugin ends with \fBxi\fR.
+
+.SH AUTHOR
+.PP
+Written by Stefano Marsili <efanomars@gmx.ch>.
+
+.SH LICENSE
+.PP
+Copyright © 2019-2020 Stefano Marsili.
+
+.PP
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+.PP
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.

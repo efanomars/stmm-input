@@ -1,0 +1,10 @@
+==================
+stmm-input-plugins
+==================
+
+stmm-input-plugins is command line tool to list, enable and disable
+plugins loaded by the libstmm-input-dl library.
+
+  $>stmm-input-plugins --help
+
+to find out how to use this utility.

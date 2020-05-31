@@ -1,0 +1,4 @@
+# !!! It's a package for developers only !!!
+libstmm-input-fake-dev: non-dev-pkg-with-shlib-symlink usr/lib/libstmm-input-fake.so.@STMM_INPUT_FAKE_VERSION@ usr/lib/libstmm-input-fake.so
+# !!! It's a package for developers only !!!
+libstmm-input-fake-dev: package-name-doesnt-match-sonames libstmm-input-fake0

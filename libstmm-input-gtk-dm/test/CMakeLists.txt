@@ -1,0 +1,76 @@
+# stmm-input-gtk-dm: test/CMakeLists.txt
+
+include(CommonTesting)
+
+option(BUILD_TESTING "Build tests" OFF)
+
+if (BUILD_TESTING)
+
+    # Tests dir
+    set(STMMI_GTK_DM_TEST_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/test")
+
+    set(STMMI_TST_GTK_DM_TARGET_LIST "stmm-input-gtk;stmm-input-ev")
+    if (NOT OMIT_PLUGINS)
+        list(APPEND STMMI_TST_GTK_DM_TARGET_LIST "stmm-input-dl")
+    endif()
+
+    # Test sources need to end with .cxx, helper sources with .h .cc
+    set(STMMI_GTK_DM_TEST_SOURCES_MAS
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/testMasGtkDeviceManager.cxx
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/testMasGtkKeyboardDevice.cxx
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/testMasGtkPointerDevice.cxx
+            )
+
+    set(STMMI_GTK_DM_TEST_WITH_SOURCES_MAS
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fakemasgtkbackend.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fakemasgtkwindowdata.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fakemasgtkdevicemanager.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixtureGlibApp.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixtureMasDM.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixtureTestBase.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixturevariantKeyRepeatMode.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixturevariantEventClasses.h
+            )
+
+    TestFiles("${STMMI_GTK_DM_TEST_SOURCES_MAS}"
+            "${STMMI_SOURCES_DATA};${STMMI_SOURCES_MAS};${STMMI_GTK_DM_TEST_WITH_SOURCES_MAS}"
+            "" "${STMMI_TST_GTK_DM_TARGET_LIST}" FALSE FALSE TRUE)
+
+    set(STMMI_GTK_DM_TEST_SOURCES_JS
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/testJsGtkDeviceManager.cxx
+            )
+
+    set(STMMI_GTK_DM_TEST_WITH_SOURCES_JS
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fakejsgtkbackend.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fakejsgtkwindowdata.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fakejsgtkdevicemanager.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixtureGlibApp.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixtureJsDM.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixtureTestBase.h
+            ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixturevariantEventClasses.h
+            )
+
+    TestFiles("${STMMI_GTK_DM_TEST_SOURCES_JS}"
+            "${STMMI_SOURCES_DATA};${STMMI_SOURCES_JS};${STMMI_GTK_DM_TEST_WITH_SOURCES_JS}"
+            "" "${STMMI_TST_GTK_DM_TARGET_LIST}" FALSE FALSE TRUE)
+
+    if (NOT OMIT_X11)
+        set(STMMI_GTK_DM_TEST_SOURCES_ALL
+                ${STMMI_GTK_DM_TEST_SOURCES_DIR}/testAllGtkDeviceManager.cxx
+                )
+
+        set(STMMI_GTK_DM_TEST_WITH_SOURCES_ALL
+                ${STMMI_GTK_DM_TEST_WITH_SOURCES_MAS}
+                ${STMMI_GTK_DM_TEST_WITH_SOURCES_FLO}
+                ${STMMI_GTK_DM_TEST_WITH_SOURCES_JS}
+                ${STMMI_GTK_DM_TEST_SOURCES_DIR}/fixtureAllDM.h
+                )
+
+        TestFiles("${STMMI_GTK_DM_TEST_SOURCES_ALL}"
+                "${STMMI_SOURCES_DATA};${STMMI_SOURCES_MAS};${STMMI_SOURCES_FLO};${STMMI_SOURCES_JS};${STMMI_GTK_DM_TEST_WITH_SOURCES_ALL}"
+                "" "${STMMI_TST_GTK_DM_TARGET_LIST}" FALSE FALSE TRUE)
+    endif()
+
+    include(CTest)
+
+endif()

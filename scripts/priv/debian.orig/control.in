@@ -1,0 +1,251 @@
+Source: stmm-input
+Priority: optional
+Maintainer: Stefano Marsili <efanomars@gmx.ch>
+Build-Depends: debhelper (>= 9)
+             , cmake
+             , python3
+             , doxygen
+             , graphviz
+             , libgtkmm-3.0-dev (>= @STMM_INPUT_GTK_REQ_GTKMM_VERSION@)
+Standards-Version: 3.9.8
+Section: libs
+Homepage: @STMMI_WEBSITE_SECTION@/stmm-input
+Vcs-Git: https://www.gitlab.com/efanomars/stmm-input.git
+#Vcs-Browser: https://www.gitlab.com/efanomars/stmm-input.git
+
+
+Package: libstmm-input@STMM_INPUT_MAJOR_VERSION@
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Device input event library
+ Extensible device input event library for C++ (C++14).
+ .
+ This library defines core interfaces for events, devices, capabilities,
+ device managers and event listeners.
+
+Package: libstmm-input-dev
+Section: libdevel
+Architecture: any
+Depends: libstmm-input@STMM_INPUT_MAJOR_VERSION@ (= ${binary:Version})
+       , ${misc:Depends}
+Suggests: libstmm-input-doc
+Description: Device input event library (develop)
+ Extensible device input event library for C++ (C++14).
+ .
+ This library defines core interfaces for events, devices, capabilities,
+ device managers and event listeners.
+ .
+ This package contains the development headers for the library found in
+ libstmm-input@STMM_INPUT_MAJOR_VERSION@.
+
+
+Package: libstmm-input-base@STMM_INPUT_BASE_MAJOR_VERSION@
+Architecture: any
+Depends: libstmm-input@STMM_INPUT_MAJOR_VERSION@ (>= @STMM_INPUT_BASE_REQ_STMM_INPUT_VERSION@)
+       , ${misc:Depends}, ${shlibs:Depends}
+Description: Device input event library - base classes
+ Extensible device input event library for C++ (C++14).
+ .
+ This library provides helper classes and templates to ease the implementation
+ and composition of device managers.
+
+Package: libstmm-input-base-dev
+Section: libdevel
+Architecture: any
+Depends: libstmm-input-base@STMM_INPUT_BASE_MAJOR_VERSION@ (= ${binary:Version})
+       , libstmm-input-dev (>= @STMM_INPUT_BASE_REQ_STMM_INPUT_VERSION@)
+       , ${misc:Depends}
+Suggests: libstmm-input-doc
+Description: Device input event library - base classes (develop)
+ Extensible device input event library for C++ (C++14).
+ .
+ This library provides helper classes and templates to ease the implementation
+ and composition of device managers.
+ .
+ This package contains the development headers for the library found in
+ libstmm-input-base@STMM_INPUT_BASE_MAJOR_VERSION@.
+
+
+Package: libstmm-input-dl@STMM_INPUT_DL_MAJOR_VERSION@
+Architecture: any
+Depends: libstmm-input-base@STMM_INPUT_BASE_MAJOR_VERSION@ (>= @STMM_INPUT_DL_REQ_STMM_INPUT_BASE_VERSION@)
+       , ${misc:Depends}, ${shlibs:Depends}
+Description: Device input event library - plugin loader
+ Extensible device input event library for C++ (C++14).
+ .
+ This library uses dlopen to load other libraries as plugins. Specifically it
+ defines a device manager that loads child plugin device managers at runtime.
+
+Package: libstmm-input-dl-dev
+Section: libdevel
+Architecture: any
+Depends: libstmm-input-dl@STMM_INPUT_DL_MAJOR_VERSION@ (= ${binary:Version})
+       , libstmm-input-base-dev (>= @STMM_INPUT_DL_REQ_STMM_INPUT_BASE_VERSION@)
+       , ${misc:Depends}
+Suggests: libstmm-input-doc
+Description: Device input event library - plugin loader (develop)
+ Extensible device input event library for C++ (C++14).
+ .
+ This library uses dlopen to load other libraries as plugins. Specifically it
+ defines a device manager that loads child plugin device managers at runtime.
+ .
+ This package contains the development headers for the library found in
+ libstmm-input-dl@STMM_INPUT_DL_MAJOR_VERSION@.
+
+
+Package: libstmm-input-ev@STMM_INPUT_EV_MAJOR_VERSION@
+Architecture: any
+Depends: libstmm-input-base@STMM_INPUT_BASE_MAJOR_VERSION@ (>= @STMM_INPUT_EV_REQ_STMM_INPUT_BASE_VERSION@)
+       , ${misc:Depends}, ${shlibs:Depends}
+Description: Device input event library - events
+ Extensible device input event library for C++ (C++14).
+ .
+ This library defines a set of event and capability types for keyboard,
+ pointer, touch and joystick devices that are suitable for games.
+
+Package: libstmm-input-ev-dev
+Section: libdevel
+Architecture: any
+Depends: libstmm-input-ev@STMM_INPUT_EV_MAJOR_VERSION@ (= ${binary:Version})
+       , libstmm-input-base-dev (>= @STMM_INPUT_EV_REQ_STMM_INPUT_BASE_VERSION@)
+       , ${misc:Depends}
+Suggests: libstmm-input-doc
+Description: Device input event library - events (develop)
+ Extensible device input event library for C++ (C++14).
+ .
+ This library defines a set of event and capability types for keyboard,
+ pointer, touch and joystick devices that are suitable for games.
+ .
+ This package contains the development headers for the library found in
+ libstmm-input-ev@STMM_INPUT_EV_MAJOR_VERSION@.
+
+
+Package: libstmm-input-fake-dev
+Section: libdevel
+Architecture: any
+Depends: libstmm-input-ev-dev (>= @STMM_INPUT_FAKE_REQ_STMM_INPUT_EV_VERSION@)
+       , ${misc:Depends}, ${shlibs:Depends}
+Suggests: libstmm-input-doc
+Description: Device input event library - fakes (develop)
+ Extensible device input event library for C++ (C++14).
+ .
+ This library is for developers that need to simulate a device manager
+ to feed their test code with fake events defined by the library
+ libstmm-input-ev-dev.
+
+
+Package: libstmm-input-gtk@STMM_INPUT_GTK_MAJOR_VERSION@
+Architecture: any
+Depends: libstmm-input@STMM_INPUT_MAJOR_VERSION@ (>= @STMM_INPUT_GTK_REQ_STMM_INPUT_VERSION@)
+       , libgtkmm-3.0-1v5 (>= @STMM_INPUT_GTK_REQ_GTKMM_VERSION@)
+       , ${misc:Depends}, ${shlibs:Depends}
+Description: Device input event library - gtk
+ Extensible device input event library for C++ (C++14).
+ .
+ This library allows gtkmm specific device managers to implement a common
+ behavior; conveying events from devices normally unsupported by it
+ (like joysticks) to the currently focused window.
+
+Package: libstmm-input-gtk-dev
+Section: libdevel
+Architecture: any
+Depends: libstmm-input-gtk@STMM_INPUT_GTK_MAJOR_VERSION@ (= ${binary:Version})
+       , libstmm-input-dev (>= @STMM_INPUT_GTK_REQ_STMM_INPUT_VERSION@)
+       , libgtkmm-3.0-dev (>= @STMM_INPUT_GTK_REQ_GTKMM_VERSION@)
+       , ${misc:Depends}
+Suggests: libstmm-input-doc
+Description: Device input event library - gtk (develop)
+ Extensible device input event library for C++ (C++14).
+ .
+ This library allows gtkmm specific device managers to implement a common
+ behavior; conveying events from devices normally unsupported by it
+ (like joysticks) to the currently focused window.
+ .
+ This package contains the development headers for the library found in
+ libstmm-input-gtk@STMM_INPUT_GTK_MAJOR_VERSION@.
+
+
+Package: libstmm-input-gtk-dm@STMM_INPUT_GTK_DM_MAJOR_VERSION@
+Architecture: any
+Depends: libstmm-input-dl@STMM_INPUT_DL_MAJOR_VERSION@ (>= @STMM_INPUT_GTK_DM_REQ_STMM_INPUT_DL_VERSION@)
+       , libstmm-input-ev@STMM_INPUT_EV_MAJOR_VERSION@ (>= @STMM_INPUT_GTK_DM_REQ_STMM_INPUT_EV_VERSION@)
+       , libstmm-input-gtk@STMM_INPUT_GTK_MAJOR_VERSION@ (>= @STMM_INPUT_GTK_DM_REQ_STMM_INPUT_GTK_VERSION@)
+       , ${misc:Depends}, ${shlibs:Depends}
+Description: Device input event library - gtk manager
+ Extensible device input event library for C++ (C++14).
+ .
+ This library provides a Gtk device manager that sends events defined in the
+ libstmm-input-ev@STMM_INPUT_EV_MAJOR_VERSION@ library.
+ .
+ The events are generated for the following devices:
+   - master keyboard and pointer
+   - joysticks (use jstest-gtk to calibrate them)
+   - any device supported by plugin device managers
+ .
+ The device manager attaches itself to the Gtk event loop, so that its
+ events can easily be processed within a gtkmm application, while allowing
+ gtk's normal events to be received too.
+
+Package: libstmm-input-gtk-dm-dev
+Section: libdevel
+Architecture: any
+Depends: libstmm-input-gtk-dm@STMM_INPUT_GTK_DM_MAJOR_VERSION@ (= ${binary:Version})
+       , libstmm-input-dl-dev (>= @STMM_INPUT_GTK_DM_REQ_STMM_INPUT_DL_VERSION@)
+       , libstmm-input-ev-dev (>= @STMM_INPUT_GTK_DM_REQ_STMM_INPUT_EV_VERSION@)
+       , libstmm-input-gtk-dev (>= @STMM_INPUT_GTK_DM_REQ_STMM_INPUT_GTK_VERSION@)
+       , ${misc:Depends}
+Suggests: libstmm-input-doc
+Description: Device input event library - gtk manager (develop)
+ Extensible device input event library for C++ (C++14).
+ .
+ This library provides a Gtk device manager that sends events defined in the
+ libstmm-input-ev-dev library.
+ .
+ The events are generated for the following devices:
+   - master keyboard and pointer
+   - joysticks (use jstest-gtk to calibrate them)
+   - any device supported by plugin device manager
+ .
+ The device manager attaches itself to the Gtk event loop, so that its
+ events can easily be processed within a gtkmm application, while allowing
+ gtk's normal events to be received too.
+ .
+ This package contains the development headers for the library found in
+ libstmm-input-gtk-dm@STMM_INPUT_GTK_DM_MAJOR_VERSION@.
+
+Package: libstmm-input-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}
+Suggests: libstmm-input-dev
+        , libstmm-input-base-dev
+        , libstmm-input-dl-dev
+        , libstmm-input-ev-dev
+        , libstmm-input-fake-dev
+        , libstmm-input-gtk-dev
+        , libstmm-input-gtk-dm-dev
+Description: Device input event library - documentation
+ Extensible device input event library for C++ (C++14).
+ .
+ This library provides the html API documentation for packages:
+   - libstmm-input-dev
+   - libstmm-input-base-dev
+   - libstmm-input-dl-dev
+   - libstmm-input-ev-dev
+   - libstmm-input-fake-dev
+   - libstmm-input-gtk-dev
+   - libstmm-input-gtk-dm-dev
+
+
+Package: stmm-input-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: libstmm-input-dl@STMM_INPUT_DL_MAJOR_VERSION@
+Description: Device input event library - plugins enabler (command line)
+ Extensible device input event library for C++ (C++14).
+ .
+ This command line executable allows one to manage the plugin device managers
+ loaded by libstmm-input-dl.
+ .
+ List, enable, disable and get detailed information about all the
+ installed plugins.

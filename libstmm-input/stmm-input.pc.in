@@ -1,0 +1,16 @@
+# stmm-input pkg-config source file
+
+prefix=@STMMI_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: stmm-input
+Description: C++ Device Input Framework
+Version: @STMM_INPUT_VERSION@
+URL: http://www.efanomars.com/libraries/stmm-input
+Requires:
+Conflicts:
+Libs: -L${libdir} -lstmm-input
+Cflags: -I${includedir}/stmm-input -I${includedir}
+

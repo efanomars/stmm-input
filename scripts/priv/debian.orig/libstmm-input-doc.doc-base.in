@@ -1,0 +1,9 @@
+Document: stmm-input-doc-html
+Title: stmm-input libraries reference
+Author: Doxygen
+Abstract: Reference Manual for main libstmm-input libraries
+Section: Programming/C++
+
+Format: HTML
+Index: /usr/share/doc/libstmm-input-doc/html/index.html
+Files: /usr/share/doc/libstmm-input-doc/html/*.html

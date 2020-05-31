@@ -1,0 +1,79 @@
+/*
+ * Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, see <http://www.gnu.org/licenses/>
+ */
+/*
+ * File:   config.cc
+ */
+
+#include "config.h"
+
+#include "dlutil.h"
+
+#include <cassert>
+#include <string>
+#include <vector>
+#include <memory>
+
+namespace stmi
+{
+
+namespace Config
+{
+
+const std::string& getVersionString() noexcept
+{
+	static std::string s_sVersion = "@STMMI_PKG_VERSION@";
+	return s_sVersion;
+}
+
+
+std::vector<std::string> getDataDirPaths() noexcept
+{
+	static const char* const s_p0DataDir0 = "@STMMI_PKG_DATA_DIR0@";
+	static const char* const s_p0DataDir1 = "@STMMI_PKG_DATA_DIR1@";
+	#ifdef STMM_SNAP_PACKAGING
+	const std::string sPrefix = DlUtil::getEnvString("SNAP");
+	#else
+	const std::string sPrefix;
+	#endif //STMM_SNAP_PACKAGING
+	std::vector<std::string> aDataDirs;
+	std::string sDataDir{s_p0DataDir0};
+	if (! sDataDir.empty()) {
+		aDataDirs.push_back(sPrefix + sDataDir);
+	}
+	sDataDir = std::string{s_p0DataDir1};
+	if (! sDataDir.empty()) {
+		aDataDirs.push_back(sPrefix + sDataDir);
+	}
+
+	assert(aDataDirs.size() <= 2);
+	if ((aDataDirs.size() == 2) && (aDataDirs[0] == aDataDirs[1])) {
+		aDataDirs.pop_back();
+	}
+	return aDataDirs;
+}
+
+std::string getUserDataDirRelPath() noexcept
+{
+	static const char* const s_p0UserDataDir = "@STMMI_PKG_USER_DATA_DIR@";
+	const std::string sUserDataDir{s_p0UserDataDir};
+	return sUserDataDir;
+}
+
+} // namespace Config
+
+} // namespace stmi
+
