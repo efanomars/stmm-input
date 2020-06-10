@@ -20,7 +20,7 @@
 #   MINOR is REVISION (implementation of interface)
 #   AGE is always 0
 set(STMM_INPUT_MAJOR_VERSION 0)
-set(STMM_INPUT_MINOR_VERSION 13) # !-U-!
+set(STMM_INPUT_MINOR_VERSION 14) # !-U-!
 set(STMM_INPUT_VERSION "${STMM_INPUT_MAJOR_VERSION}.${STMM_INPUT_MINOR_VERSION}.0")
 
 # include dirs

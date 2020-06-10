@@ -14,10 +14,10 @@ if (NOT PKG_CONFIG_FOUND)
 endif()
 
 # Version
-set(BARE_APP_VERSION "0.13.0") # !-U-!
+set(BARE_APP_VERSION "0.14.0") # !-U-!
 
 # Required libraries
-pkg_check_modules(STMMINPUTGTKDM  REQUIRED  stmm-input-gtk-dm>=0.13) # !-U-!
+pkg_check_modules(STMMINPUTGTKDM  REQUIRED  stmm-input-gtk-dm>=0.14) # !-U-!
 
 list(APPEND BARE_APP_EXTRA_INCLUDE_DIRS   ${STMMINPUTGTKDM_INCLUDE_DIRS})
 list(APPEND BARE_APP_EXTRA_LIBS           ${STMMINPUTGTKDM_LIBRARIES})

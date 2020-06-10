@@ -18,7 +18,7 @@ if (BUILD_TESTING)
     add_executable(spinn-test ${SPINN_TEST_SOURCES_DIR}/testSpinn.cxx ${SPINN_TEST_WITH_SOURCES})
 
     # Required libraries
-    pkg_check_modules(STMMINPUTFAKE  REQUIRED  stmm-input-fake>=0.13) # !-U-!
+    pkg_check_modules(STMMINPUTFAKE  REQUIRED  stmm-input-fake>=0.14) # !-U-!
 
     pkg_check_modules(SIGCPP  REQUIRED  sigc++-2.0>=2.4.0)
 

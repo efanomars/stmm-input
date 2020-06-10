@@ -20,18 +20,18 @@
 #   MINOR is REVISION (implementation of interface)
 #   AGE is always 0
 set(STMM_INPUT_GTK_DM_MAJOR_VERSION 0)
-set(STMM_INPUT_GTK_DM_MINOR_VERSION 13) # !-U-!
+set(STMM_INPUT_GTK_DM_MINOR_VERSION 14) # !-U-!
 set(STMM_INPUT_GTK_DM_VERSION "${STMM_INPUT_GTK_DM_MAJOR_VERSION}.${STMM_INPUT_GTK_DM_MINOR_VERSION}.0")
 
 # required stmm-input-gtk version
-set(STMM_INPUT_GTK_DM_REQ_STMM_INPUT_GTK_VERSION "0.13") # !-U-!
+set(STMM_INPUT_GTK_DM_REQ_STMM_INPUT_GTK_VERSION "0.14") # !-U-!
 
 # required stmm-input-ev version
-set(STMM_INPUT_GTK_DM_REQ_STMM_INPUT_EV_VERSION "0.13") # !-U-!
+set(STMM_INPUT_GTK_DM_REQ_STMM_INPUT_EV_VERSION "0.14") # !-U-!
 
 if (NOT OMIT_PLUGINS)
     # required stmm-input-dl version
-    set(STMM_INPUT_GTK_DM_REQ_STMM_INPUT_DL_VERSION "0.13") # !-U-!
+    set(STMM_INPUT_GTK_DM_REQ_STMM_INPUT_DL_VERSION "0.14") # !-U-!
 endif()
 
 include("${PROJECT_SOURCE_DIR}/../libstmm-input-gtk/stmm-input-gtk-defs.cmake")

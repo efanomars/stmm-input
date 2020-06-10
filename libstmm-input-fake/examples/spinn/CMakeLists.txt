@@ -13,10 +13,10 @@ include(FindPkgConfig)
 find_package(PkgConfig)
 
 # Version
-set(SPINN_VERSION "0.13.0") # !-U-!
+set(SPINN_VERSION "0.14.0") # !-U-!
 
 # Required libraries
-pkg_check_modules(STMMINPUTGTKDM  REQUIRED  stmm-input-gtk-dm>=0.13) # !-U-!
+pkg_check_modules(STMMINPUTGTKDM  REQUIRED  stmm-input-gtk-dm>=0.14) # !-U-!
 
 list(APPEND SPINN_EXTRA_INCLUDE_DIRS   ${STMMINPUTGTKDM_INCLUDE_DIRS})
 list(APPEND SPINN_EXTRA_LIBS           ${STMMINPUTGTKDM_LIBRARIES})
