@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,7 +48,7 @@ namespace stmi
  *         ...
  *         const stmi::Event::Class& oC = refEvent->getEventClass();
  *         if (oC.isXYEvent()) {
- *             auto pXYEvent = static_cast<stmi::XYEvent*>(refEvent);
+ *             auto pXYEvent = static_cast<stmi::XYEvent*>(refEvent.get());
  *             if (pXYEvent->getX() >= 100) {
  *                 pXYEvent->translateXY(-100, 0);
  *                 pXYEvent->scaleXY(0.5, 0.5);
