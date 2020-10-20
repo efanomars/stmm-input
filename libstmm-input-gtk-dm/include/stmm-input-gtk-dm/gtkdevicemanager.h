@@ -61,7 +61,7 @@ using std::weak_ptr;
  *    - stmi::DeviceMgmtEvent
  *
  * When there is a change of active window, all the keys, buttons, touches
- * are canceled. 
+ * are canceled.
  * Example: for each pressed keys a KeyEvent of type KeyEvent::KEY_RELEASE_CANCEL
  * is sent to the listeners.
  */

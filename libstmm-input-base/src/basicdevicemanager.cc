@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -197,7 +197,7 @@ bool BasicDeviceManager::removeEventListener(const shared_ptr<EventListener>& re
 		return false; //--------------------------------------------------------
 	}
 	ListenerData& oListenerData = *itFind;
-	// mark as removed, so that re-adding of the listener is allowed in a 
+	// mark as removed, so that re-adding of the listener is allowed in a
 	// finalize callback
 	oListenerData.m_bListenerWasRemoved = true;
 	m_bListenerListDirty = true;
@@ -275,7 +275,7 @@ bool BasicDeviceManager::ListenerData::handleEventCommon(int32_t nClassTypeIdx, 
 //std::cout << "BasicDeviceManager::ListenerData::handleEventCommon exit B  " << m_p1Owner->m_nListenerListRecursing << '\n';
 		--(m_p1Owner->m_nListenerListRecursing);
 	} else {
-		// Can't remove this element right now, because the caller is 
+		// Can't remove this element right now, because the caller is
 		// probably iterating over the list.
 		// Should be done next time m_oListenersData list is accessed (getEventListeners, etc.).
 		m_p1Owner->m_bListenerListDirty = true;

@@ -1,19 +1,19 @@
-# share/cmake/CommonTesting.cmake
+# Copyright © 2017-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
 
-#  Copyright © 2017-2018  Stefano Marsili, <stemars@gmx.ch>
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with this program; if not, see <http://www.gnu.org/licenses/>
+# File:   CommonTesting.cmake
 
 # TestFiles              Create test executables for a target library.
 #
@@ -77,8 +77,22 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_INCLUDES
                     fakepointerdevice.h
                     faketouchdevice.h
                  )
+            file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/stmm-input-fake")
+            foreach (STMMI_TEST_CUR_FAKE_HEADER  ${STMMI_FAKES_SOURCES})
+                configure_file("${STMMI_FAKES_INCLUDE_DIR}/${STMMI_TEST_CUR_FAKE_HEADER}"
+                               "${PROJECT_BINARY_DIR}/stmm-input-fake/${STMMI_TEST_CUR_FAKE_HEADER}" @ONLY)
+            endforeach (STMMI_TEST_CUR_FAKE_HEADER  ${STMMI_FAKES_SOURCES})
+            #
+            set(STMMI_FAKES_SOURCES_DIR "${PROJECT_SOURCE_DIR}/../libstmm-input-fake/src")
+            set(STMMI_FAKES_SOURCES
+                    fakedevice.cc
+                    fakejoystickdevice.cc
+                    fakekeydevice.cc
+                    fakepointerdevice.cc
+                    faketouchdevice.cc
+                 )
             foreach (STMMI_TEST_CUR_FAKE_SOURCE  ${STMMI_FAKES_SOURCES})
-                configure_file("${STMMI_FAKES_INCLUDE_DIR}/${STMMI_TEST_CUR_FAKE_SOURCE}"
+                configure_file("${STMMI_FAKES_SOURCES_DIR}/${STMMI_TEST_CUR_FAKE_SOURCE}"
                                "${PROJECT_BINARY_DIR}/${STMMI_TEST_CUR_FAKE_SOURCE}" @ONLY)
             endforeach (STMMI_TEST_CUR_FAKE_SOURCE  ${STMMI_FAKES_SOURCES})
         endif (STMMI_ADD_FAKES)
@@ -88,18 +102,19 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_INCLUDES
             set(DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE "THIS FILE WAS AUTOMATICALLY GENERATED! DO NOT MODIFY!")
             set(STMMI_EVS_HEADERS_DIR "${PROJECT_SOURCE_DIR}/../libstmm-input-ev/include/stmm-input-ev")
             set(STMMI_EVS_HEADERS
-                    "${PROJECT_BINARY_DIR}/devicemgmtcapability.h"
-                    "${PROJECT_BINARY_DIR}/devicemgmtevent.h"
-                    "${PROJECT_BINARY_DIR}/joystickcapability.h"
-                    "${PROJECT_BINARY_DIR}/joystickevent.h"
-                    "${PROJECT_BINARY_DIR}/keycapability.h"
-                    "${PROJECT_BINARY_DIR}/keyevent.h"
-                    "${PROJECT_BINARY_DIR}/pointercapability.h"
-                    "${PROJECT_BINARY_DIR}/pointerevent.h"
-                    "${PROJECT_BINARY_DIR}/stddevicemanager.h"
-                    "${PROJECT_BINARY_DIR}/touchcapability.h"
-                    "${PROJECT_BINARY_DIR}/touchevent.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/devicemgmtcapability.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/devicemgmtevent.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/joystickcapability.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/joystickevent.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/keycapability.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/keyevent.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/pointercapability.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/pointerevent.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/stddevicemanager.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/touchcapability.h"
+                    "${PROJECT_BINARY_DIR}/stmm-input-ev/touchevent.h"
                  )
+            file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/stmm-input-ev")
             foreach (STMMI_TEST_CUR_EVS_HEADER  ${STMMI_EVS_HEADERS})
                 get_filename_component(STMMI_TEST_CUR_EVS_HEADER_NAME "${STMMI_TEST_CUR_EVS_HEADER}" NAME)
                 configure_file("${STMMI_EVS_HEADERS_DIR}/${STMMI_TEST_CUR_EVS_HEADER_NAME}"
@@ -166,18 +181,21 @@ function(TestFiles STMMI_TEST_SOURCES  STMMI_WITH_SOURCES  STMMI_LINKED_INCLUDES
             target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_INCLUDE_DIR})
             if (STMMI_ADD_FAKES  OR  STMMI_ADD_EVS)
                 target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${PROJECT_BINARY_DIR})
-            endif (STMMI_ADD_FAKES  OR  STMMI_ADD_EVS)
+            endif()
+            if (STMMI_ADD_FAKES)
+                target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE "${PROJECT_BINARY_DIR}/stmm-input-fake")
+            endif()
+            if (STMMI_ADD_EVS)
+                target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE "${PROJECT_BINARY_DIR}/stmm-input-ev")
+            endif()
             # tests can also involve non public part of the library!
             target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_SOURCES_DIR})
             target_include_directories(${STMMI_TEST_CUR_TGT} BEFORE PRIVATE ${STMMI_HEADERS_DIR})
             target_include_directories(${STMMI_TEST_CUR_TGT}        PRIVATE ${STMMI_LINKED_INCLUDES})
-            target_include_directories(${STMMI_TEST_CUR_TGT}        PRIVATE ${PROJECT_SOURCE_DIR}/../share/thirdparty)
+            target_include_directories(${STMMI_TEST_CUR_TGT}        PRIVATE "${PROJECT_SOURCE_DIR}/../share/thirdparty")
             if (STMMI_FAKE_IFACE)
                 target_compile_definitions(${STMMI_TEST_CUR_TGT} PUBLIC STMI_TESTING_IFACE)
             endif (STMMI_FAKE_IFACE)
-            if (STMMI_ADD_EVS)
-                target_compile_definitions(${STMMI_TEST_CUR_TGT} PUBLIC STMI_TESTING_ADD_EVS)
-            endif (STMMI_ADD_EVS)
             DefineTestTargetPublicCompileOptions(${STMMI_TEST_CUR_TGT})
 
             target_link_libraries(${STMMI_TEST_CUR_TGT} ${STMMI_LINKED_LIBS})

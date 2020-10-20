@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -81,7 +81,7 @@ public:
 	/** Calls the function for all the children. */
 	void enableEventClass(const Event::Class& oEventClass) noexcept override;
 
-	/** Calls addAccessor() of children. 
+	/** Calls addAccessor() of children.
 	 * @return `true` if at least one of the children returned `true`, `false` otherwise.
 	 */
 	bool addAccessor(const shared_ptr<Accessor>& refAccessor) noexcept override;
@@ -92,10 +92,10 @@ public:
 	/** Tells whether an accessor is at least in one of the children. */
 	bool hasAccessor(const shared_ptr<Accessor>& refAccessor) noexcept override;
 
-	/** Calls addEventListener of children. 
+	/** Calls addEventListener of children.
 	 */
 	bool addEventListener(const shared_ptr<EventListener>& refEventListener, const shared_ptr<CallIf>& refCallIf) noexcept override;
-	/** Calls addEventListener of children. 
+	/** Calls addEventListener of children.
 	 */
 	bool addEventListener(const shared_ptr<EventListener>& refEventListener) noexcept override;
 	/** Calls removeEventListener of children.
@@ -111,7 +111,7 @@ public:
 	{
 		return m_aChildDeviceManagers;
 	}
-	/** Get the device manager capabilities of all the children of a given class.
+	/** Get the device manager capabilities of a given class of all the children.
 	 * @param oClass The device manager capability class. Must be subclass of DeviceManagerCapability.
 	 * @return The available device manager capabilities.
 	 */

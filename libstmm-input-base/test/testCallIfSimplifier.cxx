@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>
  */
-/* 
- * File:   testCallIfSimplifier.cc
+/*
+ * File:   testCallIfSimplifier.cxx
  */
 
 #define CATCH_CONFIG_MAIN
@@ -23,8 +23,8 @@
 
 #include "callifsimplifier.h"
 
-#include "fakekeydevice.h"
-#include "fakepointerdevice.h"
+#include <stmm-input-fake/fakekeydevice.h>
+#include <stmm-input-fake/fakepointerdevice.h>
 
 #include "keyevent.h"
 #include "pointerevent.h"

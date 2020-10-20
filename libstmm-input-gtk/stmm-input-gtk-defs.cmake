@@ -1,29 +1,29 @@
-# File: libstmm-input-gtk/stmm-input-gtk-defs.cmake
+# Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
 
-#  Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with this program; if not, see <http://www.gnu.org/licenses/>
+# File:   stmm-input-gtk-defs.cmake
 
 # Libtool CURRENT/REVISION/AGE: here
 #   MAJOR is CURRENT interface
 #   MINOR is REVISION (implementation of interface)
 #   AGE is always 0
 set(STMM_INPUT_GTK_MAJOR_VERSION 0)
-set(STMM_INPUT_GTK_MINOR_VERSION 14) # !-U-!
+set(STMM_INPUT_GTK_MINOR_VERSION 15) # !-U-!
 set(STMM_INPUT_GTK_VERSION "${STMM_INPUT_GTK_MAJOR_VERSION}.${STMM_INPUT_GTK_MINOR_VERSION}.0")
 
-set(STMM_INPUT_GTK_REQ_STMM_INPUT_VERSION "0.14") # !-U-!
+set(STMM_INPUT_GTK_REQ_STMM_INPUT_VERSION "0.15") # !-U-!
 
 set(STMM_INPUT_GTK_REQ_GTKMM_VERSION "3.22")
 
@@ -67,19 +67,3 @@ list(APPEND STMMINPUTGTK_LIBRARIES "${STMMINPUTGTK_EXTRA_LIBRARIES}")
 if ("${CMAKE_SCRIPT_MODE_FILE}" STREQUAL "")
     DefineAsSecondaryTarget(stmm-input-gtk  ${STMMI_LIB_FILE}  "${STMMINPUTGTK_INCLUDE_DIRS}"  "stmm-input" "${STMMI_TEMP_EXTERNAL_LIBRARIES}")
 endif()
-
-# if (("${CMAKE_SCRIPT_MODE_FILE}" STREQUAL "") AND NOT TARGET stmm-input-gtk)
-#     if (BUILD_SHARED_LIBS)
-#         add_library(stmm-input-gtk SHARED IMPORTED)
-#     else()
-#         add_library(stmm-input-gtk STATIC IMPORTED)
-#     endif()
-#     set_target_properties(stmm-input-gtk PROPERTIES IMPORTED_LOCATION             "${STMMI_LIB_FILE}")
-#     set_target_properties(stmm-input-gtk PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${STMMINPUTGTK_INCLUDE_DIRS}")
-#     set(STMMI_TEMP_PROPS "")
-#     get_target_property(STMMI_TEMP_INPUT_PROP stmm-input INTERFACE_LINK_LIBRARIES)
-#     list(APPEND STMMI_TEMP_PROPS "${STMMI_TEMP_INPUT_PROP}")
-#     list(APPEND STMMI_TEMP_PROPS "stmm-input")
-#     list(APPEND STMMI_TEMP_PROPS ${GTKMM_LIBRARIES})
-#     set_target_properties(stmm-input-gtk PROPERTIES INTERFACE_LINK_LIBRARIES      "${STMMI_TEMP_PROPS}")
-# endif()

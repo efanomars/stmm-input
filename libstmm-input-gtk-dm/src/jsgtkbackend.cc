@@ -24,9 +24,6 @@
 #include "jsgtkjoystickdevice.h"
 #include "jsdevicefiles.h"
 
-#include <linux/joystick.h>
-#include <linux/input-event-codes.h>
-
 #include <cassert>
 #include <set>
 #include <algorithm>
@@ -35,6 +32,9 @@
 #include <iterator>
 #include <tuple>
 #include <type_traits>
+
+#include <linux/joystick.h>
+#include <linux/input-event-codes.h>
 
 #include <sys/stat.h>
 #include <sys/ioctl.h>

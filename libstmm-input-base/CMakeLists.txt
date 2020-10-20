@@ -1,19 +1,19 @@
-# File: libstmm-input-base/CMakeLists.txt
+# Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
 
-#  Copyright © 2019  Stefano Marsili, <stemars@gmx.ch>
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with this program; if not, see <http://www.gnu.org/licenses/>
+# File:   libstmm-input-base/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.0)
 
@@ -54,7 +54,9 @@ set(STMMI_SOURCES
         "${STMMI_SOURCES_DIR}/callifsimplifier.h"
         "${STMMI_SOURCES_DIR}/childdevicemanager.cc"
         "${STMMI_SOURCES_DIR}/parentdevicemanager.cc"
+        "${STMMI_SOURCES_DIR}/stmm-input-base.cc"
         "${STMMI_SOURCES_DIR}/utilbase.h"
+        "${STMMI_SOURCES_DIR}/utilbase.cc"
       )
 
 # Define library

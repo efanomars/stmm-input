@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -221,7 +221,7 @@ bool GtkPointerDevice::handleGdkEventButton(GdkEventButton* p0ButtonEv, const sh
 		sendPointerEventToListener(*p0ListenerData, nEventTimeUsec, fX, fY, eInputType, nButton
 									, bWasAnyButtonPressed, bAnyButtonPressed, refWindowAccessor, p0Owner
 									, refEvent);
-		if ((eInputType == PointerEvent::BUTTON_PRESS) 
+		if ((eInputType == PointerEvent::BUTTON_PRESS)
 					&& (std::find(m_aButtons.begin(), m_aButtons.end(), nButton) == m_aButtons.end())) {
 			// The button was canceled by the callback (ex. removeAccessor was called)
 			break; // for -------
@@ -279,7 +279,7 @@ bool GtkPointerDevice::handleGdkEventScroll(GdkEventScroll* p0ScrollEv, const sh
 		const auto nAddTimeStamp = p0ListenerData->getAddedTimeStamp();
 		if (m_nAnyButtonPressTimeStamp < nAddTimeStamp) {
 			// The listener was added after the last no-button to a-button pressed transition.
-			// As for movement events a newly added listener starts to receive scroll events 
+			// As for movement events a newly added listener starts to receive scroll events
 			// only after all buttons are released (the pointer is ungrabbed)
 			continue; // for --------
 		}
@@ -326,7 +326,7 @@ bool GtkPointerDevice::handleGdkEventTouch(GdkEventTouch* p0TouchEv, const share
 	const GdkEventType eGdkType = p0TouchEv->type;
 
 	const auto fLastX = p0TouchEv->x;
-	const auto fLastY = p0TouchEv->y;	
+	const auto fLastY = p0TouchEv->y;
 	GdkEventSequence* p0Sequence = p0TouchEv->sequence;
 	TouchEvent::TOUCH_INPUT_TYPE eType;
 	switch (eGdkType) {

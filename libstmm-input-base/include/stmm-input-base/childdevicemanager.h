@@ -58,7 +58,7 @@ public:
 	 */
 	shared_ptr<ParentDeviceManager> getRoot() noexcept;
 	/** Tells whether this instance is also a ParentDeviceManager.
-	 * 
+	 *
 	 * @return Whether a ParentDeviceManager.
 	 */
 	bool isParent() const noexcept { return m_bImParent; }

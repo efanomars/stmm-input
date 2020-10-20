@@ -57,7 +57,7 @@ bool FakeDeviceManager::simulateRemoveDevice(int32_t nDeviceId) noexcept
 		return false;
 	}
 	#ifndef NDEBUG
-	const bool bRemoved = 
+	const bool bRemoved =
 	#endif
 	StdDeviceManager::removeDevice(refDevice);
 	assert(bRemoved);

@@ -1,19 +1,19 @@
-# File: libstmm-input-ev/CMakeLists.txt
+# Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
 
-#  Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with this program; if not, see <http://www.gnu.org/licenses/>
+# File:   libstmm-input-ev/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.0)
 
@@ -64,9 +64,11 @@ set(STMMI_SOURCES
         "${STMMI_SOURCES_DIR}/pointercapability.cc"
         "${STMMI_SOURCES_DIR}/pointerevent.cc"
         "${STMMI_SOURCES_DIR}/stddevicemanager.cc"
+        "${STMMI_SOURCES_DIR}/stmm-input-ev.cc"
         "${STMMI_SOURCES_DIR}/touchcapability.cc"
         "${STMMI_SOURCES_DIR}/touchevent.cc"
         "${STMMI_SOURCES_DIR}/utilev.h"
+        "${STMMI_SOURCES_DIR}/utilev.cc"
        )
 
 # Define library
@@ -79,8 +81,8 @@ target_include_directories(stmm-input-ev BEFORE PUBLIC
   $<BUILD_INTERFACE:${STMMI_HEADERS_DIR}>
   $<INSTALL_INTERFACE:include/stmm-input-ev>  # <prefix>/include/stmm-input-ev
   )
+target_include_directories(stmm-input-ev BEFORE PRIVATE ${STMMI_INCLUDE_DIR})
 
-#target_link_libraries(stmm-input-ev stmm-input-base)
 target_link_libraries(stmm-input-ev ${STMMINPUTEV_EXTRA_LIBRARIES})
 
 set_target_properties(stmm-input-ev PROPERTIES  ${CMAKE_BUILD_TYPE}_POSTFIX "")

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,8 +11,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, see <http://www.gnu.org/licenses/>
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, see <http://www.gnu.org/licenses/>
  */
 /*
  * File:   inputstrings.cc
@@ -29,7 +29,7 @@ namespace showevs
 void InputStrings::initAxisMap() noexcept
 {
 	// Generate:
-	// from <stmm-input-ev/joystickcapability.h> copy all axes 
+	// from <stmm-input-ev/joystickcapability.h> copy all axes
 	// adding a ", " to the first to transform:
 	//  , AXIS_X = 0x00 //ABS_X
 	// to:

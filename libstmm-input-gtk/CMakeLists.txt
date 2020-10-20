@@ -1,27 +1,21 @@
-# File: libstmm-input-gtk/CMakeLists.txt
+# Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
 
-#  Copyright © 2019  Stefano Marsili, <stemars@gmx.ch>
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with this program; if not, see <http://www.gnu.org/licenses/>
+# File:   libstmm-input-gtk/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.0)
-
-option(OMIT_X11 "Exclude X11 (XI2) related device managers" OFF)
-mark_as_advanced(OMIT_X11)
-
-option(OMIT_PLUGINS "Exclude plugins device manager (stmm-input-dl)" OFF)
-mark_as_advanced(OMIT_PLUGINS)
 
 project(stmm-input-gtk CXX)
 
@@ -61,6 +55,7 @@ set(STMMI_SOURCES
         "${STMMI_SOURCES_DIR}/gdkkeyconverterevdev.cc"
         "${STMMI_SOURCES_DIR}/gtkaccessor.cc"
         "${STMMI_SOURCES_DIR}/keyrepeatmode.cc"
+        "${STMMI_SOURCES_DIR}/stmm-input-gtk.cc"
         )
 
 # Define library
@@ -113,8 +108,6 @@ message(STATUS " CMAKE_CXX_FLAGS:                 ${CMAKE_CXX_FLAGS}")
 message(STATUS " install prefix:                  ${STMMI_GTK_INSTALL_PREFIX}")
 message(STATUS " BUILD_DOCS:                      ${BUILD_DOCS}")
 message(STATUS " BUILD_TESTING:                   ${BUILD_TESTING}")
-message(STATUS " OMIT_X11:                        ${OMIT_X11}")
-message(STATUS " OMIT_PLUGINS:                    ${OMIT_PLUGINS}")
 endif()
 
 # Documentation

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>
  */
-/* 
- * File:   testJoystickButtonEventClass.cc
+/*
+ * File:   testJoystickButtonEventClass.cxx
  */
 
 #define CATCH_CONFIG_MAIN
 #include "catch2/catch.hpp"
 
-#include "fakejoystickdevice.h"
+#include <stmm-input-fake/fakejoystickdevice.h>
 #include "joystickevent.h"
 
 namespace stmi

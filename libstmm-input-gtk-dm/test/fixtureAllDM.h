@@ -105,7 +105,7 @@ protected:
 		m_refGtkAccessor1 = std::make_shared<stmi::GtkAccessor>(m_refWin1);
 		assert(m_refGtkAccessor1.operator bool());
 		#ifndef NDEBUG
-		const bool bAdded = 
+		const bool bAdded =
 		#endif
 		m_refAllEvDM->addAccessor(m_refGtkAccessor1);
 		assert(bAdded);

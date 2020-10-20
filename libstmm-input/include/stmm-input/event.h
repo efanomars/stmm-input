@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,7 +47,7 @@ class XYEvent;
 
 /** Base event class.
  * Usage: if an event listener's callback (stmi::EventListener)
- * is called by the device manager, you get the actual registered subclass of the event 
+ * is called by the device manager, you get the actual registered subclass of the event
  * by statically casting as follows:
  *
  *     void handleEvent(const shared_ptr<stmi::Event>& refEvent)
@@ -102,11 +102,11 @@ public:
 	/** Tells whether the event can simulate hardware keys.
 	 * If it can the parameters nKey and eType will
 	 * contain the first of the simulated keys, bMoreThanOne whether there are more.
-	 * If it's the case (`bMoreThanOne == true`) then getAsKeys() should be called, 
+	 * If it's the case (`bMoreThanOne == true`) then getAsKeys() should be called,
 	 * which returns all the simulated keys (the first included).
 	 * If the function returns `false` the parameters are left unchanged. The default implementation
 	 * returns `false`.
-	 * 
+	 *
 	 * Ex.: a subclass JoystickHatEvent might return, for transition from HAT_CENTER to HAT_RIGHTUP,
 	 *  the first key (nKey=KEY_RIGHT, eType=AS_KEY_PRESS) and bMoreThanOne=true
 	 *  while getAsKeys() returns all keys {(KEY_RIGHT,AS_KEY_PRESS), (KEY_UP,AS_KEY_PRESS)}.
@@ -123,9 +123,9 @@ public:
 	/** All the keys this event simulates.
 	 * The default implementation calls getAsKey() and returns an empty set if no keys are simulated,
 	 * otherwise a set containing the first (nKey, eType) pair.
-	 * Therefore subclass implementations have to override this function only if 
+	 * Therefore subclass implementations have to override this function only if
 	 * more than one key is simulated.
-	 * 
+	 *
 	 * Ex.: a subclass PointerScrollEvent may return {(KEY_SCROLLUP,AS_KEY_PRESS), (KEY_SCROLLUP,AS_KEY_RELEASE)},
 	 *  if mouse's wheel was scrolled up.
 	 * @return Vector of (HARDWARE_KEY,AS_KEY_INPUT_TYPE) pairs that simulate the event. Empty if no key simulated.

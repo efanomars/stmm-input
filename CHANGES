@@ -1,3 +1,11 @@
+stmm-input (0.15) unstable; urgency=low
+
+  * Fix dates
+  * Eliminate unnecessary macro in public header files
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 19 Oct 2020 19:29:39 +0100
+
 stmm-input (0.14) unstable; urgency=low
 
   * Fix PKGBUILD

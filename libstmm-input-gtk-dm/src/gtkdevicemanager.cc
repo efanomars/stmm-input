@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,13 +21,13 @@
 #include "gtkdevicemanager.h"
 #include "jsdevicefiles.h"
 
-#include <stmm-input-gtk/gdkkeyconverterevdev.h>
 #include "masgtkdevicemanager.h"
+#include "jsgtkdevicemanager.h"
 
+#include <stmm-input-gtk/gdkkeyconverterevdev.h>
 #ifndef STMI_OMIT_PLUGINS
 #include <stmm-input-dl/pluginsdevicemanager.h>
 #endif // STMI_OMIT_PLUGINS
-#include "jsgtkdevicemanager.h"
 
 #include <iostream>
 #include <type_traits>
@@ -60,7 +60,8 @@ std::pair<shared_ptr<GtkDeviceManager>, std::string> GtkDeviceManager::create(co
 		}
 	}
 	#ifndef STMI_OMIT_PLUGINS
-	{
+	if (! (oInit.m_bEnablePlugins && oInit.m_aEnDisablePlugins.empty())) {
+		//
 		PluginsDeviceManager::Init oPluginInit;
 		oPluginInit.m_bEnableEventClasses = oInit.m_bEnableEventClasses;
 		oPluginInit.m_aEnDisableEventClasses = oInit.m_aEnDisableEventClasses;

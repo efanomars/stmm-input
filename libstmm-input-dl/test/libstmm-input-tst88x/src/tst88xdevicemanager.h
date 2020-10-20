@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2017-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,8 +23,8 @@
 
 #include "tst88capability.h"
 
-#include "stddevicemanager.h"
-#include "keycapability.h"
+#include "stmm-input-ev/stddevicemanager.h"
+#include "stmm-input-ev/keycapability.h"
 
 #include <stmm-input/device.h>
 
@@ -151,7 +151,7 @@ public:
 		auto refChildThis = shared_from_this();
 		auto refDevice = std::make_shared<Tst88XDevice>(refChildThis, sName, nData);
 		#ifndef NDEBUG
-		const bool bAdded = 
+		const bool bAdded =
 		#endif
 		StdDeviceManager::addDevice(refDevice);
 		assert(bAdded);

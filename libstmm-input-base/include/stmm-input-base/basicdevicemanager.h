@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -138,7 +138,7 @@ protected:
 	 */
 	shared_ptr< const std::list< ListenerData* > > getListeners() noexcept;
 	/** Returns the index of the event class in the array passed to the constructor.
-	 * The index can be used by 
+	 * The index can be used by
 	 * ListenerData::handleEventCallIf(int32_t, const shared_ptr<Event>&, const shared_ptr<const Accessor>&) const
 	 * for faster access to the simplified callif expression for the event class.
 	 * This function can be called  from the constructor of a subclass to initialize
@@ -210,10 +210,10 @@ protected:
 		 * The first time this function is called an instance of type ED is created
 		 * with its default constructor. Further calls must have the same type ED
 		 * and will return the same instance.
-		 * 
+		 *
 		 * ED must be a subclass of ListenerExtraData and should override method
 		 * ListenerExtraData::reset() to initialize the data.
-		 * 
+		 *
 		 * @param p0ExtraData The pointer to the data.
 		 */
 		template<class ED>
@@ -287,7 +287,7 @@ private:
 	// is not really needed except for debugging BasicDeviceManager subclasses.
 	int32_t m_nListenerListRecursing;
 	// Tells whether one or more ListenerData were marked as removed
-	bool m_bListenerListDirty; 
+	bool m_bListenerListDirty;
 
 	// Since this class isn't thread safe no need to declare it as atomic
 	static uint64_t s_nUniqueTimeStamp;

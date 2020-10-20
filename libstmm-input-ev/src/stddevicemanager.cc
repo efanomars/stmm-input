@@ -18,7 +18,7 @@
  * File:   stddevicemanager.cc
  */
 
-#include "stddevicemanager.h"
+#include "stmm-input-ev/stddevicemanager.h"
 
 #include <stmm-input/devicemanager.h>
 #include <stmm-input-base/parentdevicemanager.h>

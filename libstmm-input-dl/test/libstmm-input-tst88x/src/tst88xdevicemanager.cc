@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2017-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,8 +21,8 @@
 
 #include "tst88xdevicemanager.h"
 
-#include "keyevent.h"
-#include "devicemgmtevent.h"
+#include "stmm-input-ev/keyevent.h"
+#include "stmm-input-ev/devicemgmtevent.h"
 
 #include <iostream>
 

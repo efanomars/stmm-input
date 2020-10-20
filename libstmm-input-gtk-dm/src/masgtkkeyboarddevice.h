@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,13 +25,13 @@
 
 #include "recycler.h"
 
-#include <gdk/gdk.h>
-
 #include <stmm-input-base/basicdevice.h>
 #include <stmm-input-ev/keycapability.h>
 #include <stmm-input-ev/keyevent.h>
 #include <stmm-input/capability.h>
 #include <stmm-input/hardwarekey.h>
+
+#include <gdk/gdk.h>
 
 #include <memory>
 #include <string>

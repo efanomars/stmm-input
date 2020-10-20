@@ -1,19 +1,19 @@
-# File: libstmm-input-fake/CMakeLists.txt
+# Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
 
-#  Copyright © 2019  Stefano Marsili, <stemars@gmx.ch>
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with this program; if not, see <http://www.gnu.org/licenses/>
+# File:   libstmm-input-fake/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.0)
 
@@ -66,6 +66,7 @@ list(APPEND  STMMI_SOURCES
         "${STMMI_SOURCES_DIR}/fakekeydevice.cc"
         "${STMMI_SOURCES_DIR}/fakepointerdevice.cc"
         "${STMMI_SOURCES_DIR}/faketouchdevice.cc"
+        "${STMMI_SOURCES_DIR}/stmm-input-fake.cc"
         )
 
 # Define library
@@ -79,7 +80,8 @@ target_include_directories(stmm-input-fake BEFORE PUBLIC
   $<INSTALL_INTERFACE:include/stmm-input-fake>  # <prefix>/include/stmm-input-fake
   )
 
-#target_link_libraries(stmm-input-fake stmm-input-ev)
+target_include_directories(stmm-input-fake BEFORE PRIVATE ${STMMI_INCLUDE_DIR})
+
 target_link_libraries(stmm-input-fake ${STMMINPUTFAKE_EXTRA_LIBRARIES})
 
 set_target_properties(stmm-input-fake PROPERTIES  ${CMAKE_BUILD_TYPE}_POSTFIX "")

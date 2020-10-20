@@ -1,4 +1,19 @@
-# File: libstmm-input-tst99/CMakeLists.txt
+# Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
+
+# File:   libstmm-input-dl/test/libstmm-input-tst99/CMakeLists.txt
 
 # Libtool CURRENT/REVISION/AGE: here
 #   MAJOR is CURRENT interface
@@ -27,9 +42,9 @@ set(STMMI_TST99_SOURCES
         "${STMMI_TST99_SOURCES_DIR}/tst99capability.cc"
         "${STMMI_TST99_SOURCES_DIR}/tst99event.h"
         "${STMMI_TST99_SOURCES_DIR}/tst99event.cc"
-        "${PROJECT_BINARY_DIR}/stddevicemanager.h"
+        "${PROJECT_BINARY_DIR}/stmm-input-ev/stddevicemanager.h"
         "${PROJECT_BINARY_DIR}/stddevicemanager.cc"
-        "${PROJECT_BINARY_DIR}/devicemgmtevent.h"
+        "${PROJECT_BINARY_DIR}/stmm-input-ev/devicemgmtevent.h"
         "${PROJECT_BINARY_DIR}/devicemgmtevent.cc"
       )
 

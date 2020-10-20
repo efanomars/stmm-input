@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -124,8 +124,8 @@ public:
 	 * Example 2: A hat `0` transition with canceling from HAT_LEFTUP to HAT_CENTER
 	 * simulates the keys
 	 * `{ {HK_UP, AS_KEY_RELEASE_CANCEL}, {HK_LEFT, AS_KEY_RELEASE_CANCEL} }`
-	 * 
-	 * Example 3: A (physically very unlikely) hat `0` transition from HAT_LEFTUP to HAT_RIGHTDOWN 
+	 *
+	 * Example 3: A (physically very unlikely) hat `0` transition from HAT_LEFTUP to HAT_RIGHTDOWN
 	 * simulates the keys
 	 * `{ {HK_UP, AS_KEY_RELEASE}, {HK_LEFT, AS_KEY_RELEASE}, {HK_DOWN, AS_KEY_PRESS}, {HK_RIGHT, AS_KEY_PRESS} }`
 	 */
@@ -320,7 +320,7 @@ public:
 protected:
 	/** Sets the axis.
 	 * @param eAxis The axis.
-	 */ 
+	 */
 	inline void setAxis(JoystickCapability::AXIS eAxis) noexcept
 	{
 		assert(JoystickCapability::isValidAxis(eAxis));

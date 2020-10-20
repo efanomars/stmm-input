@@ -151,7 +151,7 @@ public:
 	/** Adds an accessor to the device manager.
 	 * If the device manager recognizes the accessor and the accessor wasn't
 	 * already added `true` is returned, `false` otherwise.
-	 * 
+	 *
 	 * It's possible to add a null accessor, it's meaning is implementation
 	 * dependent.
 	 * @param refAccessor The accessor to add. Can be null.
@@ -172,11 +172,11 @@ public:
 	virtual bool hasAccessor(const shared_ptr<Accessor>& refAccessor) noexcept = 0;
 
 	/** Adds an event listener with its callif condition to the device manager.
-	 * The EventListener callback function (actually its address) identifies 
+	 * The EventListener callback function (actually its address) identifies
 	 * the listener being added and is therefore used to remove it with removeEventListener().
-	 * The callback function is called for all events originating from this 
+	 * The callback function is called for all events originating from this
 	 * device manager's devices that satisfy the callif condition.
-	 * 
+	 *
 	 * If the listener was already added, even with a different callif,
 	 * the function has no effect and `false` is returned.
 	 *
@@ -191,12 +191,12 @@ public:
 	 * The event parameter passed to the callback function can be queued
 	 * (outlive the callback) or modified if its interface allows it.
 	 * To get the registered class of the event use Event::getEventClass() and statically cast to it.
-	 * Note: don't use `typeid(*refEvent)` since it isn't necessarily equal to 
+	 * Note: don't use `typeid(*refEvent)` since it isn't necessarily equal to
 	 * `refEvent->getEventClass().getTypeInfo()`.
 	 * @see class Event.
 	 *
 	 * Example:
-	 * 
+	 *
 	 *     void createListeners()
 	 *         ...
 	 *         // The listener has to be stored in a member variable otherwise it will
@@ -213,7 +213,7 @@ public:
 	 *                           , std::make_shared<stmi::CallIfEventClass>(typeid(stmi::KeyEvent)));
 	 *         ...
 	 *     }
-	 * 
+	 *
 	 * @param refEventListener The listener to be added. Cannot be null.
 	 * @param refCallIf The callif condition to call back the listener. Can be null.
 	 * @return Whether the listener was added.

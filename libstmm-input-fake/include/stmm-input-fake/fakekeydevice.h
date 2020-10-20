@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
-/* 
+/*
  * File:   fakekeydevice.h
  */
 /*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
@@ -24,11 +24,8 @@
 
 #include "fakedevice.h"
 
-#ifndef STMI_TESTING_ADD_EVS
 #include <stmm-input-ev/keycapability.h>
-#else
-#include "keycapability.h"
-#endif
+
 #include <stmm-input/devicemanager.h>
 
 #include <string>

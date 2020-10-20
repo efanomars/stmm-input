@@ -213,7 +213,7 @@ int doPluginPaths() noexcept
  *   endif
  * else
  *   if Config::getUserDataDirRelPath() not empty
- *     modify disabled-dlps.txt 
+ *     modify disabled-dlps.txt
  *     of $HOME/Config::getUserDataDirRelPath()
  *     if disabled in data dirs
  *       error: sorry sudo is needed to enable
@@ -335,7 +335,7 @@ int doEnablePlugin(const std::string& sPluginName) noexcept
  *   endif
  * else
  *   if Config::getUserDataDirRelPath() not empty
- *     create or modify disabled-dlps.txt 
+ *     create or modify disabled-dlps.txt
  *     of $HOME/Config::getUserDataDirRelPath()
  *   else
  *     error: no local directory found

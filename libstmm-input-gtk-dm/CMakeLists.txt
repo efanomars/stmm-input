@@ -1,19 +1,19 @@
-# File: libstmm-input-gtk-dm/CMakeLists.txt
+# Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
 
-#  Copyright © 2019  Stefano Marsili, <stemars@gmx.ch>
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with this program; if not, see <http://www.gnu.org/licenses/>
+# File:   libstmm-input-gtk-dm/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.0)
 
@@ -80,6 +80,7 @@ set(STMMI_SOURCES_DIR  "${PROJECT_SOURCE_DIR}/src")
 set(STMMI_SOURCES_DATA
         "${STMMI_SOURCES_DIR}/jsdevicefiles.cc"
         "${STMMI_SOURCES_DIR}/recycler.h"
+        "${STMMI_SOURCES_DIR}/recycler.cc"
         )
 set(STMMI_SOURCES_MAS
         "${STMMI_SOURCES_DIR}/masgtkbackend.h"
@@ -89,6 +90,7 @@ set(STMMI_SOURCES_MAS
         "${STMMI_SOURCES_DIR}/masgtkkeyboarddevice.h"
         "${STMMI_SOURCES_DIR}/masgtkkeyboarddevice.cc"
         "${STMMI_SOURCES_DIR}/masgtklistenerextradata.h"
+        "${STMMI_SOURCES_DIR}/masgtklistenerextradata.cc"
         "${STMMI_SOURCES_DIR}/masgtkpointerdevice.h"
         "${STMMI_SOURCES_DIR}/masgtkpointerdevice.cc"
         "${STMMI_SOURCES_DIR}/masgtkwindowdata.h"
@@ -104,10 +106,13 @@ set(STMMI_SOURCES_JS
         "${STMMI_SOURCES_DIR}/jsgtkjoystickdevice.h"
         "${STMMI_SOURCES_DIR}/jsgtkjoystickdevice.cc"
         "${STMMI_SOURCES_DIR}/jsgtklistenerextradata.h"
+        "${STMMI_SOURCES_DIR}/jsgtklistenerextradata.cc"
         "${STMMI_SOURCES_DIR}/jsgtkwindowdata.h"
+        "${STMMI_SOURCES_DIR}/jsgtkwindowdata.cc"
         )
 set(STMMI_SOURCES_ALL
         "${STMMI_SOURCES_DIR}/gtkdevicemanager.cc"
+        "${STMMI_SOURCES_DIR}/stmm-input-gtk-dm.cc"
         )
 # Concatenate source file lists
 list(APPEND  STMMI_SOURCES

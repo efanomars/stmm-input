@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -103,7 +103,7 @@ bool JoystickLifeSource::isFileNameMine(const std::string& sFileName) const noex
 	const size_t nFileNameSize = sUtf8FileName.size();
 	for (auto& sUtf8BaseName : m_oNumberedFilesBaseNames) {
 		const size_t nBaseNameSize = sUtf8BaseName.size();
-		if ((nFileNameSize > nBaseNameSize) 
+		if ((nFileNameSize > nBaseNameSize)
 				&& (sUtf8FileName.substr(0, nBaseNameSize) == sUtf8BaseName)
 				&& (sUtf8FileName.find_first_not_of("0123456789", nBaseNameSize) == Glib::ustring::npos)) {
 			return true; //----------------------------------------------------

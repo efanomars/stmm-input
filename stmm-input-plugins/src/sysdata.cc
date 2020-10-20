@@ -27,13 +27,13 @@
 #include <iostream>
 #include <algorithm>
 #include <cstdlib>
+#include <string>
 
 #include <unistd.h>
 #include <pwd.h>
 #include <string.h>
 
 #include <errno.h>
-#include <string>
 
 namespace stmi
 {

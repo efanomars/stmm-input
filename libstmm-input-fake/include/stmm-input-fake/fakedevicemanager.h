@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <http://www.gnu.org/licenses/>
  */
-/* 
+/*
  * File:   fakedevicemanager.h
  */
 /*   @DO_NOT_REMOVE_THIS_LINE_IT_IS_USED_BY_COMMONTESTING_CMAKE@   */
@@ -56,7 +56,7 @@ namespace testing
  * when a device or a listener is removed pressed keys aren't canceled and that
  * the user has to make sure for example that the press of a key isn't followed
  * by another press of the same key but rather by a release or a cancel.
- * This also means that the JoystickCapability's methods shouldn't be called by 
+ * This also means that the JoystickCapability's methods shouldn't be called by
  * the to be tested code because they return bogus values.
  *
  * This class is supposed to be instantiated with std::make_shared().
@@ -87,7 +87,7 @@ public:
 	/** Adds a device with single capability class.
 	 * Example:
 	 *       const int32_t nKeyDevId = refFakeDM->simulateNewDevice&lt;FakeKeyDevice&gt;();
-	 * 
+	 *
 	 * @return The id of the added device.
 	 */
 	template<class DEV>
@@ -97,7 +97,7 @@ public:
 		auto refChildThis = shared_from_this();
 		auto refDevice = std::make_shared<DEV>(refChildThis, "");
 		#ifndef NDEBUG
-		const bool bAdded = 
+		const bool bAdded =
 		#endif
 		StdDeviceManager::addDevice(refDevice);
 		assert(bAdded);
@@ -124,8 +124,8 @@ public:
 	 * `bAnyButtonPressed` and `bWasAnyButtonPressed` parameters to reflect
 	 * the current (and preceding) state of the pointer buttons.
 	 * @param nDeviceId The id of the device with the pointer capability.
-	 * @param fX The X position of the pointer. 
-	 * @param fY The Y position of the pointer. 
+	 * @param fX The X position of the pointer.
+	 * @param fY The Y position of the pointer.
 	 * @param eType The key input type.
 	 * @param nButton The button involved or `-1` if hover.
 	 * @param bAnyButtonPressed Whether any button is pressed (after this event).
@@ -168,7 +168,7 @@ public:
 	/** Generates a joystick hat event and sends it to listeners.
 	 * Note: the caller has to set the consistent value for the `ePreviousValue`
 	 * parameter to reflect the current state of the hat.
-	 * If ePreviousValue is set to JoystickCapability::HAT_VALUE_NOT_SET 
+	 * If ePreviousValue is set to JoystickCapability::HAT_VALUE_NOT_SET
 	 * key simulation is disabled (Event::getAsKey() returns `false`).
 	 * @param nDeviceId The id of the device with the joystick capability.
 	 * @param nHat The hat that changed its state. Must be >= 0.

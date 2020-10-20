@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2016-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -96,7 +96,7 @@ public:
 	 * - Buttons from 10 are not simulated with a key.
 	 *
 	 * The event type BUTTON_PRESS simulates AS_KEY_PRESS, BUTTON_RELEASE simulates AS_KEY_RELEASE
-	 * and BUTTON_RELEASE_CANCEL simulates AS_KEY_RELEASE_CANCEL. 
+	 * and BUTTON_RELEASE_CANCEL simulates AS_KEY_RELEASE_CANCEL.
 	 * @param eKey The simulated key.
 	 * @param eType The type of simulated key action.
 	 * @param bMoreThanOne Always `false`.
