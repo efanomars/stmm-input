@@ -18,7 +18,7 @@ if (BUILD_TESTING)
     add_executable(spinn-test ${SPINN_TEST_SOURCES_DIR}/testSpinn.cxx ${SPINN_TEST_WITH_SOURCES})
 
     # Required libraries
-    set(TEST_SPINN_REQ_STMM_INPUT_FAKE_VERSION "0.15") # !-U-!
+    set(TEST_SPINN_REQ_STMM_INPUT_FAKE_VERSION "0.16") # !-U-!
 
     # Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
     pkg_check_modules(STMMINPUTFAKE  REQUIRED  stmm-input-fake>=${TEST_SPINN_REQ_STMM_INPUT_FAKE_VERSION})

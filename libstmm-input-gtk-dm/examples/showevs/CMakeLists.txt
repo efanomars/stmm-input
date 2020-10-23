@@ -12,10 +12,10 @@ include(FindPkgConfig)
 find_package(PkgConfig)
 
 # Version
-set(SHOWEVS_VERSION "0.15") # !-U-!
+set(SHOWEVS_VERSION "0.16") # !-U-!
 
 # Required libraries
-set(SHOWEVS_REQ_STMM_INPUT_GTK_DM_VERSION "0.15") # !-U-!
+set(SHOWEVS_REQ_STMM_INPUT_GTK_DM_VERSION "0.16") # !-U-!
 
 # Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
 pkg_check_modules(STMMINPUTGTKDM  REQUIRED  stmm-input-gtk-dm>=${SHOWEVS_REQ_STMM_INPUT_GTK_DM_VERSION})

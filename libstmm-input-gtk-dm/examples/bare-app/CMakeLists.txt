@@ -14,10 +14,10 @@ if (NOT PKG_CONFIG_FOUND)
 endif()
 
 # Version
-set(BARE_APP_VERSION "0.15") # !-U-!
+set(BARE_APP_VERSION "0.16") # !-U-!
 
 # Required libraries
-set(BARE_APP_REQ_STMM_INPUT_GTK_DM_VERSION "0.15") # !-U-!
+set(BARE_APP_REQ_STMM_INPUT_GTK_DM_VERSION "0.16") # !-U-!
 
 # Beware! The prefix passed to pkg_check_modules(PREFIX ...) shouldn't contain underscores!
 pkg_check_modules(STMMINPUTGTKDM  REQUIRED  stmm-input-gtk-dm>=${BARE_APP_REQ_STMM_INPUT_GTK_DM_VERSION})

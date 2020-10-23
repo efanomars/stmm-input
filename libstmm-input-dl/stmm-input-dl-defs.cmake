@@ -20,10 +20,10 @@
 #   MINOR is REVISION (implementation of interface)
 #   AGE is always 0
 set(STMM_INPUT_DL_MAJOR_VERSION 0)
-set(STMM_INPUT_DL_MINOR_VERSION 15) # !-U-!
+set(STMM_INPUT_DL_MINOR_VERSION 16) # !-U-!
 set(STMM_INPUT_DL_VERSION "${STMM_INPUT_DL_MAJOR_VERSION}.${STMM_INPUT_DL_MINOR_VERSION}.0")
 
-set(STMM_INPUT_DL_REQ_STMM_INPUT_BASE_VERSION "0.15") # !-U-!
+set(STMM_INPUT_DL_REQ_STMM_INPUT_BASE_VERSION "0.16") # !-U-!
 
 include("${PROJECT_SOURCE_DIR}/../libstmm-input-base/stmm-input-base-defs.cmake")
 
